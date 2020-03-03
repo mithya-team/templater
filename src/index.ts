@@ -1,3 +1,4 @@
-export { default } from './lib/test';
-export * from './lib/test';
+export { default } from './lib/TemplateRouter';
+export * from './lib/TemplateRouter';
+export * from './lib/RouteConfig';
 

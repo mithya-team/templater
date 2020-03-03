@@ -1,68 +1,19 @@
-import React__default, { useState, useEffect } from 'react';
+import React__default, { useState, useEffect, useContext } from 'react';
 import { Link, withRouter, Switch, Route } from 'react-router-dom';
-import { makeStyles, createStyles, Paper, Box, Typography, LinearProgress } from '@material-ui/core';
+import { makeStyles, createStyles, Paper, Box, Typography, Button, LinearProgress, Dialog, AppBar, Toolbar, CircularProgress } from '@material-ui/core';
 import { useParams } from 'react-router';
 
 var config = {
     urlPrefix: '',
-    listingType: 'list'
+    listingType: 'list',
+    dialogToolbarProps: {
+        color: 'primary'
+    }
 };
 
 var getPath = function (suffix) {
     return config.urlPrefix + '/' + suffix;
 };
-
-var TemplateCard = function (props) {
-    var data = props.data;
-    var classes = useStyles();
-    return (React__default.createElement(Paper, { className: classes.root },
-        React__default.createElement(Link, { to: getPath(data.id) },
-            React__default.createElement(Box, { display: "flex", justifyContent: "space-between" },
-                React__default.createElement(Typography, { variant: "h4" }, data.name),
-                React__default.createElement(Typography, { variant: "caption" }, data.slug))),
-        React__default.createElement(Typography, null, data.id)));
-};
-var useStyles = makeStyles(function () { return createStyles({
-    root: {
-        padding: 8
-    }
-}); });
-
-var TemplateList = function () {
-    // const { listingType = templaterConfig.listingType } = props;
-    // const classes = useStyles(props);
-    var _a = useTemplateService(), templates = _a.templates, status = _a.status;
-    return (React__default.createElement(Box, null, status === 'loading' ? React__default.createElement(LinearProgress, { color: "primary" }) :
-        templates.map(function (t, i) { return (React__default.createElement(Box, { margin: "10px auto", key: t.id + i, width: "500px" },
-            React__default.createElement(TemplateCard, { data: t }))); })));
-};
-
-var AllTemplates = function () {
-    // const classes = useStyles(props)
-    return (React__default.createElement("div", null,
-        React__default.createElement(TemplateList, null)));
-};
-
-var EditTemplate = function () {
-    var id = useParams().id;
-    // const classes = useStyles(props)
-    return (React__default.createElement("div", null,
-        React__default.createElement(Typography, null,
-            "ID: ",
-            id)));
-};
-
-var TemplateRouter = function (props) {
-    console.log("here", props);
-    return (
-    // <BrowserRouter>
-    React__default.createElement(Switch, null,
-        React__default.createElement(Route, { exact: true, path: getPath(':id'), component: EditTemplate }),
-        React__default.createElement(Route, { path: getPath(''), component: AllTemplates }))
-    // </BrowserRouter>
-    );
-};
-var TemplateRouter$1 = withRouter(TemplateRouter);
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -78,6 +29,17 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
 function __awaiter(thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -116,6 +78,14 @@ function __generator(thisArg, body) {
     }
 }
 
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+}
+
 var TemplateService = /** @class */ (function () {
     function TemplateService() {
     }
@@ -123,6 +93,22 @@ var TemplateService = /** @class */ (function () {
         return new Promise((function (resolve) {
             setTimeout(function () {
                 return resolve(dummy);
+            }, 1000);
+        }));
+    };
+    TemplateService.createTemplate = function (template) {
+        return new Promise((function (resolve) {
+            setTimeout(function () {
+                console.log("created", template);
+                return resolve(template);
+            }, 1000);
+        }));
+    };
+    TemplateService.updateTemplate = function (id, template) {
+        return new Promise((function (resolve) {
+            setTimeout(function () {
+                console.log("updated", id, template);
+                return resolve(template);
             }, 1000);
         }));
     };
@@ -258,7 +244,7 @@ var useTemplateService = function () {
         loadTemplates();
     }, []);
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var t, error_1;
+        var _templates, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -268,8 +254,8 @@ var useTemplateService = function () {
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, TemplateService.fetchTemplates()];
                 case 2:
-                    t = _a.sent();
-                    setTemplates(t);
+                    _templates = _a.sent();
+                    setTemplates(_templates);
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
@@ -280,12 +266,196 @@ var useTemplateService = function () {
             }
         });
     }); };
+    var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
+        var _template, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.createTemplate(template)];
+                case 2:
+                    _template = _a.sent();
+                    setTemplates(__spreadArrays([_template], templates));
+                    setStatus('done');
+                    return [2 /*return*/, _template];
+                case 3:
+                    error_2 = _a.sent();
+                    setStatus('error');
+                    throw error_2;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
+        var _template_1, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.updateTemplate(id, template)];
+                case 2:
+                    _template_1 = _a.sent();
+                    setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), _template_1)) : t; })));
+                    setStatus('done');
+                    return [2 /*return*/, _template_1];
+                case 3:
+                    error_3 = _a.sent();
+                    setStatus('error');
+                    throw error_3;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
     return {
         templates: templates,
-        status: status
+        status: status,
+        createTemplate: createTemplate,
+        updateTemplate: updateTemplate
     };
 };
 
+var Context = React__default.createContext(null);
+var ContextProvider = function (props) {
+    var _a = useTemplateService(), templates = _a.templates, status = _a.status, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate;
+    var _b = useState(false), dialogOpen = _b[0], setDialogOpen = _b[1];
+    var _c = useState(), selectedTemplate = _c[0], setSelectedTemplate = _c[1];
+    var openTemplateEditor = function (template) {
+        setSelectedTemplate(template);
+        setDialogOpen(true);
+    };
+    var closeDialog = function () {
+        setSelectedTemplate(undefined);
+        setDialogOpen(false);
+    };
+    var saveChanges = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            console.log(createTemplate, updateTemplate);
+            return [2 /*return*/];
+        });
+    }); };
+    var value = {
+        templates: templates,
+        status: status,
+        selectedTemplate: selectedTemplate,
+        dialogOpen: dialogOpen,
+        saveChanges: saveChanges,
+        openTemplateEditor: openTemplateEditor,
+        closeDialog: closeDialog,
+    };
+    return (React__default.createElement(Context.Provider, { value: value },
+        props.children,
+        React__default.createElement(AddEditDialog, null)));
+};
+
+var TemplateCard = function (props) {
+    var context = useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var openTemplateEditor = context.openTemplateEditor;
+    var data = props.data;
+    var classes = useStyles();
+    return (React__default.createElement(Paper, { className: classes.root },
+        React__default.createElement(Link, { to: getPath(data.id) },
+            React__default.createElement(Box, { display: "flex", justifyContent: "space-between" },
+                React__default.createElement(Typography, { variant: "h4" }, data.name),
+                React__default.createElement(Typography, { variant: "caption" }, data.slug))),
+        React__default.createElement(Typography, null, data.id),
+        React__default.createElement(Button, { color: "primary", onClick: function () { return openTemplateEditor(data); }, variant: "contained" }, "EDIT")));
+};
+var useStyles = makeStyles(function () { return createStyles({
+    root: {
+        padding: 8
+    }
+}); });
+
+var TemplateList = function () {
+    // const { listingType = templaterConfig.listingType } = props;
+    // const classes = useStyles(props);
+    var context = useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var templates = context.templates, status = context.status;
+    return (React__default.createElement(Box, null, status === 'loading' ? React__default.createElement(LinearProgress, { color: "primary" }) :
+        templates.map(function (t, i) { return (React__default.createElement(Box, { margin: "10px auto", key: t.id + i, width: "500px" },
+            React__default.createElement(TemplateCard, { data: t }))); })));
+};
+
+var AllTemplates = function () {
+    // const classes = useStyles(props)
+    return (React__default.createElement("div", null,
+        React__default.createElement(TemplateList, null)));
+};
+
+var Preview = function () {
+    var id = useParams().id;
+    // const classes = useStyles(props)
+    return (React__default.createElement("div", null,
+        React__default.createElement(Typography, { variant: "h5" }, "PREVIEW"),
+        React__default.createElement(Typography, null,
+            "ID: ",
+            id)));
+};
+
+var Form = function (props) {
+    var template = props.template;
+    // const classes = useStyles(props)
+    return (React__default.createElement("div", null,
+        "FORM ---- image ----",
+        template.name));
+};
+
+var AddEditDialog = function () {
+    var context = useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, selectedTemplate = context.selectedTemplate;
+    var _a = useState((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {})), template = _a[0], setTemplate = _a[1];
+    var classes = useStyles$1();
+    var handleChange = function (key, value) {
+        var _a, _b;
+        if (key === 'name')
+            setTemplate(__assign(__assign({}, template), (_a = {}, _a[key] = value, _a)));
+        else
+            setTemplate(__assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), (_b = {}, _b[key] = value, _b)) }));
+    };
+    var handleSubmit = function () {
+        console.log("is new?", !!template.id);
+        console.log("submitting", template);
+    };
+    return selectedTemplate ? (React__default.createElement(Dialog, { open: dialogOpen, PaperProps: { className: classes.root }, onClose: closeDialog, fullScreen: true },
+        React__default.createElement(AppBar, __assign({}, config.dialogToolbarProps),
+            React__default.createElement(Toolbar, null,
+                React__default.createElement(Box, null,
+                    React__default.createElement(Typography, null,
+                        "Edit template: ",
+                        selectedTemplate.name)),
+                React__default.createElement(Box, { flex: 1 }),
+                React__default.createElement(Box, null,
+                    React__default.createElement(Button, { onClick: closeDialog }, "Cancel"),
+                    React__default.createElement(Button, { onClick: handleSubmit, variant: "contained", color: "primary" }, status === 'loading' ? React__default.createElement(CircularProgress, null) : 'Submit')))),
+        React__default.createElement(Box, { margin: "100px auto", p: "20px", width: "600px" },
+            React__default.createElement(Form, { template: selectedTemplate, onChange: handleChange })))) : null;
+};
+var useStyles$1 = makeStyles(function () { return createStyles({
+    root: {
+        backgroundColor: '#F5F5F5'
+    }
+}); });
+
+var TemplateRouter = function () {
+    return (React__default.createElement(ContextProvider, null,
+        React__default.createElement(Switch, null,
+            React__default.createElement(Route, { exact: true, path: getPath(':id'), component: Preview }),
+            React__default.createElement(Route, { exact: true, path: getPath(''), component: AllTemplates }))));
+};
+var TemplateRouter$1 = withRouter(TemplateRouter);
+
 export default TemplateRouter$1;
-export { TemplateRouter, config, useTemplateService };
+export { Form, TemplateRouter, TemplateService, config, useTemplateService };
 //# sourceMappingURL=index.es.js.map

@@ -7,12 +7,13 @@ import { useParams } from 'react-router';
 
 interface IProps { }
 
-const EditTemplate: React.FC<IProps> = () => {
+const Preview: React.FC<IProps> = () => {
     const { id } = useParams<{ id: string }>();
     // const classes = useStyles(props)
 
     return (
         <div>
+            <Typography variant="h5">PREVIEW</Typography>
             <Typography>ID: {id}</Typography>
         </div>
     )
@@ -22,4 +23,4 @@ const EditTemplate: React.FC<IProps> = () => {
 
 // }))
 
-export default EditTemplate
+export default Preview

@@ -1,6 +1,8 @@
+import { AppBarProps } from '@material-ui/core';
 export declare type TemplaterConfig = {
     urlPrefix: string;
     listingType: 'grid' | 'list';
+    dialogToolbarProps: AppBarProps;
 };
 export declare type TemplateField = {
     value: string;

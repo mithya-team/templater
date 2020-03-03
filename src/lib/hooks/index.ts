@@ -1,1 +1,1 @@
-export * from './useTemplateListing';
+export * from './useTemplateService';

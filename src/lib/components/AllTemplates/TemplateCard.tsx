@@ -1,14 +1,18 @@
-import React from 'react'
-import { createStyles, makeStyles, Paper, Typography, Box } from '@material-ui/core'
+import React, { useContext } from 'react'
+import { createStyles, makeStyles, Paper, Typography, Box, Button } from '@material-ui/core'
 import { Link } from 'react-router-dom';
 import { Template } from '../../..';
 import { getPath } from '../../utils';
+import { Context } from '../../Context';
 
 interface IProps {
     data: Template
 }
 
 const TemplateCard: React.FC<IProps> = (props) => {
+    const context = useContext(Context);
+    if (!context) return <div />
+    const { openTemplateEditor } = context;
     const { data } = props;
     const classes = useStyles()
 
@@ -23,6 +27,7 @@ const TemplateCard: React.FC<IProps> = (props) => {
                 </Box>
             </Link>
             <Typography>{data.id}</Typography>
+            <Button color="primary" onClick={() => openTemplateEditor(data)} variant="contained">EDIT</Button>
         </Paper>
     )
 }

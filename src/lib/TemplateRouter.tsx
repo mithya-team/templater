@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Switch, Route, withRouter, RouteComponentProps } from 'react-router-dom';
-import { AllTemplates, EditTemplate } from './components';
+import { AllTemplates, Preview } from './components';
 import { getPath } from './utils';
+import { ContextProvider } from './Context';
 
 interface ITemplateRouterProps extends RouteComponentProps {
 
@@ -9,10 +10,12 @@ interface ITemplateRouterProps extends RouteComponentProps {
 
 export const TemplateRouter: FC<ITemplateRouterProps> = () => {
     return (
-        <Switch>
-            <Route exact path={getPath(':id')} component={EditTemplate} />
-            <Route path={getPath('')} component={AllTemplates} />
-        </Switch>
+        <ContextProvider>
+            <Switch>
+                <Route exact path={getPath(':id')} component={Preview} />
+                <Route exact path={getPath('')} component={AllTemplates} />
+            </Switch>
+        </ContextProvider>
     )
 }
 

@@ -7,6 +7,24 @@ export class TemplateService {
             }, 1000);
         }))
     }
+
+    static createTemplate = (template: Template) => {
+        return new Promise<Template>((resolve => {
+            setTimeout(() => {
+                console.log("created", template)
+                return resolve(template)
+            }, 1000);
+        }))
+    }
+
+    static updateTemplate = (id: string, template: Template) => {
+        return new Promise<Template>((resolve => {
+            setTimeout(() => {
+                console.log("updated", id, template)
+                return resolve(template)
+            }, 1000);
+        }))
+    }
 }
 
 

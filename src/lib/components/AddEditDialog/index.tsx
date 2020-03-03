@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import {
     createStyles, makeStyles,
-    // Slide,
+    Slide,
     Dialog, Box, AppBar, Toolbar, Typography, Button, CircularProgress
 } from '@material-ui/core'
 import { Context } from '../../Context';
@@ -15,13 +15,14 @@ export type FormKey = 'name' | 'subject' | 'body'
 
 
 
-// function Transition(props: any) {
-//     return <Slide direction="up" {...props} />;
-// }
+function Transition(props: any) {
+    return <Slide direction="up" {...props} />;
+}
 
 
 
 const AddEditDialog: React.FC<IProps> = () => {
+    const classes = useStyles()
     const { dialogProps } = config;
     const context = useContext(Context);
     if (!context) return <div />
@@ -32,13 +33,16 @@ const AddEditDialog: React.FC<IProps> = () => {
         selectedTemplate,
         saveChanges
     } = context;
+
     const [template, setTemplate] = useState<Partial<Template>>(selectedTemplate ?? {})
+
+
 
     useEffect(() => {
         setTemplate(selectedTemplate ?? {});
     }, [dialogOpen, selectedTemplate])
 
-    const classes = useStyles()
+
 
     const handleChange = (key: FormKey, value: string) => {
         if (key === 'name')
@@ -64,15 +68,17 @@ const AddEditDialog: React.FC<IProps> = () => {
     const DIALOG_TITLE = selectedTemplate ? `Edit email - ${selectedTemplate.name}` : 'Create email'
 
     return (
-        <Dialog open={dialogOpen} PaperProps={{ className: classes.root }} onClose={closeDialog} fullScreen>
+        <Dialog open={dialogOpen} TransitionComponent={Transition} PaperProps={{ className: classes.root }} onClose={closeDialog} fullScreen>
             <AppBar {...dialogProps.toolbarProps}>
                 <Toolbar >
                     <Box>
                         <Typography>{DIALOG_TITLE}</Typography>
                     </Box>
                     <Box flex={1} />
-                    <Box>
-                        <Button {...dialogProps.secondaryActionButtonProps} onClick={closeDialog}>Cancel</Button>
+                    <Box display="flex" alignItems="center">
+                        <Box mr={2}>
+                            <Button {...dialogProps.secondaryActionButtonProps} onClick={closeDialog}>Cancel</Button>
+                        </Box>
                         <Button variant="contained" color="primary" {...dialogProps.mainActionButtonProps} onClick={handleSubmit} >
                             {
                                 status === 'loading' ? <CircularProgress /> : 'Submit'
@@ -81,6 +87,7 @@ const AddEditDialog: React.FC<IProps> = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
+
             <Box {...dialogProps.containerProps} margin="100px auto" width="600px">
                 <Form
                     template={template}

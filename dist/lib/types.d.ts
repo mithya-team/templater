@@ -1,8 +1,15 @@
-import { AppBarProps } from '@material-ui/core';
+import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps } from '@material-ui/core';
 export declare type TemplaterConfig = {
     urlPrefix: string;
     listingType: 'grid' | 'list';
-    dialogToolbarProps: AppBarProps;
+    dialogProps: Partial<{
+        transitionComponent: DialogProps['TransitionComponent'];
+        toolbarProps: AppBarProps;
+        mainActionButtonProps: ButtonProps;
+        secondaryActionButtonProps: ButtonProps;
+        containerProps: BoxProps;
+        formContainerProps: PaperProps;
+    }>;
 };
 export declare type TemplateField = {
     value: string;

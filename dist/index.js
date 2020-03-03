@@ -13,8 +13,12 @@ var reactRouter = require('react-router');
 var config = {
     urlPrefix: '',
     listingType: 'list',
-    dialogToolbarProps: {
-        color: 'primary'
+    dialogProps: {
+        containerProps: {},
+        formContainerProps: {},
+        mainActionButtonProps: {},
+        secondaryActionButtonProps: {},
+        toolbarProps: {}
     }
 };
 
@@ -47,6 +51,18 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -340,10 +356,28 @@ var ContextProvider = function (props) {
         setSelectedTemplate(undefined);
         setDialogOpen(false);
     };
-    var saveChanges = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var saveChanges = function (template) { return __awaiter(void 0, void 0, void 0, function () {
+        var id, created, updated, templateData, error_1;
         return __generator(this, function (_a) {
-            console.log(createTemplate, updateTemplate);
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    if (!template.id) return [3 /*break*/, 2];
+                    id = template.id, created = template.created, updated = template.updated, templateData = __rest(template, ["id", "created", "updated"]);
+                    return [4 /*yield*/, updateTemplate(template.id, templateData)];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, createTemplate(template)];
+                case 3:
+                    _a.sent();
+                    _a.label = 4;
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    error_1 = _a.sent();
+                    throw error_1;
+                case 6: return [2 /*return*/];
+            }
         });
     }); };
     var value = {
@@ -394,10 +428,24 @@ var TemplateList = function () {
 };
 
 var AllTemplates = function () {
-    // const classes = useStyles(props)
+    var context = React.useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var openTemplateEditor = context.openTemplateEditor;
+    var classes = useStyles$1();
     return (React__default.createElement("div", null,
-        React__default.createElement(TemplateList, null)));
+        React__default.createElement(TemplateList, null),
+        React__default.createElement("div", { className: classes.fabContainer },
+            React__default.createElement(core.Fab, { onClick: function () { return openTemplateEditor(); } },
+                React__default.createElement("i", { className: "material-icons" }, "add")))));
 };
+var useStyles$1 = core.makeStyles(function () { return core.createStyles({
+    fabContainer: {
+        position: 'absolute',
+        right: 30,
+        bottom: 30
+    }
+}); });
 
 var Preview = function () {
     var id = reactRouter.useParams().id;
@@ -410,20 +458,43 @@ var Preview = function () {
 };
 
 var Form = function (props) {
-    var template = props.template;
-    // const classes = useStyles(props)
-    return (React__default.createElement("div", null,
-        "FORM ---- image ----",
-        template.name));
+    var _a;
+    var template = props.template, onChange = props.onChange;
+    var dialogProps = config.dialogProps;
+    var classes = useStyles$2(props);
+    var _handleChange = function (e) {
+        onChange(e.target.name, e.target.value);
+    };
+    var INPUT_CONFIG = [
+        { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.email) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
+    ];
+    return (React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.root }, dialogProps.formContainerProps),
+        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 1, key: config.name, width: "100%" },
+            React__default.createElement(core.FormControl, { fullWidth: true },
+                React__default.createElement(core.InputLabel, null, config.label),
+                React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }))));
 };
+var useStyles$2 = core.makeStyles(function () { return core.createStyles({
+    root: {
+        padding: '30px 20px'
+    }
+}); });
 
+// function Transition(props: any) {
+//     return <Slide direction="up" {...props} />;
+// }
 var AddEditDialog = function () {
+    var dialogProps = config.dialogProps;
     var context = React.useContext(Context);
     if (!context)
         return React__default.createElement("div", null);
-    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, selectedTemplate = context.selectedTemplate;
+    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, selectedTemplate = context.selectedTemplate, saveChanges = context.saveChanges;
     var _a = React.useState((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {})), template = _a[0], setTemplate = _a[1];
-    var classes = useStyles$1();
+    React.useEffect(function () {
+        setTemplate((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {}));
+    }, [dialogOpen, selectedTemplate]);
+    var classes = useStyles$3();
     var handleChange = function (key, value) {
         var _a, _b;
         if (key === 'name')
@@ -431,25 +502,44 @@ var AddEditDialog = function () {
         else
             setTemplate(__assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), (_b = {}, _b[key] = value, _b)) }));
     };
-    var handleSubmit = function () {
-        console.log("is new?", !!template.id);
-        console.log("submitting", template);
-    };
-    return selectedTemplate ? (React__default.createElement(core.Dialog, { open: dialogOpen, PaperProps: { className: classes.root }, onClose: closeDialog, fullScreen: true },
-        React__default.createElement(core.AppBar, __assign({}, config.dialogToolbarProps),
+    var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var isNew, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    isNew = !template.id;
+                    console.log("is new?", isNew);
+                    console.log("submitting", template);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, saveChanges(template)];
+                case 2:
+                    _a.sent();
+                    setTemplate({});
+                    closeDialog();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var DIALOG_TITLE = selectedTemplate ? "Edit email - " + selectedTemplate.name : 'Create email';
+    return (React__default.createElement(core.Dialog, { open: dialogOpen, PaperProps: { className: classes.root }, onClose: closeDialog, fullScreen: true },
+        React__default.createElement(core.AppBar, __assign({}, dialogProps.toolbarProps),
             React__default.createElement(core.Toolbar, null,
                 React__default.createElement(core.Box, null,
-                    React__default.createElement(core.Typography, null,
-                        "Edit template: ",
-                        selectedTemplate.name)),
+                    React__default.createElement(core.Typography, null, DIALOG_TITLE)),
                 React__default.createElement(core.Box, { flex: 1 }),
                 React__default.createElement(core.Box, null,
-                    React__default.createElement(core.Button, { onClick: closeDialog }, "Cancel"),
-                    React__default.createElement(core.Button, { onClick: handleSubmit, variant: "contained", color: "primary" }, status === 'loading' ? React__default.createElement(core.CircularProgress, null) : 'Submit')))),
-        React__default.createElement(core.Box, { margin: "100px auto", p: "20px", width: "600px" },
-            React__default.createElement(Form, { template: selectedTemplate, onChange: handleChange })))) : null;
+                    React__default.createElement(core.Button, __assign({}, dialogProps.secondaryActionButtonProps, { onClick: closeDialog }), "Cancel"),
+                    React__default.createElement(core.Button, __assign({ variant: "contained", color: "primary" }, dialogProps.mainActionButtonProps, { onClick: handleSubmit }), status === 'loading' ? React__default.createElement(core.CircularProgress, null) : 'Submit')))),
+        React__default.createElement(core.Box, __assign({}, dialogProps.containerProps, { margin: "100px auto", width: "600px" }),
+            React__default.createElement(Form, { template: template, onChange: handleChange }))));
 };
-var useStyles$1 = core.makeStyles(function () { return core.createStyles({
+var useStyles$3 = core.makeStyles(function () { return core.createStyles({
     root: {
         backgroundColor: '#F5F5F5'
     }

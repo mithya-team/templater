@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import {
     createStyles, makeStyles,
+    // Slide,
     Dialog, Box, AppBar, Toolbar, Typography, Button, CircularProgress
 } from '@material-ui/core'
 import { Context } from '../../Context';
@@ -11,16 +12,31 @@ import { Template } from '../../types';
 interface IProps { }
 
 export type FormKey = 'name' | 'subject' | 'body'
+
+
+
+// function Transition(props: any) {
+//     return <Slide direction="up" {...props} />;
+// }
+
+
+
 const AddEditDialog: React.FC<IProps> = () => {
+    const { dialogProps } = config;
     const context = useContext(Context);
     if (!context) return <div />
     const {
         dialogOpen,
         closeDialog,
         status,
-        selectedTemplate
+        selectedTemplate,
+        saveChanges
     } = context;
     const [template, setTemplate] = useState<Partial<Template>>(selectedTemplate ?? {})
+
+    useEffect(() => {
+        setTemplate(selectedTemplate ?? {});
+    }, [dialogOpen, selectedTemplate])
 
     const classes = useStyles()
 
@@ -31,22 +47,33 @@ const AddEditDialog: React.FC<IProps> = () => {
             setTemplate({ ...template, email: { ...(template.email || { body: '', html: '', subject: '' }), [key]: value } })
     }
 
-    const handleSubmit = () => {
-        console.log("is new?", !!template.id)
+    const handleSubmit = async () => {
+        const isNew = !template.id;
+        console.log("is new?", isNew)
         console.log("submitting", template)
+        try {
+            await saveChanges(template);
+            setTemplate({})
+            closeDialog();
+        } catch (error) {
+
+        }
+
     }
 
-    return selectedTemplate ? (
+    const DIALOG_TITLE = selectedTemplate ? `Edit email - ${selectedTemplate.name}` : 'Create email'
+
+    return (
         <Dialog open={dialogOpen} PaperProps={{ className: classes.root }} onClose={closeDialog} fullScreen>
-            <AppBar  {...config.dialogToolbarProps}>
+            <AppBar {...dialogProps.toolbarProps}>
                 <Toolbar >
                     <Box>
-                        <Typography>Edit template: {selectedTemplate.name}</Typography>
+                        <Typography>{DIALOG_TITLE}</Typography>
                     </Box>
                     <Box flex={1} />
                     <Box>
-                        <Button onClick={closeDialog}>Cancel</Button>
-                        <Button onClick={handleSubmit} variant="contained" color="primary">
+                        <Button {...dialogProps.secondaryActionButtonProps} onClick={closeDialog}>Cancel</Button>
+                        <Button variant="contained" color="primary" {...dialogProps.mainActionButtonProps} onClick={handleSubmit} >
                             {
                                 status === 'loading' ? <CircularProgress /> : 'Submit'
                             }
@@ -54,14 +81,14 @@ const AddEditDialog: React.FC<IProps> = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Box margin="100px auto" p="20px" width="600px">
+            <Box {...dialogProps.containerProps} margin="100px auto" width="600px">
                 <Form
-                    template={selectedTemplate}
+                    template={template}
                     onChange={handleChange}
                 />
             </Box>
         </Dialog>
-    ) : null
+    )
 }
 
 const useStyles = makeStyles(() => createStyles({

@@ -7,7 +7,7 @@ declare type ProviderValue = {
     selectedTemplate: Template | undefined;
     status: TemplateServiceStatus;
     dialogOpen: boolean;
-    saveChanges: () => Promise<void>;
+    saveChanges: (template: Partial<Template>) => Promise<void>;
     openTemplateEditor: (template?: Template) => void;
     closeDialog: () => void;
 };

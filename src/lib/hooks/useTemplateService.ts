@@ -22,7 +22,7 @@ export const useTemplateService = () => {
         }
     }
 
-    const createTemplate = async (template: Template) => {
+    const createTemplate = async (template: Partial<Template>) => {
         setStatus('loading');
         try {
             const _template = await TemplateService.createTemplate(template);
@@ -35,7 +35,7 @@ export const useTemplateService = () => {
         }
     }
 
-    const updateTemplate = async (id: string, template: Template) => {
+    const updateTemplate = async (id: string, template: Partial<Template>) => {
         setStatus('loading');
         try {
             const _template = await TemplateService.updateTemplate(id, template);

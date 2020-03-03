@@ -11,7 +11,7 @@ type ProviderValue = {
     selectedTemplate: Template | undefined,
     status: TemplateServiceStatus
     dialogOpen: boolean
-    saveChanges: () => Promise<void>
+    saveChanges: (template: Partial<Template>) => Promise<void>
     openTemplateEditor: (template?: Template) => void
     closeDialog: () => void
 }
@@ -32,8 +32,17 @@ export const ContextProvider: React.FC = (props) => {
         setDialogOpen(false)
     }
 
-    const saveChanges = async () => {
-        console.log(createTemplate, updateTemplate)
+    const saveChanges = async (template: Partial<Template>) => {
+        try {
+            if (template.id) {
+                const { id, created, updated, ...templateData } = template;
+                await updateTemplate(template.id, templateData)
+            } else {
+                await createTemplate(template);
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 
     const value: ProviderValue = {

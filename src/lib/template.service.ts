@@ -8,20 +8,20 @@ export class TemplateService {
         }))
     }
 
-    static createTemplate = (template: Template) => {
+    static createTemplate = (template: Partial<Template>) => {
         return new Promise<Template>((resolve => {
             setTimeout(() => {
                 console.log("created", template)
-                return resolve(template)
+                return resolve(template as Template)
             }, 1000);
         }))
     }
 
-    static updateTemplate = (id: string, template: Template) => {
+    static updateTemplate = (id: string, template: Partial<Template>) => {
         return new Promise<Template>((resolve => {
             setTimeout(() => {
                 console.log("updated", id, template)
-                return resolve(template)
+                return resolve(template as Template)
             }, 1000);
         }))
     }

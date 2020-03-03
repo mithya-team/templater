@@ -1,5 +1,5 @@
-import { RouteConfig } from "./RouteConfig"
+import { config } from "./Config"
 
 export const getPath = (suffix: string) => {
-    return RouteConfig.urlPrefix + '/' + suffix;
+    return config.urlPrefix + '/' + suffix;
 }

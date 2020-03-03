@@ -1,2 +1,5 @@
-import { FC } from 'react';
-export declare const EditTemplate: FC;
+import React from 'react';
+interface IProps {
+}
+declare const EditTemplate: React.FC<IProps>;
+export default EditTemplate;

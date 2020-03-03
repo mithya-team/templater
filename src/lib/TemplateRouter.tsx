@@ -1,17 +1,19 @@
 import React, { FC } from 'react';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Switch, Route, withRouter, RouteComponentProps } from 'react-router-dom';
 import { AllTemplates, EditTemplate } from './components';
 import { getPath } from './utils';
 
-export const TemplateRouter: FC = () => {
+interface ITemplateRouterProps extends RouteComponentProps {
+
+}
+
+export const TemplateRouter: FC<ITemplateRouterProps> = () => {
     return (
-        <BrowserRouter>
-            <Switch>
-                <Route exact path={getPath('')} component={AllTemplates} />
-                <Route exact path={getPath(':id')} component={EditTemplate} />
-            </Switch>
-        </BrowserRouter>
+        <Switch>
+            <Route exact path={getPath(':id')} component={EditTemplate} />
+            <Route path={getPath('')} component={AllTemplates} />
+        </Switch>
     )
 }
 
-export default TemplateRouter;
+export default withRouter(TemplateRouter);

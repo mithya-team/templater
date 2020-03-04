@@ -16,25 +16,31 @@ const TemplateCard: React.FC<IProps> = (props) => {
     const { data } = props;
     const classes = useStyles()
 
-
+    const imgUrl = data.email?.banner?.url
 
     return (
-        <Paper className={classes.root}>
-            <Link to={getPath(data.id)}>
-                <Box display="flex" justifyContent="space-between">
-                    <Typography variant="h4">{data.name}</Typography>
-                    <Typography variant="caption">{data.slug}</Typography>
-                </Box>
-            </Link>
-            <Typography>{data.id}</Typography>
-            <Button color="primary" onClick={() => openTemplateEditor(data)} variant="contained">EDIT</Button>
+        <Paper>
+            {
+                imgUrl ? <img src={imgUrl} className={classes.img} /> : null
+            }
+            <Box p={2} >
+                <Link to={getPath(data.id)}>
+                    <Box display="flex" justifyContent="space-between">
+                        <Typography>{data.name}</Typography>
+                        <Typography variant="caption" color="textSecondary" >{data.slug}</Typography>
+                    </Box>
+                </Link>
+                <Typography color="textSecondary">{data.email?.subject || ''}</Typography>
+                <Button color="primary" onClick={() => openTemplateEditor(data)} variant="contained">EDIT</Button>
+            </Box>
         </Paper>
     )
 }
 
 const useStyles = makeStyles(() => createStyles({
-    root: {
-        padding: 8
+    img: {
+        borderRadius: '4px 4px 0px 0px',
+        width: '100%'
     }
 }))
 

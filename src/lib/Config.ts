@@ -6,6 +6,7 @@ export let config: TemplaterConfig = {
     baseUrl: '',
     accessToken: '',
     listingType: 'list',
+    rootContainerProps: {},
     dialogProps: {
         containerProps: {},
         formContainerProps: {},
@@ -18,7 +19,7 @@ export let config: TemplaterConfig = {
 
 /**
  * @function initializeTemplater
- * @params configuration
+ * @param configuration Partial<TemplaterConfig>
  * @description Initialize the templater with provided configurations
  */
 export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => {

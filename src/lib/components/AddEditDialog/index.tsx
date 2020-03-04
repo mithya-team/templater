@@ -8,10 +8,11 @@ import { Context } from '../../Context';
 import Form from '../../Form';
 import { config } from '../../Config';
 import { Template } from '../../types';
+import { generateHTML } from '../../utils';
 
 interface IProps { }
 
-export type FormKey = 'name' | 'subject' | 'body'
+export type FormKey = 'name' | 'subject' | 'body' | 'banner'
 
 
 
@@ -45,7 +46,7 @@ const AddEditDialog: React.FC<IProps> = () => {
 
 
 
-    const handleChange = (key: FormKey, value: string) => {
+    const handleChange = (key: FormKey, value: any) => {
         if (key === 'name')
             setTemplate({ ...template, [key]: value });
         else
@@ -54,10 +55,17 @@ const AddEditDialog: React.FC<IProps> = () => {
 
     const handleSubmit = async () => {
         const isNew = !template.id;
+        const _template: Partial<Template> = {
+            ...template,
+            email: {
+                ...(template.email || { body: '', html: '', subject: '' }),
+                html: generateHTML(template.email?.body || '', template.email?.banner)
+            }
+        }
         console.log("is new?", isNew)
-        console.log("submitting", template)
+        console.log("submitting", _template)
         try {
-            await saveChanges(template);
+            await saveChanges(_template);
             setTemplate({})
             closeDialog();
         } catch (error) {

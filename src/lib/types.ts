@@ -5,6 +5,7 @@ export type TemplaterConfig = {
     baseUrl: string
     accessToken: string
     listingType: 'grid' | 'list'
+    rootContainerProps: BoxProps
     dialogProps: Partial<{
         transitionComponent: DialogProps['TransitionComponent']
         toolbarProps: AppBarProps
@@ -47,6 +48,7 @@ export type Template = {
 }
 
 export type TemplateEmail = {
+    banner?: TPicture
     subject: string
     body: string
     html: string

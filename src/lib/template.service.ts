@@ -31,6 +31,18 @@ export class TemplateService {
     })
 
 
+
+
+
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<Template>
+    */
+    static getTemplateById = (id: string) => Axios.request({
+        url: `${API_URL}/${id}`,
+    })
+
     /**
     * Update an existing template
     * @param id ID of the template to be updated
@@ -38,7 +50,7 @@ export class TemplateService {
     * @return Promise<Template>
     */
     static updateTemplate = (id: string, template: Partial<Template>) => Axios.request({
-        url: API_URL,
+        url: `${API_URL}/${id}`,
         method: 'PATCH',
         data: template
     })

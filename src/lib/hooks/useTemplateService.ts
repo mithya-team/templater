@@ -60,11 +60,24 @@ export const useTemplateService = () => {
         }
     }
 
+    const getTemplateById = async (id: string): Promise<Template> => {
+        const index = templates.findIndex(t => t.id === id);
+        if (index > -1)
+            return templates[index];
+        try {
+            const res = await TemplateService.getTemplateById(id);
+            return res.data
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     return {
         templates,
         status,
         createTemplate,
-        updateTemplate
+        updateTemplate,
+        getTemplateById
     }
 }

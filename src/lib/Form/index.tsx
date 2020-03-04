@@ -10,13 +10,12 @@ import SingleImageUpload from './ImageUpload';
 
 interface IProps {
     template: Partial<Template>
-    onChange: (key: FormKey, value: string) => void
+    onChange: (key: FormKey, value: any) => void
 }
 
 const Form: React.FC<IProps> = (props) => {
     const { template, onChange } = props;
     const [loading, setLoading] = useState(false);
-    const [headerImage, setHeaderImage] = useState<TPicture | undefined>()
     const { dialogProps } = config
     const classes = useStyles(props)
 
@@ -26,7 +25,7 @@ const Form: React.FC<IProps> = (props) => {
 
     const onImageUploadComplete = (current: any, response: TPicture) => {
         console.log("upload completed", response);
-        setHeaderImage(response);
+        onChange('banner', response)
         setLoading(false);
     }
 
@@ -49,7 +48,7 @@ const Form: React.FC<IProps> = (props) => {
                     placeholderText="600 x 250"
                     dimension={{ width: '600px', height: '250px' }}
                     folderName={'template'}
-                    imageUrl={headerImage?.url}
+                    imageUrl={template?.email?.banner?.url}
                     loading={loading}
                     onImageSelected={onImagesSelected}
                     onImageUploadComplete={onImageUploadComplete}
@@ -84,7 +83,7 @@ const useStyles = makeStyles(() => createStyles({
     },
     rte: {
         '& .ql-container': {
-            minHeight: 300
+            minHeight: 160
         }
     }
 }))

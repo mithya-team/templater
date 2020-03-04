@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { createStyles, makeStyles } from '@material-ui/core'
+import { createStyles, makeStyles, Box } from '@material-ui/core'
 import TemplateList from './TemplateList'
 import { Fab } from '@material-ui/core'
 import { Context } from '../../Context'
@@ -13,20 +13,21 @@ const AllTemplates: React.FC<IProps> = () => {
     const classes = useStyles()
 
     return (
-        <div>
+        <Box py={4}>
             <TemplateList />
             <div className={classes.fabContainer}>
                 <Fab onClick={() => openTemplateEditor()}>
                     <i className="material-icons">add</i>
                 </Fab>
             </div>
-        </div>
+        </Box>
     )
 }
 
 const useStyles = makeStyles(() => createStyles({
+
     fabContainer: {
-        position: 'absolute',
+        position: 'fixed',
         right: 30,
         bottom: 30
     }

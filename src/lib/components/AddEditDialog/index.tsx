@@ -22,6 +22,7 @@ function Transition(props: any) {
 
 
 const AddEditDialog: React.FC<IProps> = () => {
+
     const classes = useStyles()
     const { dialogProps } = config;
     const context = useContext(Context);

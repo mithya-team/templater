@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTemplateService } from './hooks';
 import { Template } from '..';
 import { TemplateServiceStatus } from './types';
@@ -20,6 +20,7 @@ export const ContextProvider: React.FC = (props) => {
     const { templates, status, createTemplate, updateTemplate } = useTemplateService();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>()
+
 
 
     const openTemplateEditor = (template?: Template) => {

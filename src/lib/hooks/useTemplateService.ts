@@ -1,21 +1,33 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Template, TemplateServiceStatus } from '../types';
 import { TemplateService } from '../template.service';
+import { config } from '../Config';
 
+
+
+const SORT = { order: 'created DESC' }
 
 export const useTemplateService = () => {
-    const [templates, setTemplates] = React.useState<Template[]>([]);
-    const [status, setStatus] = React.useState<TemplateServiceStatus>('done');
+    const [templates, setTemplates] = useState<Template[]>([]);
+    const [status, setStatus] = useState<TemplateServiceStatus>('done');
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    React.useEffect(() => {
-        loadTemplates()
-    }, [])
+    useEffect(() => {
+        if (config.baseUrl && config.accessToken) setIsInitialized(true);
+    }, [config.baseUrl, config.accessToken])
+
+
+    useEffect(() => {
+        if (isInitialized)
+            loadTemplates()
+    }, [isInitialized])
 
     const loadTemplates = async () => {
+
         setStatus('loading');
         try {
-            const _templates = await TemplateService.fetchTemplates();
-            setTemplates(_templates);
+            const res = await TemplateService.fetchTemplates({ filter: SORT });
+            setTemplates(res.data);
             setStatus('done')
         } catch (error) {
             setStatus('error')
@@ -25,10 +37,10 @@ export const useTemplateService = () => {
     const createTemplate = async (template: Partial<Template>) => {
         setStatus('loading');
         try {
-            const _template = await TemplateService.createTemplate(template);
-            setTemplates([_template, ...templates])
+            const res = await TemplateService.createTemplate(template);
+            setTemplates([res.data, ...templates])
             setStatus('done');
-            return _template
+            return res.data
         } catch (error) {
             setStatus('error')
             throw error;
@@ -38,10 +50,10 @@ export const useTemplateService = () => {
     const updateTemplate = async (id: string, template: Partial<Template>) => {
         setStatus('loading');
         try {
-            const _template = await TemplateService.updateTemplate(id, template);
-            setTemplates([...templates.map(t => t.id === id ? ({ ...t, ..._template }) : t)])
+            const res = await TemplateService.updateTemplate(id, template);
+            setTemplates([...templates.map(t => t.id === id ? ({ ...t, ...res.data }) : t)])
             setStatus('done');
-            return _template
+            return res.data
         } catch (error) {
             setStatus('error')
             throw error;

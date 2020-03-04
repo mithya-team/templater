@@ -2,6 +2,8 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps } from '@ma
 
 export type TemplaterConfig = {
     urlPrefix: string
+    baseUrl: string
+    accessToken: string
     listingType: 'grid' | 'list'
     dialogProps: Partial<{
         transitionComponent: DialogProps['TransitionComponent']
@@ -12,6 +14,18 @@ export type TemplaterConfig = {
         formContainerProps: PaperProps
     }>
 }
+
+
+export type TPicture = {
+    id: string
+    created: string
+    height: number
+    width: number
+    imagePath: string
+    thumbnail: string
+    url: string
+}
+
 
 export type TemplateField = {
     value: string

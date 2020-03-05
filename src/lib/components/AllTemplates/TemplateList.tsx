@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {
     // createStyles, makeStyles, Theme, 
     Box, LinearProgress, Grid,
@@ -20,10 +20,16 @@ const TemplateList: React.FC<IProps> = () => {
     // const classes = useStyles(props);
     const context = useContext(Context);
     if (!context) return <div />
+    const [loading, setLoading] = useState(false);
+    const { templates, status, paginatedList, curPage, handlePageChange } = context;
 
-    const { templates, status } = context;
-    const { paginatedList, curPage, handlePageChange, loading } = usePagination<Template>(templates, { limit: LIMIT })
-
+    const onPageChange = (page: number) => {
+        handlePageChange(page)
+        setLoading(true)
+        setTimeout(() => {
+            setLoading(false)
+        }, 400);
+    }
 
     if (status === 'loading' || loading)
         return <LinearProgress color="primary" />;
@@ -53,7 +59,7 @@ const TemplateList: React.FC<IProps> = () => {
             <Box m="0 auto">
                 <Pagination
                     currentPage={curPage}
-                    onPageChange={handlePageChange}
+                    onPageChange={onPageChange}
                     entriesPerPage={LIMIT}
                     total={templates.length}
                 />

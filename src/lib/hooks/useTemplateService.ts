@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Template, TemplateServiceStatus } from '../types';
+import { Template, TemplateServiceStatus, TemplateContentType, TemplateProviderConfig } from '../types';
 import { TemplateService } from '../template.service';
 import { config } from '../Config';
 
@@ -73,11 +73,21 @@ export const useTemplateService = () => {
     }
 
 
+    const testTemplate = async (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => {
+        try {
+            const res = await TemplateService.testTemplate(templateId, type, providerConfig);
+        } catch (error) {
+
+        }
+    }
+
+
     return {
         templates,
         status,
         createTemplate,
         updateTemplate,
-        getTemplateById
+        getTemplateById,
+        testTemplate
     }
 }

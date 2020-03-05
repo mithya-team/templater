@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
     // createStyles, makeStyles, Theme,
-    Typography, Box
+    Typography, Box, Chip, Tooltip, Button
 } from '@material-ui/core'
 import { useParams } from 'react-router';
 import { Context } from '../../Context';
 import { Template } from '../../..';
 import { config } from '../../Config';
+import TestTemplate from '../TestTemplate';
 
 interface IProps { }
 
@@ -35,9 +36,11 @@ const Preview: React.FC<IProps> = () => {
     }
 
     return (
-        <Box m="30px auto" width="500px">
-            <Typography gutterBottom variant="h5" color="primary">PREVIEW</Typography>
-            <div dangerouslySetInnerHTML={{ __html: template?.email.html || '' }} />
+        <Box m="30px auto" width="900px" display="flex" justifyContent="space-around">
+            <Box minWidth="500px">
+                <div dangerouslySetInnerHTML={{ __html: template?.email.html || '' }} />
+            </Box>
+            <TestTemplate template={template} />
         </Box>
     )
 }

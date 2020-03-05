@@ -68,8 +68,8 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
                             <Typography variant="body2">{placeholderText}</Typography>
                         </> : null
                 }
-                <Fab size="small" className={classes.uploadBtn}>
-                    <i className="material-icons">cloud_upload</i>
+                <Fab size="small" color="primary" className={classes.uploadBtn}>
+                    <i className="material-icons">camera_alt</i>
                     <FileInput
                         accept="image/*"
                         multiple={false}

@@ -9,6 +9,7 @@ import Form from '../../Form';
 import { config } from '../../Config';
 import { Template } from '../../types';
 import { generateHTML } from '../../utils';
+import DialogHeader from './DialogHeader';
 
 interface IProps { }
 
@@ -78,25 +79,12 @@ const AddEditDialog: React.FC<IProps> = () => {
 
     return (
         <Dialog open={dialogOpen} TransitionComponent={Transition} PaperProps={{ className: classes.root }} onClose={closeDialog} fullScreen>
-            <AppBar {...dialogProps.toolbarProps}>
-                <Toolbar >
-                    <Box>
-                        <Typography>{DIALOG_TITLE}</Typography>
-                    </Box>
-                    <Box flex={1} />
-                    <Box display="flex" alignItems="center">
-                        <Box mr={2}>
-                            <Button {...dialogProps.secondaryActionButtonProps} onClick={closeDialog}>Cancel</Button>
-                        </Box>
-                        <Button variant="contained" color="primary" {...dialogProps.mainActionButtonProps} onClick={handleSubmit} >
-                            {
-                                status === 'loading' ? <CircularProgress /> : 'Submit'
-                            }
-                        </Button>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-
+            <DialogHeader
+                dialogTitle={DIALOG_TITLE}
+                handleClose={closeDialog}
+                handleSubmit={handleSubmit}
+                loading={status === 'loading'}
+            />
             <Box {...dialogProps.containerProps} margin="100px auto" width="600px">
                 <Form
                     template={template}

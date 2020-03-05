@@ -5,7 +5,7 @@ import { TPicture } from "..";
 
 
 export const getPath = (suffix: string) => {
-    return config.urlPrefix + '/' + suffix;
+    return suffix ? config.urlPrefix + '/' + suffix : config.urlPrefix;
 }
 
 

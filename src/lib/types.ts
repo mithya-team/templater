@@ -17,6 +17,11 @@ export type TemplaterConfig = {
 }
 
 
+export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
+export type TemplateProviderConfig = {
+    to: string
+    cc: string[]
+}
 export type TPicture = {
     id: string
     created: string

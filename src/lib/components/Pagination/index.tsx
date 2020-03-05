@@ -19,6 +19,7 @@ const Pagination: React.FC<IProps> = (props) => {
         currentPage + 2
     ].map(p => currentPage > 1 ? p - 1 : p).filter(p => p <= totalPages)
 
+
     return (
         <div className={classes.root}>
             <Button variant="text" onClick={() => onPageChange(currentPage - 1)}>prev</Button>

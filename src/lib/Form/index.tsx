@@ -47,7 +47,7 @@ const Form: React.FC<IProps> = (props) => {
 
     return (
         <div>
-            <Box mb={5} position="relative">
+            <Box mb={3} position="relative">
                 <SingleImageUpload
                     placeholderText="600 x 250"
                     dimension={{ width: '600px', height: '250px' }}
@@ -105,6 +105,7 @@ const Form: React.FC<IProps> = (props) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     container: {
+        margin: '16px 0px',
         position: 'relative',
         padding: '30px 20px'
     },

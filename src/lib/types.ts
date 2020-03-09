@@ -8,7 +8,7 @@ export type TemplaterConfig = {
     rootContainerProps: BoxProps
     dialogProps: Partial<{
         transitionComponent: DialogProps['TransitionComponent']
-        toolbarProps: AppBarProps
+        appbarProps: AppBarProps
         mainActionButtonProps: ButtonProps
         secondaryActionButtonProps: ButtonProps
         containerProps: BoxProps

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography } from '@material-ui/core'
+import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme } from '@material-ui/core'
 import { Template, TPicture } from '../types';
 import { FormKey } from '../components/AddEditDialog';
 import { Paper } from '@material-ui/core';
@@ -55,6 +55,10 @@ const Form: React.FC<IProps> = (props) => {
                 />
             </Box>
             <Paper elevation={1} className={classes.root} {...dialogProps.formContainerProps}>
+                {
+                    template.slug ?
+                        <Typography variant="caption" className={classes.slug}>{template.slug}</Typography> : null
+                }
                 <Box display="flex" flexDirection="column">
                     {
                         INPUT_CONFIG.map(config => (
@@ -77,9 +81,18 @@ const Form: React.FC<IProps> = (props) => {
     )
 }
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
+        position: 'relative',
         padding: '30px 20px'
+    },
+    slug: {
+        padding: '2px 4px',
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        borderTopRightRadius: 4,
+        border: `1px solid ${theme.palette.primary.main}`
     },
     rte: {
         '& .ql-container': {

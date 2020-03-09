@@ -15,8 +15,9 @@ const DialogHeader: React.FC<IProps> = (props) => {
 
     const classes = useStyles(props)
 
+
     return (
-        <AppBar {...dialogProps.toolbarProps}>
+        <AppBar {...dialogProps.appbarProps}>
             <Toolbar >
                 <Box>
                     <Typography>{dialogTitle}</Typography>

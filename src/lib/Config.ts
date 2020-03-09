@@ -12,7 +12,7 @@ export let config: TemplaterConfig = {
         formContainerProps: {},
         mainActionButtonProps: {},
         secondaryActionButtonProps: {},
-        toolbarProps: {}
+        appbarProps: {}
     }
 }
 

@@ -21895,9 +21895,9 @@ var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
 }); });
 
 var Form = function (props) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     var template = props.template, onChange = props.onChange;
-    var _f = React.useState(false), loading = _f[0], setLoading = _f[1];
+    var _g = React.useState(false), loading = _g[0], setLoading = _g[1];
     var dialogProps = config.dialogProps;
     var classes = useStyles$7(props);
     var onImagesSelected = function (file) {
@@ -21912,27 +21912,37 @@ var Form = function (props) {
     var _handleChange = function (e) {
         onChange(e.target.name, e.target.value);
     };
-    var INPUT_CONFIG = [
+    var EMAIL_INPUT_CONFIG = [
         { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.email) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
     ];
-    return (React__default.createElement(React__default.Fragment, null,
+    var SMS_INPUT_CONFIG = [
+        { label: 'SMS BODY', name: 'smsBody', value: ((_b = template.sms) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
+    ];
+    return (React__default.createElement("div", null,
         React__default.createElement(core.Box, { mb: 5, position: "relative" },
-            React__default.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_d = (_c = (_b = template) === null || _b === void 0 ? void 0 : _b.email) === null || _c === void 0 ? void 0 : _c.banner) === null || _d === void 0 ? void 0 : _d.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
-        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.root }, dialogProps.formContainerProps),
+            React__default.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_e = (_d = (_c = template) === null || _c === void 0 ? void 0 : _c.email) === null || _d === void 0 ? void 0 : _d.banner) === null || _e === void 0 ? void 0 : _e.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             template.slug ?
                 React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
+            React__default.createElement(core.Typography, null, "EMAIL"),
             React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-                INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
+                EMAIL_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
                     React__default.createElement(core.FormControl, { fullWidth: true },
                         React__default.createElement(core.InputLabel, null, config.label),
                         React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }),
                 React__default.createElement(core.Box, { my: 2, width: "100%" },
                     React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                    React__default.createElement(lib, { className: classes.rte, value: ((_e = template.email) === null || _e === void 0 ? void 0 : _e.body) || '', onChange: handleRteChange }))))));
+                    React__default.createElement(lib, { className: classes.rte, value: ((_f = template.email) === null || _f === void 0 ? void 0 : _f.body) || '', onChange: handleRteChange })))),
+        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
+            React__default.createElement(core.Typography, null, "SMS"),
+            React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
+                React__default.createElement(core.FormControl, { fullWidth: true },
+                    React__default.createElement(core.InputLabel, null, config.label),
+                    React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); })))));
 };
 var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
-    root: {
+    container: {
         position: 'relative',
         padding: '30px 20px'
     },
@@ -21984,19 +21994,19 @@ var AddEditDialog = function () {
         var _a, _b;
         if (key === 'name')
             setTemplate(__assign(__assign({}, template), (_a = {}, _a[key] = value, _a)));
+        else if (key === 'smsBody')
+            setTemplate(__assign(__assign({}, template), { sms: { 'body': value } }));
         else
             setTemplate(__assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), (_b = {}, _b[key] = value, _b)) }));
     };
+    //
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var isNew, _template, error_1;
+        var _template, error_1;
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    isNew = !template.id;
                     _template = __assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), { html: generateHTML(((_a = template.email) === null || _a === void 0 ? void 0 : _a.body) || '', (_b = template.email) === null || _b === void 0 ? void 0 : _b.banner) }) });
-                    console.log("is new?", isNew);
-                    console.log("submitting", _template);
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 3, , 4]);

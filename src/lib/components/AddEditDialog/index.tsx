@@ -56,6 +56,9 @@ const AddEditDialog: React.FC<IProps> = () => {
             setTemplate({ ...template, email: { ...(template.email || { body: '', html: '', subject: '' }), [key]: value } })
     }
 
+
+    //
+
     const handleSubmit = async () => {
         const _template: Partial<Template> = {
             ...template,

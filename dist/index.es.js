@@ -21934,7 +21934,6 @@ var useStyles$7 = makeStyles(function (theme) { return createStyles({
         position: 'absolute',
         right: 0,
         top: 0,
-        borderTopRightRadius: 4,
         border: "1px solid " + theme.palette.primary.main
     },
     rte: {

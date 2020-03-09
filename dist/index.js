@@ -21941,7 +21941,6 @@ var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
         position: 'absolute',
         right: 0,
         top: 0,
-        borderTopRightRadius: 4,
         border: "1px solid " + theme.palette.primary.main
     },
     rte: {

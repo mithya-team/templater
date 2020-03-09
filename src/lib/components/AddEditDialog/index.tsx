@@ -13,7 +13,7 @@ import DialogHeader from './DialogHeader';
 
 interface IProps { }
 
-export type FormKey = 'name' | 'subject' | 'body' | 'banner'
+export type FormKey = 'name' | 'subject' | 'body' | 'banner' | 'smsBody'
 
 
 
@@ -50,12 +50,13 @@ const AddEditDialog: React.FC<IProps> = () => {
     const handleChange = (key: FormKey, value: any) => {
         if (key === 'name')
             setTemplate({ ...template, [key]: value });
+        else if (key === 'smsBody')
+            setTemplate({ ...template, sms: { 'body': value } })
         else
             setTemplate({ ...template, email: { ...(template.email || { body: '', html: '', subject: '' }), [key]: value } })
     }
 
     const handleSubmit = async () => {
-        const isNew = !template.id;
         const _template: Partial<Template> = {
             ...template,
             email: {
@@ -63,8 +64,6 @@ const AddEditDialog: React.FC<IProps> = () => {
                 html: generateHTML(template.email?.body || '', template.email?.banner)
             }
         }
-        console.log("is new?", isNew)
-        console.log("submitting", _template)
         try {
             await saveChanges(_template);
             setTemplate({})

@@ -36,13 +36,17 @@ const Form: React.FC<IProps> = (props) => {
         onChange(e.target.name as FormKey, e.target.value);
     }
 
-    const INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
+    const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
         { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', name: 'subject', value: template.email?.subject || '', handleChange: _handleChange },
     ]
 
+    const SMS_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
+        { label: 'SMS BODY', name: 'smsBody', value: template.sms?.body || '', handleChange: _handleChange },
+    ]
+
     return (
-        <>
+        <div>
             <Box mb={5} position="relative">
                 <SingleImageUpload
                     placeholderText="600 x 250"
@@ -54,14 +58,15 @@ const Form: React.FC<IProps> = (props) => {
                     onImageUploadComplete={onImageUploadComplete}
                 />
             </Box>
-            <Paper elevation={1} className={classes.root} {...dialogProps.formContainerProps}>
+            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
                 {
                     template.slug ?
                         <Typography variant="caption" className={classes.slug}>{template.slug}</Typography> : null
                 }
+                <Typography>EMAIL</Typography>
                 <Box display="flex" flexDirection="column">
                     {
-                        INPUT_CONFIG.map(config => (
+                        EMAIL_INPUT_CONFIG.map(config => (
                             <Box my={2} key={config.name} width="100%">
                                 <FormControl fullWidth>
                                     <InputLabel>{config.label}</InputLabel>
@@ -77,12 +82,29 @@ const Form: React.FC<IProps> = (props) => {
                     </Box>
                 </Box>
             </Paper>
-        </>
+
+            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                <Typography>SMS</Typography>
+                <Box display="flex" flexDirection="column">
+                    {
+                        SMS_INPUT_CONFIG.map(config => (
+                            <Box my={2} key={config.name} width="100%">
+                                <FormControl fullWidth>
+                                    <InputLabel>{config.label}</InputLabel>
+                                    <Input name={config.name} value={config.value} onChange={config.handleChange} />
+                                </FormControl>
+                            </Box>
+                        ))
+                    }
+
+                </Box>
+            </Paper>
+        </div>
     )
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
+    container: {
         position: 'relative',
         padding: '30px 20px'
     },
@@ -91,7 +113,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         position: 'absolute',
         right: 0,
         top: 0,
-        borderTopRightRadius: 4,
         border: `1px solid ${theme.palette.primary.main}`
     },
     rte: {

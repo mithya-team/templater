@@ -2,6 +2,7 @@ import React from 'react'
 import { createStyles, makeStyles, Theme, AppBar, Toolbar, Box, Tabs, Tab } from '@material-ui/core'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { getPath } from '../../utils';
+import { config } from '../../Config';
 
 
 
@@ -21,7 +22,7 @@ const MainTabs: React.FC<IProps> = (props) => {
 
     const classes = useStyles(props)
 
-    if (!shoudShowTabs(props.location.pathname))
+    if (!shoudShowTabs(props.location.pathname) || config.disableTabs)
         return <div />
 
     return (

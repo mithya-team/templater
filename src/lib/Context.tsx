@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTemplateService, usePagination } from './hooks';
 import { Template } from '..';
-import { TemplateServiceStatus } from './types';
+import { TemplateServiceStatus, TemplateTypeConfig, TemplateContentType, TemplateProviderConfig } from './types';
 import { AddEditDialog } from './components';
 
 export const Context = React.createContext<ProviderValue | null>(null);
@@ -9,6 +9,7 @@ export const Context = React.createContext<ProviderValue | null>(null);
 type ProviderValue = {
     templates: Template[]
     paginatedList: Template[]
+    templateTypes: Partial<TemplateTypeConfig>
     curPage: number
     selectedTemplate: Template | undefined,
     status: TemplateServiceStatus
@@ -18,12 +19,13 @@ type ProviderValue = {
     openTemplateEditor: (template?: Template) => void
     closeDialog: () => void
     getTemplateById: (id: string) => Promise<Template>
+    testTemplate: (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Promise<void>
 }
 
 const LIMIT = 8;
 
 export const ContextProvider: React.FC = (props) => {
-    const { templates, status, createTemplate, updateTemplate, getTemplateById } = useTemplateService();
+    const { templates, status, createTemplate, updateTemplate, getTemplateById, types, testTemplate } = useTemplateService();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>()
     const { paginatedList, curPage, handlePageChange } = usePagination<Template>(templates, { limit: LIMIT })
@@ -54,6 +56,8 @@ export const ContextProvider: React.FC = (props) => {
         }
     }
 
+
+
     const value: ProviderValue = {
         templates,
         status,
@@ -65,7 +69,9 @@ export const ContextProvider: React.FC = (props) => {
         getTemplateById,
         paginatedList,
         curPage,
-        handlePageChange
+        handlePageChange,
+        templateTypes: types,
+        testTemplate
     }
     return (
         <Context.Provider value={value}>

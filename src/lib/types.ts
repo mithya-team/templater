@@ -3,6 +3,7 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps } from '@ma
 export type TemplaterConfig = {
     urlPrefix: string
     baseUrl: string
+    disableTabs: boolean
     accessToken: string
     listingType: 'grid' | 'list'
     rootContainerProps: BoxProps
@@ -16,6 +17,15 @@ export type TemplaterConfig = {
     }>
 }
 
+export type TemplateTypeField = {
+    value: string
+    description: string
+    default: string
+    isRequired: boolean
+}
+
+export type TemplateType = 'forgetPassword'
+export type TemplateTypeConfig = Record<TemplateType, { fields: TemplateTypeField[] }>
 
 export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
 export type TemplateProviderConfig = {
@@ -42,6 +52,8 @@ export type TemplateField = {
 
 export type Template = {
     name: string
+    type: TemplateType
+    enabled: boolean,
     modified: boolean
     id: string
     slug: string

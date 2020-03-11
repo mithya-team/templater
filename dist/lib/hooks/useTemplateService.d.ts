@@ -1,5 +1,8 @@
 import { Template, TemplateServiceStatus, TemplateProviderConfig } from '../types';
 export declare const useTemplateService: () => {
+    types: Partial<Record<"forgetPassword", {
+        fields: import("../types").TemplateTypeField[];
+    }>>;
     templates: Template[];
     status: TemplateServiceStatus;
     createTemplate: (template: Partial<Template>) => Promise<any>;

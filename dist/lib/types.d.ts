@@ -2,6 +2,7 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps } from '@ma
 export declare type TemplaterConfig = {
     urlPrefix: string;
     baseUrl: string;
+    disableTabs: boolean;
     accessToken: string;
     listingType: 'grid' | 'list';
     rootContainerProps: BoxProps;
@@ -14,6 +15,16 @@ export declare type TemplaterConfig = {
         formContainerProps: PaperProps;
     }>;
 };
+export declare type TemplateTypeField = {
+    value: string;
+    description: string;
+    default: string;
+    isRequired: boolean;
+};
+export declare type TemplateType = 'forgetPassword';
+export declare type TemplateTypeConfig = Record<TemplateType, {
+    fields: TemplateTypeField[];
+}>;
 export declare type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>;
 export declare type TemplateProviderConfig = {
     to: string;
@@ -36,6 +47,8 @@ export declare type TemplateField = {
 };
 export declare type Template = {
     name: string;
+    type: TemplateType;
+    enabled: boolean;
     modified: boolean;
     id: string;
     slug: string;

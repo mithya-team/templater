@@ -58,6 +58,16 @@ export class TemplateService {
 
 
     /**
+    * Fetch template types with its configs
+    * @return Array<Type of templates with its fields>
+    */
+    static getTemplateTypes = () => Axios.request({
+        url: `${API_URL}/getTemplateConfig`,
+        method: 'post'
+    })
+
+
+    /**
     * Test a template 
     * @param id ID of the template sent
     * @param type email | sms

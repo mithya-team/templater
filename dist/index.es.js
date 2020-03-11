@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Component } from 'react';
 import { Link, withRouter, Switch, Route } from 'react-router-dom';
-import { makeStyles, createStyles, Paper, Box, Typography, Button, LinearProgress, Grid, Fab, Input, IconButton, FormControl, InputLabel, Select, MenuItem, useTheme, CircularProgress, AppBar, Toolbar as Toolbar$1, Dialog, Slide, Tabs, Tab } from '@material-ui/core';
+import { makeStyles, createStyles, Paper, Box, Typography, Button, LinearProgress, Grid, Fab, Input, IconButton, FormControl, InputLabel, Select, MenuItem, CircularProgress, useTheme, Icon, FormControlLabel, Checkbox, AppBar, Toolbar as Toolbar$1, Dialog, Collapse, Slide, Tabs, Tab } from '@material-ui/core';
 import { useParams } from 'react-router';
 import reactDom from 'react-dom';
 import server from 'react-dom/server';
@@ -1530,6 +1530,7 @@ var config = {
     urlPrefix: '',
     baseUrl: '',
     accessToken: '',
+    disableTabs: false,
     listingType: 'list',
     rootContainerProps: {},
     dialogProps: {
@@ -1628,6 +1629,14 @@ var TemplateService = /** @class */ (function () {
         data: template
     }); };
     /**
+    * Fetch template types with its configs
+    * @return Array<Type of templates with its fields>
+    */
+    TemplateService.getTemplateTypes = function () { return axios$1.request({
+        url: API_URL + "/getTemplateConfig",
+        method: 'post'
+    }); };
+    /**
     * Test a template
     * @param id ID of the template sent
     * @param type email | sms
@@ -1654,33 +1663,36 @@ var TemplateService = /** @class */ (function () {
 var SORT = { order: 'created DESC' };
 var useTemplateService = function () {
     var _a = useState([]), templates = _a[0], setTemplates = _a[1];
-    var _b = useState('done'), status = _b[0], setStatus = _b[1];
-    var _c = useState(false), isInitialized = _c[0], setIsInitialized = _c[1];
+    var _b = useState({}), types = _b[0], setTypes = _b[1];
+    var _c = useState('done'), status = _c[0], setStatus = _c[1];
+    var _d = useState(false), isInitialized = _d[0], setIsInitialized = _d[1];
     useEffect(function () {
         if (config.baseUrl && config.accessToken)
             setIsInitialized(true);
     }, [config.baseUrl, config.accessToken]);
     useEffect(function () {
-        if (isInitialized)
+        if (isInitialized) {
             loadTemplates();
+        }
     }, [isInitialized]);
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, res1, res2, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     setStatus('loading');
-                    _a.label = 1;
+                    _b.label = 1;
                 case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.fetchTemplates({ filter: SORT })];
+                    _b.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: SORT }), TemplateService.getTemplateTypes()])];
                 case 2:
-                    res = _a.sent();
-                    setTemplates(res.data);
+                    _a = _b.sent(), res1 = _a[0], res2 = _a[1];
+                    setTemplates(res1.data);
+                    setTypes(res2.data);
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _a.sent();
+                    error_1 = _b.sent();
                     setStatus('error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -1773,6 +1785,7 @@ var useTemplateService = function () {
         });
     }); };
     return {
+        types: types,
         templates: templates,
         status: status,
         createTemplate: createTemplate,
@@ -1814,7 +1827,7 @@ function usePagination(items, config) {
 var Context = React.createContext(null);
 var LIMIT = 8;
 var ContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, status = _a.status, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, getTemplateById = _a.getTemplateById;
+    var _a = useTemplateService(), templates = _a.templates, status = _a.status, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, getTemplateById = _a.getTemplateById, types = _a.types, testTemplate = _a.testTemplate;
     var _b = useState(false), dialogOpen = _b[0], setDialogOpen = _b[1];
     var _c = useState(), selectedTemplate = _c[0], setSelectedTemplate = _c[1];
     var _d = usePagination(templates, { limit: LIMIT }), paginatedList = _d.paginatedList, curPage = _d.curPage, handlePageChange = _d.handlePageChange;
@@ -1861,7 +1874,9 @@ var ContextProvider = function (props) {
         getTemplateById: getTemplateById,
         paginatedList: paginatedList,
         curPage: curPage,
-        handlePageChange: handlePageChange
+        handlePageChange: handlePageChange,
+        templateTypes: types,
+        testTemplate: testTemplate
     };
     return (React.createElement(Context.Provider, { value: value },
         props.children,
@@ -1948,25 +1963,19 @@ var TemplateList = function () {
             React.createElement(Pagination, { currentPage: curPage, onPageChange: onPageChange, entriesPerPage: LIMIT$1, total: templates.length }))));
 };
 
-var Settings = function (props) {
-    var classes = useStyles$2(props);
-    return (React.createElement("div", null, "Settings"));
-};
-var useStyles$2 = makeStyles(function (theme) { return createStyles({}); });
-
 var AllTemplates = function () {
     var context = useContext(Context);
     if (!context)
         return React.createElement("div", null);
     var openTemplateEditor = context.openTemplateEditor;
-    var classes = useStyles$3();
+    var classes = useStyles$2();
     return (React.createElement(Box, { py: 4 },
         React.createElement(TemplateList, null),
         React.createElement("div", { className: classes.fabContainer },
             React.createElement(Fab, { onClick: function () { return openTemplateEditor(); } },
                 React.createElement("i", { className: "material-icons" }, "add")))));
 };
-var useStyles$3 = makeStyles(function () { return createStyles({
+var useStyles$2 = makeStyles(function () { return createStyles({
     fabContainer: {
         position: 'fixed',
         right: 30,
@@ -1977,7 +1986,7 @@ var useStyles$3 = makeStyles(function () { return createStyles({
 var EmailConfig = function (props) {
     var _a = useState(props.to || ''), to = _a[0], setTo = _a[1];
     var _b = useState(props.cc || []), cc = _b[0], setCc = _b[1];
-    var classes = useStyles$4(props);
+    var classes = useStyles$3(props);
     useEffect(function () {
         props.onToChange(to);
     }, [to]);
@@ -2004,14 +2013,43 @@ var EmailConfig = function (props) {
                         React.createElement(IconButton, { onClick: function () { return setCc(__spreadArrays(cc, [''])); } },
                             React.createElement("i", { className: "material-icons" }, "add"))))))));
 };
+var useStyles$3 = makeStyles(function (theme) { return createStyles({}); });
+
+var SmsConfig = function (props) {
+    var _a = useState(props.phoneNumbers || []), numbers = _a[0], setNumbers = _a[1];
+    var classes = useStyles$4(props);
+    useEffect(function () {
+        props.onPhoneNumberChange(numbers);
+    }, [numbers]);
+    return (React.createElement(Box, null,
+        React.createElement(Typography, { gutterBottom: true }, "Configure SMS"),
+        React.createElement(Box, { display: "flex", flexDirection: "column" },
+            React.createElement(Box, { my: 2 },
+                React.createElement(Typography, null, "to: "),
+                React.createElement(Box, { display: "flex", flexDirection: "column" },
+                    numbers.map(function (number, i) { return (React.createElement(Box, { my: 1, key: i, display: "flex", width: "100%" },
+                        React.createElement(Input, { placeholder: "+918800000000", fullWidth: true, value: numbers[i] || '', onChange: function (e) {
+                                setNumbers(__spreadArrays(numbers.map(function (_, _i) { return i === _i ? e.target.value : _; })));
+                            } }),
+                        React.createElement(IconButton, { style: { padding: 0 }, onClick: function () { return setNumbers(__spreadArrays(numbers.filter(function (_, _i) { return i !== _i; }))); } },
+                            React.createElement("i", { className: "material-icons" }, "clear")))); }),
+                    React.createElement(Box, { width: "50px", my: 1, height: "50px" },
+                        React.createElement(IconButton, { onClick: function () { return setNumbers(__spreadArrays(numbers, [''])); } },
+                            React.createElement("i", { className: "material-icons" }, "add"))))))));
+};
 var useStyles$4 = makeStyles(function (theme) { return createStyles({}); });
 
 var TestTemplate = function (props) {
-    var template = props.template;
+    var context = useContext(Context);
+    if (!context)
+        return React.createElement("div", null);
+    var testTemplate = context.testTemplate;
+    var _a = useState(false), loading = _a[0], setLoading = _a[1];
+    var template = props.template, _b = props.type, type = _b === void 0 ? 'email' : _b, _c = props.onTypeChange, onTypeChange = _c === void 0 ? function () { return null; } : _c;
     var classes = useStyles$5(props);
-    var _a = useState('email'), type = _a[0], setType = _a[1];
-    var _b = useState(''), to = _b[0], setTo = _b[1];
-    var _c = useState([]), cc = _c[0], setCc = _c[1];
+    var _d = useState(''), to = _d[0], setTo = _d[1];
+    var _e = useState([]), phoneNumbers = _e[0], setPhoneNumbers = _e[1];
+    var _f = useState([]), cc = _f[0], setCc = _f[1];
     var TEMPLATE_TYP_OPTIONS = [
         { label: 'Email', value: 'email' },
         { label: 'SMS', value: 'sms' },
@@ -2022,6 +2060,19 @@ var TestTemplate = function (props) {
         // if (cc.filter(_c => !!_c).length === 0) return false;
         return true;
     };
+    var send = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setLoading(true);
+                    return [4 /*yield*/, testTemplate(template.id, type, { to: to, cc: cc })];
+                case 1:
+                    _a.sent();
+                    setLoading(false);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
     if (!template)
         return React.createElement("div", null);
     return (React.createElement(Paper, null,
@@ -2033,13 +2084,13 @@ var TestTemplate = function (props) {
             React.createElement(Box, { mt: "20px" },
                 React.createElement(FormControl, { fullWidth: true },
                     React.createElement(InputLabel, null, "Type"),
-                    React.createElement(Select, { value: type, onChange: function (e) { return setType(e.target.value); } }, TEMPLATE_TYP_OPTIONS.map(function (o) { return (React.createElement(MenuItem, { value: o.value, key: o.value }, o.label)); }))),
-                type === 'email' ?
-                    React.createElement(Box, { mt: "40px" },
-                        React.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } }))
-                    : null,
+                    React.createElement(Select, { value: type, onChange: function (e) { return onTypeChange(e.target.value); } }, TEMPLATE_TYP_OPTIONS.map(function (o) { return (React.createElement(MenuItem, { value: o.value, key: o.value }, o.label)); }))),
+                React.createElement(Box, { mt: "40px" }, type === 'email' ?
+                    React.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } })
+                    :
+                        React.createElement(SmsConfig, { phoneNumbers: phoneNumbers, onPhoneNumberChange: function (_numbers) { return setPhoneNumbers(_numbers); } })),
                 React.createElement(Box, { mt: 2 },
-                    React.createElement(Button, { disabled: !validateInput(), variant: "outlined", color: "secondary" }, "Send"))))));
+                    React.createElement(Button, { onClick: send, disabled: !validateInput(), variant: "outlined", color: "secondary" }, loading ? React.createElement(CircularProgress, null) : 'Send'))))));
 };
 var useStyles$5 = makeStyles(function (theme) { return createStyles({
     tag: {
@@ -2050,12 +2101,13 @@ var useStyles$5 = makeStyles(function (theme) { return createStyles({
 }); });
 
 var Preview = function () {
-    var _a;
+    var _a, _b, _c;
     var context = useContext(Context);
     if (!context)
         return React.createElement("div", null);
     var getTemplateById = context.getTemplateById;
-    var _b = useState(), template = _b[0], setTemplate = _b[1];
+    var _d = useState(), template = _d[0], setTemplate = _d[1];
+    var _e = useState('email'), testType = _e[0], setTestType = _e[1];
     var id = useParams().id;
     useEffect(function () {
         if (!!config.baseUrl && !!config.accessToken)
@@ -2082,8 +2134,14 @@ var Preview = function () {
     }); };
     return (React.createElement(Box, { m: "30px auto", width: "900px", display: "flex", justifyContent: "space-around" },
         React.createElement(Box, { minWidth: "500px" },
-            React.createElement("div", { dangerouslySetInnerHTML: { __html: ((_a = template) === null || _a === void 0 ? void 0 : _a.email.html) || '' } })),
-        React.createElement(TestTemplate, { template: template })));
+            testType === 'email' ?
+                React.createElement("div", { dangerouslySetInnerHTML: { __html: ((_a = template) === null || _a === void 0 ? void 0 : _a.email.html) || '' } }) : null,
+            testType === 'sms' ?
+                React.createElement(Box, { p: 2 },
+                    React.createElement(Typography, null, ((_c = (_b = template) === null || _b === void 0 ? void 0 : _b.sms) === null || _c === void 0 ? void 0 : _c.body) || '')) : null),
+        template ?
+            React.createElement(TestTemplate, { template: template, type: testType, onTypeChange: function (type) { return setTestType(type); } })
+            : null));
 };
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -21913,8 +21971,18 @@ var Form = function (props) {
         { label: 'SMS BODY', name: 'smsBody', value: ((_b = template.sms) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
     ];
     return (React.createElement("div", null,
-        React.createElement(Box, { mb: 5, position: "relative" },
+        React.createElement(Paper, null,
+            React.createElement(Box, { p: 3, display: "flex", alignItems: "center" },
+                props.handleBack ?
+                    React.createElement(IconButton, { onClick: props.handleBack },
+                        React.createElement(Icon, null, "keyboard_arrow_left")) : null,
+                React.createElement(Typography, { className: classes.typeLabel },
+                    "Template type ",
+                    React.createElement("span", null, props.type)))),
+        React.createElement(Box, { my: 3, position: "relative" },
             React.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_e = (_d = (_c = template) === null || _c === void 0 ? void 0 : _c.email) === null || _d === void 0 ? void 0 : _d.banner) === null || _e === void 0 ? void 0 : _e.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+        React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
+            React.createElement(FormControlLabel, { value: !!template.enabled, onChange: function () { return onChange('enabled', !template.enabled); }, control: React.createElement(Checkbox, null), label: "Enabled" })),
         React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             template.slug ?
                 React.createElement(Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
@@ -21936,6 +22004,7 @@ var Form = function (props) {
 };
 var useStyles$7 = makeStyles(function (theme) { return createStyles({
     container: {
+        margin: '16px 0px',
         position: 'relative',
         padding: '30px 20px'
     },
@@ -21949,6 +22018,14 @@ var useStyles$7 = makeStyles(function (theme) { return createStyles({
     rte: {
         '& .ql-container': {
             minHeight: 160
+        }
+    },
+    typeLabel: {
+        '& span': {
+            background: theme.palette.primary.main,
+            color: 'white',
+            padding: '0px 2px',
+            margin: '0px 2px'
         }
     }
 }); });
@@ -21972,34 +22049,43 @@ var useStyles$8 = makeStyles(function (theme) { return createStyles({}); });
 function Transition(props) {
     return React.createElement(Slide, __assign({ direction: "up" }, props));
 }
+var LVL1_KEYS = ['name', 'enabled', 'fields', 'type'];
 var AddEditDialog = function () {
     var classes = useStyles$9();
     var dialogProps = config.dialogProps;
     var context = useContext(Context);
     if (!context)
         return React.createElement("div", null);
-    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, selectedTemplate = context.selectedTemplate, saveChanges = context.saveChanges;
+    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, templateTypes = context.templateTypes, selectedTemplate = context.selectedTemplate, saveChanges = context.saveChanges;
     var _a = useState((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {})), template = _a[0], setTemplate = _a[1];
+    var _b = useState('forgetPassword'), templateType = _b[0], setTemplateType = _b[1];
+    var _c = useState(1), step = _c[0], setStep = _c[1];
+    var TEMPLATE_TYPES = Object.keys(templateTypes);
     useEffect(function () {
+        if (selectedTemplate)
+            setStep(2);
         setTemplate((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {}));
     }, [dialogOpen, selectedTemplate]);
     var handleChange = function (key, value) {
         var _a, _b;
-        if (key === 'name')
+        if (LVL1_KEYS.indexOf(key) > -1)
             setTemplate(__assign(__assign({}, template), (_a = {}, _a[key] = value, _a)));
         else if (key === 'smsBody')
             setTemplate(__assign(__assign({}, template), { sms: { 'body': value } }));
         else
             setTemplate(__assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), (_b = {}, _b[key] = value, _b)) }));
     };
-    //
+    var handleTemplateSelect = function (e) {
+        setTemplateType(e.target.value);
+        // setStep(2);
+    };
     var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
         var _template, error_1;
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    _template = __assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), { html: generateHTML(((_a = template.email) === null || _a === void 0 ? void 0 : _a.body) || '', (_b = template.email) === null || _b === void 0 ? void 0 : _b.banner) }) });
+                    _template = __assign(__assign({ enabled: false, type: templateType }, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), { html: generateHTML(((_a = template.email) === null || _a === void 0 ? void 0 : _a.body) || '', (_b = template.email) === null || _b === void 0 ? void 0 : _b.banner) }) });
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 3, , 4]);
@@ -22007,6 +22093,7 @@ var AddEditDialog = function () {
                 case 2:
                     _c.sent();
                     setTemplate({});
+                    setStep(1);
                     closeDialog();
                     return [3 /*break*/, 4];
                 case 3:
@@ -22016,11 +22103,23 @@ var AddEditDialog = function () {
             }
         });
     }); };
+    var close = function () {
+        closeDialog();
+        setStep(1);
+    };
     var DIALOG_TITLE = selectedTemplate ? "Edit email - " + selectedTemplate.name : 'Create email';
-    return (React.createElement(Dialog, { open: dialogOpen, TransitionComponent: Transition, PaperProps: { className: classes.root }, onClose: closeDialog, fullScreen: true },
-        React.createElement(DialogHeader, { dialogTitle: DIALOG_TITLE, handleClose: closeDialog, handleSubmit: handleSubmit, loading: status === 'loading' }),
+    return (React.createElement(Dialog, { open: dialogOpen, TransitionComponent: Transition, PaperProps: { className: classes.root }, onClose: close, fullScreen: true },
+        React.createElement(DialogHeader, { dialogTitle: DIALOG_TITLE, handleClose: close, handleSubmit: handleSubmit, loading: status === 'loading' }),
         React.createElement(Box, __assign({}, dialogProps.containerProps, { margin: "100px auto", width: "600px" }),
-            React.createElement(Form, { template: template, onChange: handleChange }))));
+            React.createElement(Collapse, { in: step === 1 },
+                React.createElement(Box, { m: "0 auto", width: "300px" },
+                    React.createElement(FormControl, { fullWidth: true },
+                        React.createElement(InputLabel, null, "Select a type"),
+                        React.createElement(Select, { value: templateType, onChange: handleTemplateSelect }, TEMPLATE_TYPES.map(function (t, i) { return (React.createElement(MenuItem, { key: i, value: t }, t)); }))),
+                    React.createElement(Box, { mt: 2 },
+                        React.createElement(Button, { onClick: function () { return setStep(2); }, color: "primary", variant: "outlined" }, "Continue")))),
+            React.createElement(Collapse, { in: step === 2 },
+                React.createElement(Form, { handleBack: function () { return setStep(1); }, type: templateType, template: template, onChange: handleChange })))));
 };
 var useStyles$9 = makeStyles(function () { return createStyles({
     root: {
@@ -22028,13 +22127,19 @@ var useStyles$9 = makeStyles(function () { return createStyles({
     }
 }); });
 
+var Settings = function (props) {
+    var classes = useStyles$a(props);
+    return (React.createElement("div", null, "Settings"));
+};
+var useStyles$a = makeStyles(function (theme) { return createStyles({}); });
+
 var ENABLED_TABS_ROUTES = ['', 'settings'];
 var shoudShowTabs = function (pathname) {
     return ENABLED_TABS_ROUTES.map(function (r) { return getPath(r); }).indexOf(pathname) > -1;
 };
 var MainTabs = function (props) {
-    var classes = useStyles$a(props);
-    if (!shoudShowTabs(props.location.pathname))
+    var classes = useStyles$b(props);
+    if (!shoudShowTabs(props.location.pathname) || config.disableTabs)
         return React.createElement("div", null);
     return (React.createElement(AppBar, { position: "sticky" },
         React.createElement(Toolbar$1, { className: classes.toolbar },
@@ -22044,7 +22149,7 @@ var MainTabs = function (props) {
                 React.createElement(Tab, { label: "Settings" })),
             React.createElement(Box, { flex: 1 }))));
 };
-var useStyles$a = makeStyles(function (theme) { return createStyles({
+var useStyles$b = makeStyles(function (theme) { return createStyles({
     toolbar: {
         minHeight: 48
     }
@@ -22056,7 +22161,7 @@ var TAB_PATH_MAPPING = [
     'settings'
 ];
 var TemplateRouter = function (props) {
-    var classes = useStyles$b();
+    var classes = useStyles$c();
     var _a = useState(0), tabValue = _a[0], setTabValue = _a[1];
     useEffect(function () {
         props.history.push(getPath(TAB_PATH_MAPPING[tabValue] || ''));
@@ -22069,7 +22174,7 @@ var TemplateRouter = function (props) {
                 React.createElement(Route, { exact: true, path: getPath(':id'), component: Preview }),
                 React.createElement(Route, { exact: true, path: getPath(''), component: AllTemplates })))));
 };
-var useStyles$b = makeStyles(function () { return createStyles({
+var useStyles$c = makeStyles(function () { return createStyles({
     root: {
         position: 'absolute',
         top: 0,
@@ -22082,5 +22187,5 @@ var useStyles$b = makeStyles(function () { return createStyles({
 var TemplateRouter$1 = withRouter(TemplateRouter);
 
 export default TemplateRouter$1;
-export { Form, TemplateRouter, TemplateService, TestTemplate, generateHTML, initializeTemplater, usePagination, useTemplateService };
+export { Form, Settings, TemplateRouter, TemplateService, TestTemplate, generateHTML, initializeTemplater, usePagination, useTemplateService };
 //# sourceMappingURL=index.es.js.map

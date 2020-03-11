@@ -9,20 +9,6 @@ import Settings from '../Settings/index';
 
 interface IProps { }
 
-
-const index: React.FC = () => {
-    console.log("test", getPath('settings'))
-    return (
-        <Box>
-
-            <Switch>
-                <Route exact path={getPath('settings')} component={Settings} />
-                <Route exact path={getPath('')} component={AllTemplates} />
-            </Switch>
-        </Box>
-    )
-}
-
 const AllTemplates: React.FC<IProps> = () => {
     const context = useContext(Context);
     if (!context) return <div />

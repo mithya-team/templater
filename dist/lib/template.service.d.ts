@@ -29,6 +29,11 @@ export declare class TemplateService {
     */
     static updateTemplate: (id: string, template: Partial<Template>) => Promise<import("axios").AxiosResponse<any>>;
     /**
+    * Fetch template types with its configs
+    * @return Array<Type of templates with its fields>
+    */
+    static getTemplateTypes: () => Promise<import("axios").AxiosResponse<any>>;
+    /**
     * Test a template
     * @param id ID of the template sent
     * @param type email | sms

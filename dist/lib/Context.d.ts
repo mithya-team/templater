@@ -1,10 +1,11 @@
 import React from 'react';
 import { Template } from '..';
-import { TemplateServiceStatus } from './types';
+import { TemplateServiceStatus, TemplateTypeConfig, TemplateContentType, TemplateProviderConfig } from './types';
 export declare const Context: React.Context<ProviderValue | null>;
 declare type ProviderValue = {
     templates: Template[];
     paginatedList: Template[];
+    templateTypes: Partial<TemplateTypeConfig>;
     curPage: number;
     selectedTemplate: Template | undefined;
     status: TemplateServiceStatus;
@@ -14,6 +15,7 @@ declare type ProviderValue = {
     openTemplateEditor: (template?: Template) => void;
     closeDialog: () => void;
     getTemplateById: (id: string) => Promise<Template>;
+    testTemplate: (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Promise<void>;
 };
 export declare const ContextProvider: React.FC;
 export {};

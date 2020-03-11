@@ -5,6 +5,7 @@ export let config: TemplaterConfig = {
     urlPrefix: '',
     baseUrl: '',
     accessToken: '',
+    disableTabs: false,
     listingType: 'list',
     rootContainerProps: {},
     dialogProps: {

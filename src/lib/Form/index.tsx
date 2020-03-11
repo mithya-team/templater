@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme } from '@material-ui/core'
-import { Template, TPicture } from '../types';
+import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox } from '@material-ui/core'
+import { Template, TPicture, TemplateType } from '../types';
 import { FormKey } from '../components/AddEditDialog';
 import { Paper } from '@material-ui/core';
 import { config } from '../Config';
@@ -9,6 +9,8 @@ import SingleImageUpload from './ImageUpload';
 
 
 interface IProps {
+    type: TemplateType
+    handleBack?: () => void
     template: Partial<Template>
     onChange: (key: FormKey, value: any) => void
 }
@@ -47,7 +49,18 @@ const Form: React.FC<IProps> = (props) => {
 
     return (
         <div>
-            <Box mb={3} position="relative">
+            <Paper>
+                <Box p={3} display="flex" alignItems="center">
+                    {
+                        props.handleBack ?
+                            <IconButton onClick={props.handleBack}>
+                                <Icon>keyboard_arrow_left</Icon>
+                            </IconButton> : null
+                    }
+                    <Typography className={classes.typeLabel}>Template type <span>{props.type}</span></Typography>
+                </Box>
+            </Paper>
+            <Box my={3} position="relative">
                 <SingleImageUpload
                     placeholderText="600 x 250"
                     dimension={{ width: '600px', height: '250px' }}
@@ -58,6 +71,11 @@ const Form: React.FC<IProps> = (props) => {
                     onImageUploadComplete={onImageUploadComplete}
                 />
             </Box>
+
+            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                <FormControlLabel value={!!template.enabled} onChange={() => onChange('enabled', !template.enabled)} control={<Checkbox />} label="Enabled" />
+            </Paper>
+
             <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
                 {
                     template.slug ?
@@ -119,6 +137,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     rte: {
         '& .ql-container': {
             minHeight: 160
+        }
+    },
+    typeLabel: {
+        '& span': {
+            background: theme.palette.primary.main,
+            color: 'white',
+            padding: '0px 2px',
+            margin: '0px 2px'
         }
     }
 }))

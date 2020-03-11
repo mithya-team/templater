@@ -1,20 +1,28 @@
-import React, { useState } from 'react'
-import { createStyles, makeStyles, Theme, Typography, Box, Select, MenuItem, InputLabel, FormControl, Input, IconButton, Paper, Button } from '@material-ui/core'
+import React, { useState, useContext } from 'react'
+import { createStyles, makeStyles, Theme, Typography, Box, Select, MenuItem, InputLabel, FormControl, Input, IconButton, Paper, Button, CircularProgress } from '@material-ui/core'
 import { Template, TemplateContentType } from '../../types'
 import EmailConfig from './EmailConfig';
+import SmsConfig from './SmsConfig';
+import { Context } from '../../Context';
 
 export interface ITestTemplateProps {
-    template?: Template
+    template: Template
+    type: TemplateContentType
+    onTypeChange: (type: TemplateContentType) => void
 }
 
 const TestTemplate: React.FC<ITestTemplateProps> = (props) => {
-    const { template } = props;
+    const context = useContext(Context);
+    if (!context) return <div />
+    const { testTemplate } = context;
+    const [loading, setLoading] = useState(false);
+    const { template, type = 'email', onTypeChange = () => null } = props;
     const classes = useStyles(props)
-    const [type, setType] = useState<TemplateContentType>('email');
     const [to, setTo] = useState('')
+    const [phoneNumbers, setPhoneNumbers] = useState<string[]>([])
     const [cc, setCc] = useState<string[]>([])
 
-    const TEMPLATE_TYP_OPTIONS = [
+    const TEMPLATE_TYP_OPTIONS: { label: string, value: TemplateContentType }[] = [
         { label: 'Email', value: 'email' },
         { label: 'SMS', value: 'sms' },
     ]
@@ -24,6 +32,14 @@ const TestTemplate: React.FC<ITestTemplateProps> = (props) => {
         // if (cc.filter(_c => !!_c).length === 0) return false;
         return true;
     }
+
+
+    const send = async () => {
+        setLoading(true)
+        await testTemplate(template.id, type, { to, cc })
+        setLoading(false)
+    }
+
 
     if (!template) return <div />
 
@@ -37,7 +53,7 @@ const TestTemplate: React.FC<ITestTemplateProps> = (props) => {
                         <InputLabel>Type</InputLabel>
                         <Select
                             value={type}
-                            onChange={e => setType(e.target.value as TemplateContentType)}
+                            onChange={e => onTypeChange(e.target.value as TemplateContentType)}
                         >
                             {
                                 TEMPLATE_TYP_OPTIONS.map(o => (
@@ -46,17 +62,18 @@ const TestTemplate: React.FC<ITestTemplateProps> = (props) => {
                             }
                         </Select>
                     </FormControl>
-                    {
-                        type === 'email' ?
-                            <Box mt="40px">
+                    <Box mt="40px">
+                        {
+                            type === 'email' ?
                                 <EmailConfig to={to} cc={cc} onCcChange={_cc => setCc(_cc)} onToChange={_to => setTo(_to)} />
-                            </Box>
-                            : null
-                    }
+                                :
+                                <SmsConfig phoneNumbers={phoneNumbers} onPhoneNumberChange={_numbers => setPhoneNumbers(_numbers)} />
+                        }
+                    </Box>
                     <Box mt={2}>
-                        <Button disabled={!validateInput()} variant="outlined" color="secondary">
-                            Send
-                    </Button>
+                        <Button onClick={send} disabled={!validateInput()} variant="outlined" color="secondary">
+                            {loading ? <CircularProgress /> : 'Send'}
+                        </Button>
                     </Box>
                 </Box>
             </Box>

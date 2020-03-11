@@ -8,6 +8,7 @@ import { Context } from '../../Context';
 import { Template } from '../../..';
 import { config } from '../../Config';
 import TestTemplate from '../TestTemplate';
+import { TemplateContentType } from '../../types';
 
 interface IProps { }
 
@@ -16,6 +17,7 @@ const Preview: React.FC<IProps> = () => {
     if (!context) return <div />
     const { getTemplateById } = context;
     const [template, setTemplate] = useState<Template | undefined>()
+    const [testType, setTestType] = useState<TemplateContentType>('email');
 
     const { id } = useParams<{ id: string }>();
 
@@ -35,12 +37,26 @@ const Preview: React.FC<IProps> = () => {
         }
     }
 
+
     return (
         <Box m="30px auto" width="900px" display="flex" justifyContent="space-around">
             <Box minWidth="500px">
-                <div dangerouslySetInnerHTML={{ __html: template?.email.html || '' }} />
+                {
+                    testType === 'email' ?
+                        <div dangerouslySetInnerHTML={{ __html: template?.email.html || '' }} /> : null
+                }
+                {
+                    testType === 'sms' ?
+                        <Box p={2}>
+                            <Typography>{template?.sms?.body || ''}</Typography>
+                        </Box> : null
+                }
             </Box>
-            <TestTemplate template={template} />
+            {
+                template ?
+                    <TestTemplate template={template} type={testType} onTypeChange={type => setTestType(type)} />
+                    : null
+            }
         </Box>
     )
 }

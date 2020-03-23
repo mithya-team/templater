@@ -23,21 +23,16 @@ const TemplateCard: React.FC<IProps> = (props) => {
             {/* {
                 imgUrl ? <img src={imgUrl} className={classes.img} /> : null
             } */}
-            <Box borderRadius="4px" style={{ backgroundSize: 'cover', backgroundImage: imgUrl ? `url(${imgUrl})` : undefined }}>
-                <Box p={2} borderRadius="4px" style={{ backdropFilter: 'blur(20px)', backgroundColor: 'rgba(255,255,255,0.3)' }}>
-                    <Link to={getPath(data.id)}>
-                        <Box>
-                            <Box display="flex" justifyContent="space-between">
-                                <Typography>{data.name}</Typography>
-                                <Typography variant="caption" color="textSecondary" >{data.slug}</Typography>
-                            </Box>
-                            <Typography color="textSecondary">{data.email?.subject || ''}</Typography>
-                        </Box>
-                    </Link>
-                    <Box display="flex">
-                        <Box flex={1} />
-                        <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">EDIT</Button>
+            <Box p={2} borderRadius="4px">
+                <Link to={getPath(data.id)}>
+                    <Box pl={1} display="flex" justifyContent="space-between">
+                        <Typography>{data.name}</Typography>
                     </Box>
+                </Link>
+                <Box display="flex">
+                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Preview</Button>
+                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Edit</Button>
+                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Send</Button>
                 </Box>
             </Box>
         </Paper>

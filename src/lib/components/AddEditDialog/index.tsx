@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import {
     createStyles, makeStyles,
     Slide,
-    Dialog, Box, AppBar, Toolbar, Typography, Button, CircularProgress, Collapse, FormControl, Select, MenuItem, InputLabel
+    Dialog, Box, AppBar, Toolbar, Typography, Button, CircularProgress, Collapse, FormControl, Select, MenuItem, InputLabel, Paper
 } from '@material-ui/core'
 import { Context } from '../../Context';
 import Form from '../../Form';
@@ -71,8 +71,8 @@ const AddEditDialog: React.FC<IProps> = () => {
     const handleSubmit = async () => {
         const _template: Partial<Template> = {
             enabled: false,
-            type: templateType,
             ...template,
+            type: templateType,
             email: {
                 ...(template.email || { body: '', html: '', subject: '' }),
                 html: generateHTML(template.email?.body || '', template.email?.banner)
@@ -126,6 +126,7 @@ const AddEditDialog: React.FC<IProps> = () => {
                     <Form
                         handleBack={() => setStep(1)}
                         type={templateType}
+                        fields={templateTypes[templateType]?.fields || []}
                         template={template}
                         onChange={handleChange}
                     />
@@ -138,7 +139,8 @@ const AddEditDialog: React.FC<IProps> = () => {
 const useStyles = makeStyles(() => createStyles({
     root: {
         backgroundColor: '#F5F5F5'
-    }
+    },
+
 }))
 
 export default AddEditDialog

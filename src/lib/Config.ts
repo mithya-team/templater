@@ -1,11 +1,14 @@
 import { TemplaterConfig } from "./types";
 import Axios from 'axios';
+import { createMuiTheme } from "@material-ui/core";
 
 export let config: TemplaterConfig = {
     urlPrefix: '',
     baseUrl: '',
     accessToken: '',
+    theme: createMuiTheme(),
     disableTabs: false,
+    onActionCompleted: () => { },
     listingType: 'list',
     rootContainerProps: {},
     dialogProps: {

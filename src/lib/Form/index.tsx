@@ -1,29 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, createRef, useEffect } from 'react'
 import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox } from '@material-ui/core'
-import { Template, TPicture, TemplateType } from '../types';
+import { Template, TPicture, TemplateType, TemplateTypeField } from '../types';
 import { FormKey } from '../components/AddEditDialog';
 import { Paper } from '@material-ui/core';
 import { config } from '../Config';
-import ReactQuill from 'react-quill'
+import ReactQuill, { Quill } from 'react-quill'
 import SingleImageUpload from './ImageUpload';
+import BodyFields from '../components/BodyFields';
 
 
 interface IProps {
     type: TemplateType
+    fields?: TemplateTypeField[]
     handleBack?: () => void
     template: Partial<Template>
     onChange: (key: FormKey, value: any) => void
 }
 
+let curQuillInputIndex = 0;
 const Form: React.FC<IProps> = (props) => {
     const { template, onChange } = props;
     const [loading, setLoading] = useState(false);
     const { dialogProps } = config
     const classes = useStyles(props)
+    const quillRef = createRef<ReactQuill>();
 
     const onImagesSelected = (file: any) => {
         setLoading(true)
     }
+
+    useEffect(() => {
+        if (!quillRef.current) return;
+        const editor = quillRef.current.getEditor();
+        // editor.on('selection-change', (range) => {
+        //     console.log("seclection change", range?.index)
+        //     if (range)
+        //         curQuillInputIndex = range.index;
+        // })
+        editor.on('editor-change', () => {
+            const selection = editor.getSelection();
+            console.log("selection", selection?.index)
+            if (selection) curQuillInputIndex = selection.index;
+        })
+
+    }, [quillRef])
+
 
     const onImageUploadComplete = (current: any, response: TPicture) => {
         console.log("upload completed", response);
@@ -36,6 +57,15 @@ const Form: React.FC<IProps> = (props) => {
 
     const _handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.name as FormKey, e.target.value);
+    }
+
+    const handleInsertValue = (value: string) => {
+        const valueToBeAppended = `{{${value}}}`;
+        if (!quillRef.current) return;
+        const editor = quillRef.current.getEditor();
+        console.log("quill ref selection", editor, curQuillInputIndex);
+        editor.insertText(curQuillInputIndex, valueToBeAppended);
+
     }
 
     const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
@@ -95,7 +125,7 @@ const Form: React.FC<IProps> = (props) => {
                     }
                     <Box my={2} width="100%">
                         <Typography gutterBottom variant="caption">EMAIL BODY</Typography>
-                        <ReactQuill className={classes.rte} value={template.email?.body || ''}
+                        <ReactQuill ref={quillRef} className={classes.rte} value={template.email?.body || ''}
                             onChange={handleRteChange} />
                     </Box>
                 </Box>
@@ -117,6 +147,11 @@ const Form: React.FC<IProps> = (props) => {
 
                 </Box>
             </Paper>
+            {props.fields ? (
+                <Paper className={classes.bodyFields} elevation={1}>
+                    <BodyFields onClick={handleInsertValue} fields={props.fields || []} />
+                </Paper>
+            ) : null}
         </div>
     )
 }
@@ -146,6 +181,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             padding: '0px 2px',
             margin: '0px 2px'
         }
+    },
+    bodyFields: {
+        padding: '20px 10px',
+        position: 'fixed',
+        right: 10,
+        top: 100,
+        width: 180,
     }
 }))
 

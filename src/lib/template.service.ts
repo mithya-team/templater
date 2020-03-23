@@ -69,7 +69,7 @@ export class TemplateService {
 
     /**
     * Test a template 
-    * @param id ID of the template sent
+    * @param id ID of the template to be sent
     * @param type email | sms
     * @param providerConfig configuration
     * @example 
@@ -80,11 +80,11 @@ export class TemplateService {
     * @return Promise<AxiosResponse<void>>>
     */
     static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
-        url: `${API_URL}/testTemplate`,
+        url: `Communications/${type}/send`,
         method: 'POST',
-        params: {
-            uid: id,
-            type,
+        data: {
+            templateId: id,
+            // type,
             providerFields: providerConfig
         }
     })

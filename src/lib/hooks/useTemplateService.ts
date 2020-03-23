@@ -4,6 +4,17 @@ import { TemplateService } from '../template.service';
 import { config } from '../Config';
 
 
+const templateCreate = (success: boolean) => {
+    config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
+}
+
+const templateUpdate = (success: boolean) => {
+    config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
+}
+
+const templateSend = (success: boolean) => {
+    config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
+}
 
 const SORT = { order: 'created DESC' }
 
@@ -27,7 +38,6 @@ export const useTemplateService = () => {
 
 
     const loadTemplates = async () => {
-
         setStatus('loading');
         try {
             const [res1, res2] = await Promise.all([TemplateService.fetchTemplates({ filter: SORT }), TemplateService.getTemplateTypes()]);
@@ -45,9 +55,11 @@ export const useTemplateService = () => {
             const res = await TemplateService.createTemplate(template);
             setTemplates([res.data, ...templates])
             setStatus('done');
+            templateCreate(true)
             return res.data
         } catch (error) {
             setStatus('error')
+            templateCreate(false)
             throw error;
         }
     }
@@ -58,9 +70,11 @@ export const useTemplateService = () => {
             const res = await TemplateService.updateTemplate(id, template);
             setTemplates([...templates.map(t => t.id === id ? ({ ...t, ...res.data }) : t)])
             setStatus('done');
+            templateUpdate(true);
             return res.data
         } catch (error) {
             setStatus('error')
+            templateUpdate(false);
             throw error;
         }
     }
@@ -81,7 +95,9 @@ export const useTemplateService = () => {
     const testTemplate = async (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => {
         try {
             const res = await TemplateService.testTemplate(templateId, type, providerConfig);
+            templateSend(true);
         } catch (error) {
+            templateSend(false);
 
         }
     }

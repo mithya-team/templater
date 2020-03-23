@@ -1,10 +1,12 @@
-import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps } from '@material-ui/core';
+import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } from '@material-ui/core';
 export declare type TemplaterConfig = {
     urlPrefix: string;
     baseUrl: string;
     disableTabs: boolean;
     accessToken: string;
     listingType: 'grid' | 'list';
+    onActionCompleted: (action: string, message: string) => void;
+    theme: Theme;
     rootContainerProps: BoxProps;
     dialogProps: Partial<{
         transitionComponent: DialogProps['TransitionComponent'];

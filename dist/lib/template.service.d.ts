@@ -35,7 +35,7 @@ export declare class TemplateService {
     static getTemplateTypes: () => Promise<import("axios").AxiosResponse<any>>;
     /**
     * Test a template
-    * @param id ID of the template sent
+    * @param id ID of the template to be sent
     * @param type email | sms
     * @param providerConfig configuration
     * @example

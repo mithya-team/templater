@@ -41,12 +41,9 @@ const AddEditDialog: React.FC<IProps> = () => {
 
     const [template, setTemplate] = useState<Partial<Template>>(selectedTemplate ?? {})
     const [templateType, setTemplateType] = useState<TemplateType>('forgetPassword');
-    const [step, setStep] = useState(1);
     const TEMPLATE_TYPES = Object.keys(templateTypes) as TemplateType[];
 
     useEffect(() => {
-        if (selectedTemplate)
-            setStep(2)
         setTemplate(selectedTemplate ?? {});
     }, [dialogOpen, selectedTemplate])
 
@@ -54,12 +51,12 @@ const AddEditDialog: React.FC<IProps> = () => {
 
     const handleChange = (key: FormKey, value: any) => {
 
-        if (LVL1_KEYS.indexOf(key) > -1)
-            setTemplate({ ...template, [key]: value });
-        else if (key === 'smsBody')
-            setTemplate({ ...template, sms: { 'body': value } })
-        else
-            setTemplate({ ...template, email: { ...(template.email || { body: '', html: '', subject: '' }), [key]: value } })
+        // if (LVL1_KEYS.indexOf(key) > -1)
+        //     setTemplate({ ...template, [key]: value });
+        // else if (key === 'smsBody')
+        //     setTemplate({ ...template, sms: { 'body': value } })
+        // else
+        //     setTemplate({ ...template, email: { ...(template.email || { body: '', html: '', subject: '' }), [key]: value } })
     }
 
 
@@ -69,29 +66,28 @@ const AddEditDialog: React.FC<IProps> = () => {
     }
 
     const handleSubmit = async () => {
-        const _template: Partial<Template> = {
-            enabled: false,
-            ...template,
-            type: templateType,
-            email: {
-                ...(template.email || { body: '', html: '', subject: '' }),
-                html: generateHTML(template.email?.body || '', template.email?.banner)
-            }
-        }
-        try {
-            await saveChanges(_template);
-            setTemplate({})
-            setStep(1);
-            closeDialog();
-        } catch (error) {
+        // const _template: Partial<Template> = {
+        //     enabled: false,
+        //     ...template,
+        //     type: templateType,
+        //     email: {
+        //         ...(template.email || { body: '', html: '', subject: '' }),
+        //         html: generateHTML(template.email?.body || '', template.email?.banner)
+        //     }
+        // }
+        // try {
+        //     await saveChanges(_template);
+        //     setTemplate({})
+        //     setStep(1);
+        //     closeDialog();
+        // } catch (error) {
 
-        }
+        // }
 
     }
 
     const close = () => {
         closeDialog();
-        setStep(1);
     }
 
     const DIALOG_TITLE = selectedTemplate ? `Edit email - ${selectedTemplate.name}` : 'Create email'
@@ -105,32 +101,15 @@ const AddEditDialog: React.FC<IProps> = () => {
                 loading={status === 'loading'}
             />
             <Box {...dialogProps.containerProps} margin="100px auto" width="600px">
-                <Collapse in={step === 1}>
-                    <Box m="0 auto" width="300px">
-                        <FormControl fullWidth>
-                            <InputLabel>Select a type</InputLabel>
-                            <Select value={templateType} onChange={handleTemplateSelect}>
-                                {
-                                    TEMPLATE_TYPES.map((t, i) => (
-                                        <MenuItem key={i} value={t}>{t}</MenuItem>
-                                    ))
-                                }
-                            </Select>
-                        </FormControl>
-                        <Box mt={2}>
-                            <Button onClick={() => setStep(2)} color="primary" variant="outlined">Continue</Button>
-                        </Box>
-                    </Box>
-                </Collapse>
-                <Collapse in={step === 2}>
-                    <Form
-                        handleBack={() => setStep(1)}
-                        type={templateType}
-                        fields={templateTypes[templateType]?.fields || []}
-                        template={template}
-                        onChange={handleChange}
-                    />
-                </Collapse>
+
+
+                <Form
+                    // handleBack={() => setStep(1)}
+                    // type={templateType}
+                    fields={templateTypes[templateType]?.fields || []}
+                    template={template}
+                    onChange={handleChange}
+                />
             </Box>
         </Dialog>
     )

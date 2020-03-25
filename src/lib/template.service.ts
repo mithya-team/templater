@@ -1,8 +1,8 @@
-import { Template, TemplateContentType, TemplateProviderConfig } from '..';
+import { Template, TemplateProviderConfig } from '..';
 import Axios from 'axios';
 
 
-const API_URL = 'templates'
+const API_URL = ''
 
 /**
  * @class TemplateService
@@ -63,7 +63,6 @@ export class TemplateService {
     */
     static getTemplateTypes = () => Axios.request({
         url: `${API_URL}/getTemplateConfig`,
-        method: 'post'
     })
 
 
@@ -79,15 +78,15 @@ export class TemplateService {
     * }
     * @return Promise<AxiosResponse<void>>>
     */
-    static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
-        url: `Communications/${type}/send`,
-        method: 'POST',
-        data: {
-            templateId: id,
-            // type,
-            providerFields: providerConfig
-        }
-    })
+    // static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
+    //     url: `Communications/${type}/send`,
+    //     method: 'POST',
+    //     data: {
+    //         templateId: id,
+    //         // type,
+    //         providerFields: providerConfig
+    //     }
+    // })
 
 }
 

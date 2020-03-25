@@ -1,9 +1,11 @@
 import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } from '@material-ui/core';
 export declare type TemplaterConfig = {
     urlPrefix: string;
-    baseUrl: string;
+    apiConfig: {
+        baseUrl: string;
+        accessToken: string;
+    };
     disableTabs: boolean;
-    accessToken: string;
     listingType: 'grid' | 'list';
     onActionCompleted: (action: string, message: string) => void;
     theme: Theme;
@@ -27,7 +29,6 @@ export declare type TemplateType = 'forgetPassword';
 export declare type TemplateTypeConfig = Record<TemplateType, {
     fields: TemplateTypeField[];
 }>;
-export declare type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>;
 export declare type TemplateProviderConfig = {
     to: string;
     cc: string[];
@@ -52,21 +53,20 @@ export declare type Template = {
     type: TemplateType;
     enabled: boolean;
     modified: boolean;
+    channel: TemplateChannel;
+    flow: string;
+    templateData: TemplateData;
     id: string;
     slug: string;
     created: string;
     updated: string;
-    fields: Array<TemplateField>;
-    email: TemplateEmail;
-    sms: TemplateSms;
 };
-export declare type TemplateEmail = {
+declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
+declare type TemplateData = {
     banner?: TPicture;
-    subject: string;
-    body: string;
-    html: string;
-};
-export declare type TemplateSms = {
-    body: string;
+    body?: string;
+    subject?: string;
+    html?: string;
 };
 export declare type TemplateServiceStatus = 'loading' | 'done' | 'error';
+export {};

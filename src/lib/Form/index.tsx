@@ -1,7 +1,7 @@
 import React, { useState, createRef, useEffect } from 'react'
 import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox } from '@material-ui/core'
 import { Template, TPicture, TemplateType, TemplateTypeField } from '../types';
-import { FormKey } from '../components/AddEditDialog';
+import { FormKey } from '../screens/AddEditDialog';
 import { Paper } from '@material-ui/core';
 import { config } from '../Config';
 import ReactQuill, { Quill } from 'react-quill'
@@ -9,16 +9,14 @@ import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
 
 
-interface IProps {
-    type: TemplateType
+export interface IFormProps {
     fields?: TemplateTypeField[]
-    handleBack?: () => void
     template: Partial<Template>
     onChange: (key: FormKey, value: any) => void
 }
 
 let curQuillInputIndex = 0;
-const Form: React.FC<IProps> = (props) => {
+const Form: React.FC<IFormProps> = (props) => {
     const { template, onChange } = props;
     const [loading, setLoading] = useState(false);
     const { dialogProps } = config
@@ -70,83 +68,94 @@ const Form: React.FC<IProps> = (props) => {
 
     const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
         { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', name: 'subject', value: template.email?.subject || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },
     ]
 
     const SMS_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
-        { label: 'SMS BODY', name: 'smsBody', value: template.sms?.body || '', handleChange: _handleChange },
+        { label: 'SMS BODY', name: 'smsBody', value: template.templateData?.body || '', handleChange: _handleChange },
     ]
 
     return (
         <div>
             <Paper>
                 <Box p={3} display="flex" alignItems="center">
-                    {
-                        props.handleBack ?
-                            <IconButton onClick={props.handleBack}>
+                    {props.template?.flow ? (
+                        <>
+                            <IconButton>
                                 <Icon>keyboard_arrow_left</Icon>
-                            </IconButton> : null
-                    }
-                    <Typography className={classes.typeLabel}>Template type <span>{props.type}</span></Typography>
+                            </IconButton>
+                            <Typography className={classes.typeLabel}>Template type <span>{props.template.flow}</span></Typography>
+                        </>
+                    ) : (
+                            <div>picker</div>
+                        )}
+
                 </Box>
             </Paper>
-            <Box my={3} position="relative">
-                <SingleImageUpload
-                    placeholderText="600 x 250"
-                    dimension={{ width: '600px', height: '250px' }}
-                    folderName={'template'}
-                    imageUrl={template?.email?.banner?.url}
-                    loading={loading}
-                    onImageSelected={onImagesSelected}
-                    onImageUploadComplete={onImageUploadComplete}
-                />
-            </Box>
 
-            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
-                <FormControlLabel value={!!template.enabled} onChange={() => onChange('enabled', !template.enabled)} control={<Checkbox />} label="Enabled" />
-            </Paper>
-
-            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
-                {
-                    template.slug ?
-                        <Typography variant="caption" className={classes.slug}>{template.slug}</Typography> : null
-                }
-                <Typography>EMAIL</Typography>
-                <Box display="flex" flexDirection="column">
-                    {
-                        EMAIL_INPUT_CONFIG.map(config => (
-                            <Box my={2} key={config.name} width="100%">
-                                <FormControl fullWidth>
-                                    <InputLabel>{config.label}</InputLabel>
-                                    <Input name={config.name} value={config.value} onChange={config.handleChange} />
-                                </FormControl>
-                            </Box>
-                        ))
-                    }
-                    <Box my={2} width="100%">
-                        <Typography gutterBottom variant="caption">EMAIL BODY</Typography>
-                        <ReactQuill ref={quillRef} className={classes.rte} value={template.email?.body || ''}
-                            onChange={handleRteChange} />
+            {props.template.channel === 'email' ? (
+                <>
+                    <Box my={3} position="relative">
+                        <SingleImageUpload
+                            placeholderText="600 x 250"
+                            dimension={{ width: '600px', height: '250px' }}
+                            folderName={'template'}
+                            imageUrl={template?.templateData?.banner?.url}
+                            loading={loading}
+                            onImageSelected={onImagesSelected}
+                            onImageUploadComplete={onImageUploadComplete}
+                        />
                     </Box>
-                </Box>
-            </Paper>
 
-            <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
-                <Typography>SMS</Typography>
-                <Box display="flex" flexDirection="column">
-                    {
-                        SMS_INPUT_CONFIG.map(config => (
-                            <Box my={2} key={config.name} width="100%">
-                                <FormControl fullWidth>
-                                    <InputLabel>{config.label}</InputLabel>
-                                    <Input name={config.name} value={config.value} onChange={config.handleChange} />
-                                </FormControl>
+                    <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                        <FormControlLabel value={!!template.enabled} onChange={() => onChange('enabled', !template.enabled)} control={<Checkbox />} label="Enabled" />
+                    </Paper>
+
+                    <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                        {
+                            template.slug ?
+                                <Typography variant="caption" className={classes.slug}>{template.slug}</Typography> : null
+                        }
+                        <Typography>EMAIL</Typography>
+                        <Box display="flex" flexDirection="column">
+                            {
+                                EMAIL_INPUT_CONFIG.map(config => (
+                                    <Box my={2} key={config.name} width="100%">
+                                        <FormControl fullWidth>
+                                            <InputLabel>{config.label}</InputLabel>
+                                            <Input name={config.name} value={config.value} onChange={config.handleChange} />
+                                        </FormControl>
+                                    </Box>
+                                ))
+                            }
+                            <Box my={2} width="100%">
+                                <Typography gutterBottom variant="caption">EMAIL BODY</Typography>
+                                <ReactQuill ref={quillRef} className={classes.rte} value={template.templateData?.body || ''}
+                                    onChange={handleRteChange} />
                             </Box>
-                        ))
-                    }
+                        </Box>
+                    </Paper>
+                </>
+            ) : null}
 
-                </Box>
-            </Paper>
+            {template.channel === 'sms' ? (
+                <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                    <Typography>SMS</Typography>
+                    <Box display="flex" flexDirection="column">
+                        {
+                            SMS_INPUT_CONFIG.map(config => (
+                                <Box my={2} key={config.name} width="100%">
+                                    <FormControl fullWidth>
+                                        <InputLabel>{config.label}</InputLabel>
+                                        <Input name={config.name} value={config.value} onChange={config.handleChange} />
+                                    </FormControl>
+                                </Box>
+                            ))
+                        }
+
+                    </Box>
+                </Paper>
+            ) : null}
             {props.fields ? (
                 <Paper className={classes.bodyFields} elevation={1}>
                     <BodyFields onClick={handleInsertValue} fields={props.fields || []} />

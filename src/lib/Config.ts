@@ -4,8 +4,10 @@ import { createMuiTheme } from "@material-ui/core";
 
 export let config: TemplaterConfig = {
     urlPrefix: '',
-    baseUrl: '',
-    accessToken: '',
+    apiConfig: {
+        baseUrl: '',
+        accessToken: '',
+    },
     theme: createMuiTheme(),
     disableTabs: false,
     onActionCompleted: () => { },
@@ -28,7 +30,7 @@ export let config: TemplaterConfig = {
  */
 export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => {
     config = { ...config, ...configuration, dialogProps: { ...config.dialogProps, ...configuration.dialogProps } };
-    Axios.defaults.baseURL = config.baseUrl;
-    Axios.defaults.headers.common['Authorization'] = config.accessToken;
-    console.log("Templater Initialized", Axios.defaults);
+    Axios.defaults.baseURL = config.apiConfig.baseUrl;
+    Axios.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
+    console.log("Templater Initialized", config);
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Template, TemplateServiceStatus, TemplateContentType, TemplateProviderConfig, TemplateTypeConfig } from '../types';
+import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig } from '../types';
 import { TemplateService } from '../template.service';
 import { config } from '../Config';
 
@@ -16,6 +16,8 @@ const templateSend = (success: boolean) => {
     config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
 }
 
+
+
 const SORT = { order: 'created DESC' }
 
 export const useTemplateService = () => {
@@ -25,8 +27,8 @@ export const useTemplateService = () => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        if (config.baseUrl && config.accessToken) setIsInitialized(true);
-    }, [config.baseUrl, config.accessToken])
+        if (config.apiConfig.baseUrl && config.apiConfig.accessToken) setIsInitialized(true);
+    }, [config.apiConfig])
 
 
     useEffect(() => {
@@ -92,9 +94,9 @@ export const useTemplateService = () => {
     }
 
 
-    const testTemplate = async (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => {
+    const testTemplate = async (templateId: string, type: any, providerConfig: TemplateProviderConfig) => {
         try {
-            const res = await TemplateService.testTemplate(templateId, type, providerConfig);
+            // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
             templateSend(true);
         } catch (error) {
             templateSend(false);

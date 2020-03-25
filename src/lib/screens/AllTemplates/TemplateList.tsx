@@ -5,9 +5,10 @@ import {
 } from '@material-ui/core'
 import { Template, usePagination } from '../../..';
 import { config } from '../../Config';
-import TemplateCard from './TemplateCard';
+import { TemplateCard } from '../../components';
 import { Context } from '../../Context';
-import Pagination from '../Pagination';
+import Pagination from '../../components/Pagination';
+import { getPath } from '../../utils';
 
 interface IProps {
 }
@@ -48,7 +49,7 @@ const TemplateList: React.FC<IProps> = () => {
                                 {
                                     paginatedList.map((t, i) => (
                                         <Grid item md={6} key={t.id + i}>
-                                            <TemplateCard data={t} />
+                                            <TemplateCard data={t} redirectUrl={getPath(t.id)} />
                                         </Grid>
                                     ))
                                 }

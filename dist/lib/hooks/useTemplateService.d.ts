@@ -8,5 +8,5 @@ export declare const useTemplateService: () => {
     createTemplate: (template: Partial<Template>) => Promise<any>;
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>;
     getTemplateById: (id: string) => Promise<Template>;
-    testTemplate: (templateId: string, type: "email" | "sms", providerConfig: TemplateProviderConfig) => Promise<void>;
+    testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>;
 };

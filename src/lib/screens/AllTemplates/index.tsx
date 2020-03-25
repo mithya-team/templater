@@ -5,7 +5,7 @@ import { Fab } from '@material-ui/core'
 import { Context } from '../../Context'
 import { Switch, Route, withRouter, RouteComponentProps, Link } from 'react-router-dom';
 import { getPath } from '../../utils'
-import Settings from '../Settings/index';
+import Settings from '../../components/Settings/index';
 
 interface IProps { }
 

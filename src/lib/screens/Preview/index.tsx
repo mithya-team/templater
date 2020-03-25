@@ -8,7 +8,7 @@ import { Context } from '../../Context';
 import { Template } from '../../..';
 import { config } from '../../Config';
 import TestTemplate from '../TestTemplate';
-import { TemplateContentType } from '../../types';
+import { TemplatePreview } from '../../components';
 
 interface IProps { }
 
@@ -17,15 +17,14 @@ const Preview: React.FC<IProps> = () => {
     if (!context) return <div />
     const { getTemplateById } = context;
     const [template, setTemplate] = useState<Template | undefined>()
-    const [testType, setTestType] = useState<TemplateContentType>('email');
 
     const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
-        if (!!config.baseUrl && !!config.accessToken)
+        if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken)
             init()
 
-    }, [config.baseUrl, config.accessToken])
+    }, [config.apiConfig])
     // const classes = useStyles(props)
 
     const init = async () => {
@@ -40,21 +39,10 @@ const Preview: React.FC<IProps> = () => {
 
     return (
         <Box m="30px auto" width="900px" display="flex" justifyContent="space-around">
-            <Box minWidth="500px">
-                {
-                    testType === 'email' ?
-                        <div dangerouslySetInnerHTML={{ __html: template?.email.html || '' }} /> : null
-                }
-                {
-                    testType === 'sms' ?
-                        <Box p={2}>
-                            <Typography>{template?.sms?.body || ''}</Typography>
-                        </Box> : null
-                }
-            </Box>
+            <TemplatePreview id={template?.id || ''} />
             {
                 template ?
-                    <TestTemplate template={template} type={testType} onTypeChange={type => setTestType(type)} />
+                    <TestTemplate template={template} />
                     : null
             }
         </Box>

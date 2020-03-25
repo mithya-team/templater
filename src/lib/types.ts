@@ -2,9 +2,11 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } fr
 
 export type TemplaterConfig = {
     urlPrefix: string
-    baseUrl: string
+    apiConfig: {
+        baseUrl: string
+        accessToken: string
+    },
     disableTabs: boolean
-    accessToken: string
     listingType: 'grid' | 'list'
     onActionCompleted: (action: string, message: string) => void
     theme: Theme
@@ -29,7 +31,7 @@ export type TemplateTypeField = {
 export type TemplateType = 'forgetPassword'
 export type TemplateTypeConfig = Record<TemplateType, { fields: TemplateTypeField[] }>
 
-export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
+// export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
 export type TemplateProviderConfig = {
     to: string
     cc: string[]
@@ -57,24 +59,36 @@ export type Template = {
     type: TemplateType
     enabled: boolean,
     modified: boolean
+    channel: TemplateChannel
+    flow: string
+    templateData: TemplateData
     id: string
     slug: string
     created: string
     updated: string
-    fields: Array<TemplateField>
-    email: TemplateEmail
-    sms: TemplateSms
+    // fields: Array<TemplateField>
+    // email: TemplateEmail
+    // sms: TemplateSms
 }
 
-export type TemplateEmail = {
+type TemplateChannel = 'email' | 'sms' | 'TemplateData'
+
+type TemplateData = {
     banner?: TPicture
-    subject: string
-    body: string
-    html: string
+    body?: string
+    subject?: string
+    html?: string
 }
 
-export type TemplateSms = {
-    body: string
-}
+// export type TemplateEmail = {
+//     banner?: TPicture
+//     subject: string
+//     body: string
+//     html: string
+// }
+
+// export type TemplateSms = {
+//     body: string
+// }
 
 export type TemplateServiceStatus = 'loading' | 'done' | 'error'

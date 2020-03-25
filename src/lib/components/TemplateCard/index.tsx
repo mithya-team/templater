@@ -5,34 +5,27 @@ import { Template } from '../../..';
 import { getPath } from '../../utils';
 import { Context } from '../../Context';
 
-interface IProps {
+interface ITemplateCardProps {
     data: Template
+    redirectUrl?: string
+    actions?: JSX.Element
 }
 
-const TemplateCard: React.FC<IProps> = (props) => {
-    const context = useContext(Context);
-    if (!context) return <div />
-    const { openTemplateEditor } = context;
-    const { data } = props;
+const TemplateCard: React.FC<ITemplateCardProps> = (props) => {
+    const { data, redirectUrl, actions = (<div />) } = props;
     const classes = useStyles()
 
-    const imgUrl = data.email?.banner?.url
 
     return (
         <Paper>
-            {/* {
-                imgUrl ? <img src={imgUrl} className={classes.img} /> : null
-            } */}
             <Box p={2} borderRadius="4px">
-                <Link to={getPath(data.id)}>
+                <Link to={redirectUrl || '#'}>
                     <Box pl={1} display="flex" justifyContent="space-between">
                         <Typography>{data.name}</Typography>
                     </Box>
                 </Link>
                 <Box display="flex">
-                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Preview</Button>
-                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Edit</Button>
-                    <Button color="primary" onClick={() => openTemplateEditor(data)} variant="text">Send</Button>
+                    {actions}
                 </Box>
             </Box>
         </Paper>

@@ -6,11 +6,11 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = require('react');
 var React__default = _interopDefault(React);
-var reactRouterDom = require('react-router-dom');
 var core = require('@material-ui/core');
 var reactRouter = require('react-router');
 var reactDom = _interopDefault(require('react-dom'));
 var server = _interopDefault(require('react-dom/server'));
+var reactRouterDom = require('react-router-dom');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -51,18 +51,6 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1533,68 +1521,7 @@ axios_1.default = default_1;
 
 var axios$1 = axios_1;
 
-var config = {
-    urlPrefix: '',
-    baseUrl: '',
-    accessToken: '',
-    theme: core.createMuiTheme(),
-    disableTabs: false,
-    onActionCompleted: function () { },
-    listingType: 'list',
-    rootContainerProps: {},
-    dialogProps: {
-        containerProps: {},
-        formContainerProps: {},
-        mainActionButtonProps: {},
-        secondaryActionButtonProps: {},
-        appbarProps: {}
-    }
-};
-/**
- * @function initializeTemplater
- * @param configuration Partial<TemplaterConfig>
- * @description Initialize the templater with provided configurations
- */
-var initializeTemplater = function (configuration) {
-    config = __assign(__assign(__assign({}, config), configuration), { dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
-    axios$1.defaults.baseURL = config.baseUrl;
-    axios$1.defaults.headers.common['Authorization'] = config.accessToken;
-    console.log("Templater Initialized", axios$1.defaults);
-};
-
-var getPath = function (suffix) {
-    return suffix ? config.urlPrefix + '/' + suffix : config.urlPrefix;
-};
-var IMAGE_UPLOAD_URL = 'pictures/upload';
-var uploadPicture = function (file, imagesFolder) {
-    if (!file.base64)
-        return Promise.reject('Could not find base64 encoding of file');
-    imagesFolder = imagesFolder || 'images';
-    if (!(/\/$/.test(imagesFolder)))
-        imagesFolder += '/';
-    return axios$1.request({
-        url: IMAGE_UPLOAD_URL,
-        method: 'POST',
-        data: {
-            base64img: file.base64,
-            filename: file.name,
-            folder: imagesFolder
-        }
-    });
-};
-var trimHTML = function (html) {
-    return html.replace(/<p><br><\/p>/ig, '');
-};
-var generateHTML = function (body, banner, footer) {
-    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 500px; height: 250px; object-fit: cover;\" /></td></tr>" : '';
-    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + trimHTML(body) + "</div></td></tr>";
-    var createTable = function (content) {
-        return "<table style=\"width: 500px; margin: 0 auto; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">" + content + "</table>";
-    };
-    return createTable(BANNER + BODY);
-};
-
-var API_URL = 'templates';
+var API_URL = '';
 /**
  * @class TemplateService
  * @description Services related to templates and CRUD operation
@@ -1645,31 +1572,40 @@ var TemplateService = /** @class */ (function () {
     */
     TemplateService.getTemplateTypes = function () { return axios$1.request({
         url: API_URL + "/getTemplateConfig",
-        method: 'post'
-    }); };
-    /**
-    * Test a template
-    * @param id ID of the template to be sent
-    * @param type email | sms
-    * @param providerConfig configuration
-    * @example
-    * {
-    *   to: "jagzmz...com",
-    *   cc: ["a....com","b...com"]
-    * }
-    * @return Promise<AxiosResponse<void>>>
-    */
-    TemplateService.testTemplate = function (id, type, providerConfig) { return axios$1.request({
-        url: "Communications/" + type + "/send",
-        method: 'POST',
-        data: {
-            templateId: id,
-            // type,
-            providerFields: providerConfig
-        }
     }); };
     return TemplateService;
 }());
+
+var config = {
+    urlPrefix: '',
+    apiConfig: {
+        baseUrl: '',
+        accessToken: '',
+    },
+    theme: core.createMuiTheme(),
+    disableTabs: false,
+    onActionCompleted: function () { },
+    listingType: 'list',
+    rootContainerProps: {},
+    dialogProps: {
+        containerProps: {},
+        formContainerProps: {},
+        mainActionButtonProps: {},
+        secondaryActionButtonProps: {},
+        appbarProps: {}
+    }
+};
+/**
+ * @function initializeTemplater
+ * @param configuration Partial<TemplaterConfig>
+ * @description Initialize the templater with provided configurations
+ */
+var initializeTemplater = function (configuration) {
+    config = __assign(__assign(__assign({}, config), configuration), { dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
+    axios$1.defaults.baseURL = config.apiConfig.baseUrl;
+    axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
+    console.log("Templater Initialized", config);
+};
 
 var templateCreate = function (success) {
     config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
@@ -1687,9 +1623,9 @@ var useTemplateService = function () {
     var _c = React.useState('done'), status = _c[0], setStatus = _c[1];
     var _d = React.useState(false), isInitialized = _d[0], setIsInitialized = _d[1];
     React.useEffect(function () {
-        if (config.baseUrl && config.accessToken)
+        if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
             setIsInitialized(true);
-    }, [config.baseUrl, config.accessToken]);
+    }, [config.apiConfig]);
     React.useEffect(function () {
         if (isInitialized) {
             loadTemplates();
@@ -1792,22 +1728,15 @@ var useTemplateService = function () {
         });
     }); };
     var testTemplate = function (templateId, type, providerConfig) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_5;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.testTemplate(templateId, type, providerConfig)];
-                case 1:
-                    res = _a.sent();
-                    templateSend(true);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_5 = _a.sent();
-                    templateSend(false);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+            try {
+                // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
+                templateSend(true);
             }
+            catch (error) {
+                templateSend(false);
+            }
+            return [2 /*return*/];
         });
     }); };
     return {
@@ -1850,95 +1779,10 @@ function usePagination(items, config) {
     };
 }
 
-var Context = React__default.createContext(null);
-var LIMIT = 8;
-var ContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, status = _a.status, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, getTemplateById = _a.getTemplateById, types = _a.types, testTemplate = _a.testTemplate;
-    var _b = React.useState(false), dialogOpen = _b[0], setDialogOpen = _b[1];
-    var _c = React.useState(), selectedTemplate = _c[0], setSelectedTemplate = _c[1];
-    var _d = usePagination(templates, { limit: LIMIT }), paginatedList = _d.paginatedList, curPage = _d.curPage, handlePageChange = _d.handlePageChange;
-    var openTemplateEditor = function (template) {
-        setSelectedTemplate(template);
-        setDialogOpen(true);
-    };
-    var closeDialog = function () {
-        setSelectedTemplate(undefined);
-        setDialogOpen(false);
-    };
-    var saveChanges = function (template) { return __awaiter(void 0, void 0, void 0, function () {
-        var id, created, updated, slug, templateData, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    if (!template.id) return [3 /*break*/, 2];
-                    id = template.id, created = template.created, updated = template.updated, slug = template.slug, templateData = __rest(template, ["id", "created", "updated", "slug"]);
-                    return [4 /*yield*/, updateTemplate(template.id, templateData)];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, createTemplate(template)];
-                case 3:
-                    _a.sent();
-                    _a.label = 4;
-                case 4: return [3 /*break*/, 6];
-                case 5:
-                    error_1 = _a.sent();
-                    throw error_1;
-                case 6: return [2 /*return*/];
-            }
-        });
-    }); };
-    var value = {
-        templates: templates,
-        status: status,
-        selectedTemplate: selectedTemplate,
-        dialogOpen: dialogOpen,
-        saveChanges: saveChanges,
-        openTemplateEditor: openTemplateEditor,
-        closeDialog: closeDialog,
-        getTemplateById: getTemplateById,
-        paginatedList: paginatedList,
-        curPage: curPage,
-        handlePageChange: handlePageChange,
-        templateTypes: types,
-        testTemplate: testTemplate
-    };
-    return (React__default.createElement(Context.Provider, { value: value },
-        props.children,
-        React__default.createElement(AddEditDialog, null)));
-};
-
-var TemplateCard = function (props) {
-    var _a, _b;
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var openTemplateEditor = context.openTemplateEditor;
-    var data = props.data;
-    var classes = useStyles();
-    var imgUrl = (_b = (_a = data.email) === null || _a === void 0 ? void 0 : _a.banner) === null || _b === void 0 ? void 0 : _b.url;
-    return (React__default.createElement(core.Paper, null,
-        React__default.createElement(core.Box, { p: 2, borderRadius: "4px" },
-            React__default.createElement(reactRouterDom.Link, { to: getPath(data.id) },
-                React__default.createElement(core.Box, { display: "flex", justifyContent: "space-between" },
-                    React__default.createElement(core.Typography, null, data.name))),
-            React__default.createElement(core.Box, { display: "flex" },
-                React__default.createElement(core.Button, { color: "primary", onClick: function () { return openTemplateEditor(data); }, variant: "text" }, "Preview"),
-                React__default.createElement(core.Button, { color: "primary", onClick: function () { return openTemplateEditor(data); }, variant: "text" }, "Edit"),
-                React__default.createElement(core.Button, { color: "primary", onClick: function () { return openTemplateEditor(data); }, variant: "text" }, "Send")))));
-};
-var useStyles = core.makeStyles(function () { return core.createStyles({
-    img: {
-        borderRadius: '4px 4px 0px 0px',
-        width: '100%'
-    }
-}); });
-
 var Pagination = function (props) {
     var total = props.total, entriesPerPage = props.entriesPerPage, currentPage = props.currentPage, onPageChange = props.onPageChange;
     var totalPages = Math.ceil(total / entriesPerPage);
-    var classes = useStyles$1(props);
+    var classes = useStyles(props);
     var pages = [
         currentPage,
         currentPage + 1,
@@ -1949,7 +1793,7 @@ var Pagination = function (props) {
         pages.map(function (p) { return (React__default.createElement(core.Button, { color: p === currentPage ? "primary" : "default", key: p + '', variant: p === currentPage ? 'contained' : 'text', onClick: function () { return onPageChange(p); } }, p)); }),
         React__default.createElement(core.Button, { onClick: function () { return onPageChange(currentPage + 1); }, variant: "text" }, "next")));
 };
-var useStyles$1 = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles = core.makeStyles(function (theme) { return core.createStyles({
     root: {
         display: 'flex',
         width: 300,
@@ -1958,47 +1802,39 @@ var useStyles$1 = core.makeStyles(function (theme) { return core.createStyles({
     },
 }); });
 
-var LIMIT$1 = 8;
-var TemplateList = function () {
-    var listingType = config.listingType;
-    // const classes = useStyles(props);
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var _a = React.useState(false), loading = _a[0], setLoading = _a[1];
-    var templates = context.templates, status = context.status, paginatedList = context.paginatedList, curPage = context.curPage, handlePageChange = context.handlePageChange;
-    var onPageChange = function (page) {
-        handlePageChange(page);
-        setLoading(true);
-        setTimeout(function () {
-            setLoading(false);
-        }, 400);
+var getPath = function (suffix) {
+    return suffix ? config.urlPrefix + '/' + suffix : config.urlPrefix;
+};
+var IMAGE_UPLOAD_URL = 'pictures/upload';
+var uploadPicture = function (file, imagesFolder) {
+    if (!file.base64)
+        return Promise.reject('Could not find base64 encoding of file');
+    imagesFolder = imagesFolder || 'images';
+    if (!(/\/$/.test(imagesFolder)))
+        imagesFolder += '/';
+    return axios$1.request({
+        url: IMAGE_UPLOAD_URL,
+        method: 'POST',
+        data: {
+            base64img: file.base64,
+            filename: file.name,
+            folder: imagesFolder
+        }
+    });
+};
+var trimHTML = function (html) {
+    return html.replace(/<p><br><\/p>/ig, '');
+};
+var generateHTML = function (body, banner, footer) {
+    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 500px; height: 250px; object-fit: cover;\" /></td></tr>" : '';
+    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + trimHTML(body) + "</div></td></tr>";
+    var createTable = function (content) {
+        return "<table style=\"width: 500px; margin: 0 auto; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">" + content + "</table>";
     };
-    if (status === 'loading' || loading)
-        return React__default.createElement(core.LinearProgress, { color: "primary" });
-    return (React__default.createElement(core.Box, null,
-        listingType === 'list' ?
-            paginatedList.map(function (t, i) { return (React__default.createElement(core.Box, { margin: "10px auto", key: t.id + i, width: "500px" },
-                React__default.createElement(TemplateCard, { data: t }))); }) : (React__default.createElement(core.Box, { width: "700px", mx: "auto" },
-            React__default.createElement(core.Grid, { container: true, spacing: 4 }, paginatedList.map(function (t, i) { return (React__default.createElement(core.Grid, { item: true, md: 6, key: t.id + i },
-                React__default.createElement(TemplateCard, { data: t }))); })))),
-        React__default.createElement(core.Box, { m: "0 auto" },
-            React__default.createElement(Pagination, { currentPage: curPage, onPageChange: onPageChange, entriesPerPage: LIMIT$1, total: templates.length }))));
+    return createTable(BANNER + BODY);
 };
 
-var AllTemplates = function () {
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var openTemplateEditor = context.openTemplateEditor;
-    var classes = useStyles$2();
-    return (React__default.createElement(core.Box, { py: 4 },
-        React__default.createElement(TemplateList, null),
-        React__default.createElement("div", { className: classes.fabContainer },
-            React__default.createElement(core.Fab, { onClick: function () { return openTemplateEditor(); } },
-                React__default.createElement("i", { className: "material-icons" }, "add")))));
-};
-var useStyles$2 = core.makeStyles(function () { return core.createStyles({
+var useStyles$1 = core.makeStyles(function () { return core.createStyles({
     fabContainer: {
         position: 'fixed',
         right: 30,
@@ -2009,7 +1845,7 @@ var useStyles$2 = core.makeStyles(function () { return core.createStyles({
 var EmailConfig = function (props) {
     var _a = React.useState(props.to || ''), to = _a[0], setTo = _a[1];
     var _b = React.useState(props.cc || []), cc = _b[0], setCc = _b[1];
-    var classes = useStyles$3(props);
+    var classes = useStyles$2(props);
     React.useEffect(function () {
         props.onToChange(to);
     }, [to]);
@@ -2036,11 +1872,11 @@ var EmailConfig = function (props) {
                         React__default.createElement(core.IconButton, { onClick: function () { return setCc(__spreadArrays(cc, [''])); } },
                             React__default.createElement("i", { className: "material-icons" }, "add"))))))));
 };
-var useStyles$3 = core.makeStyles(function (theme) { return core.createStyles({}); });
+var useStyles$2 = core.makeStyles(function (theme) { return core.createStyles({}); });
 
 var SmsConfig = function (props) {
     var _a = React.useState(props.phoneNumbers || []), numbers = _a[0], setNumbers = _a[1];
-    var classes = useStyles$4(props);
+    var classes = useStyles$3(props);
     React.useEffect(function () {
         props.onPhoneNumberChange(numbers);
     }, [numbers]);
@@ -2060,7 +1896,7 @@ var SmsConfig = function (props) {
                         React__default.createElement(core.IconButton, { onClick: function () { return setNumbers(__spreadArrays(numbers, [''])); } },
                             React__default.createElement("i", { className: "material-icons" }, "add"))))))));
 };
-var useStyles$4 = core.makeStyles(function (theme) { return core.createStyles({}); });
+var useStyles$3 = core.makeStyles(function (theme) { return core.createStyles({}); });
 
 var TestTemplate = function (props) {
     var context = React.useContext(Context);
@@ -2068,17 +1904,13 @@ var TestTemplate = function (props) {
         return React__default.createElement("div", null);
     var testTemplate = context.testTemplate;
     var _a = React.useState(false), loading = _a[0], setLoading = _a[1];
-    var template = props.template, _b = props.type, type = _b === void 0 ? 'email' : _b, _c = props.onTypeChange, onTypeChange = _c === void 0 ? function () { return null; } : _c;
-    var classes = useStyles$5(props);
-    var _d = React.useState(''), to = _d[0], setTo = _d[1];
-    var _e = React.useState([]), phoneNumbers = _e[0], setPhoneNumbers = _e[1];
-    var _f = React.useState([]), cc = _f[0], setCc = _f[1];
-    var TEMPLATE_TYP_OPTIONS = [
-        { label: 'Email', value: 'email' },
-        { label: 'SMS', value: 'sms' },
-    ];
+    var template = props.template;
+    var classes = useStyles$4(props);
+    var _b = React.useState(''), to = _b[0], setTo = _b[1];
+    var _c = React.useState([]), phoneNumbers = _c[0], setPhoneNumbers = _c[1];
+    var _d = React.useState([]), cc = _d[0], setCc = _d[1];
     var validateInput = function () {
-        if (type === 'email' && !to)
+        if (template.channel === 'email' && !to)
             return false;
         // if (cc.filter(_c => !!_c).length === 0) return false;
         return true;
@@ -2088,7 +1920,7 @@ var TestTemplate = function (props) {
             switch (_a.label) {
                 case 0:
                     setLoading(true);
-                    return [4 /*yield*/, testTemplate(template.id, type, { to: to, cc: cc })];
+                    return [4 /*yield*/, testTemplate(template.id, template.channel, { to: to, cc: cc })];
                 case 1:
                     _a.sent();
                     setLoading(false);
@@ -2105,67 +1937,19 @@ var TestTemplate = function (props) {
                 template.name),
             React__default.createElement(core.Typography, { className: classes.tag, variant: "caption" }, template.slug),
             React__default.createElement(core.Box, { mt: "20px" },
-                React__default.createElement(core.FormControl, { fullWidth: true },
-                    React__default.createElement(core.InputLabel, null, "Type"),
-                    React__default.createElement(core.Select, { value: type, onChange: function (e) { return onTypeChange(e.target.value); } }, TEMPLATE_TYP_OPTIONS.map(function (o) { return (React__default.createElement(core.MenuItem, { value: o.value, key: o.value }, o.label)); }))),
-                React__default.createElement(core.Box, { mt: "40px" }, type === 'email' ?
-                    React__default.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } })
-                    :
-                        React__default.createElement(SmsConfig, { phoneNumbers: phoneNumbers, onPhoneNumberChange: function (_numbers) { return setPhoneNumbers(_numbers); } })),
+                React__default.createElement(core.Box, { mt: "40px" },
+                    template.channel === 'email' ? (React__default.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } })) : null,
+                    template.channel === 'sms' ? (React__default.createElement(SmsConfig, { phoneNumbers: phoneNumbers, onPhoneNumberChange: function (_numbers) { return setPhoneNumbers(_numbers); } })) : null),
                 React__default.createElement(core.Box, { mt: 2 },
                     React__default.createElement(core.Button, { onClick: send, disabled: !validateInput(), variant: "outlined", color: "secondary" }, loading ? React__default.createElement(core.CircularProgress, null) : 'Send'))))));
 };
-var useStyles$5 = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$4 = core.makeStyles(function (theme) { return core.createStyles({
     tag: {
         color: 'white',
         backgroundColor: theme.palette.primary.main,
         padding: '2px 4px'
     }
 }); });
-
-var Preview = function () {
-    var _a, _b, _c;
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var getTemplateById = context.getTemplateById;
-    var _d = React.useState(), template = _d[0], setTemplate = _d[1];
-    var _e = React.useState('email'), testType = _e[0], setTestType = _e[1];
-    var id = reactRouter.useParams().id;
-    React.useEffect(function () {
-        if (!!config.baseUrl && !!config.accessToken)
-            init();
-    }, [config.baseUrl, config.accessToken]);
-    // const classes = useStyles(props)
-    var init = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _template, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, getTemplateById(id)];
-                case 1:
-                    _template = _a.sent();
-                    setTemplate(_template);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
-    return (React__default.createElement(core.Box, { m: "30px auto", width: "900px", display: "flex", justifyContent: "space-around" },
-        React__default.createElement(core.Box, { minWidth: "500px" },
-            testType === 'email' ?
-                React__default.createElement("div", { dangerouslySetInnerHTML: { __html: ((_a = template) === null || _a === void 0 ? void 0 : _a.email.html) || '' } }) : null,
-            testType === 'sms' ?
-                React__default.createElement(core.Box, { p: 2 },
-                    React__default.createElement(core.Typography, null, ((_c = (_b = template) === null || _b === void 0 ? void 0 : _b.sms) === null || _c === void 0 ? void 0 : _c.body) || '')) : null),
-        template ?
-            React__default.createElement(TestTemplate, { template: template, type: testType, onTypeChange: function (type) { return setTestType(type); } })
-            : null));
-};
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -21893,7 +21677,7 @@ var FileInput = /** @class */ (function (_super) {
 function SingleImageUpload(props) {
     var _this = this;
     var theme = core.useTheme();
-    var classes = useStyles$6(props);
+    var classes = useStyles$5(props);
     var _a = props.dimension, dimension = _a === void 0 ? { width: '100%', height: '250px' } : _a, _b = props.placeholderText, placeholderText = _b === void 0 ? '' : _b;
     var uploadFiles = function (files) { return __awaiter(_this, void 0, void 0, function () {
         var file, filePromises;
@@ -21943,7 +21727,7 @@ function SingleImageUpload(props) {
                 React__default.createElement("i", { className: "material-icons" }, "camera_alt"),
                 React__default.createElement(FileInput, { accept: "image/*", multiple: false, onDone: uploadFiles })))));
 }
-var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$5 = core.makeStyles(function (theme) { return core.createStyles({
     image: {
         display: 'block',
         // height: '250px',
@@ -21969,7 +21753,7 @@ var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
 }); });
 
 var BodyFields = function (props) {
-    var classes = useStyles$7(props);
+    var classes = useStyles$6(props);
     var fields = props.fields;
     var handleClick = function (value) { return function () {
         props.onClick(value);
@@ -21980,7 +21764,7 @@ var BodyFields = function (props) {
             React__default.createElement(core.Typography, { variant: "caption", color: f.isRequired ? "primary" : "textSecondary" }, f.isRequired ? "Required field" : "Not required")),
         React__default.createElement(core.Typography, { variant: "body2" }, f.description))); })));
 };
-var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
     fieldItem: {
         cursor: 'pointer'
     }
@@ -21988,11 +21772,11 @@ var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
 
 var curQuillInputIndex = 0;
 var Form = function (props) {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g;
     var template = props.template, onChange = props.onChange;
-    var _g = React.useState(false), loading = _g[0], setLoading = _g[1];
+    var _h = React.useState(false), loading = _h[0], setLoading = _h[1];
     var dialogProps = config.dialogProps;
-    var classes = useStyles$8(props);
+    var classes = useStyles$7(props);
     var quillRef = React.createRef();
     var onImagesSelected = function (file) {
         setLoading(true);
@@ -22033,46 +21817,46 @@ var Form = function (props) {
     };
     var EMAIL_INPUT_CONFIG = [
         { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.email) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.templateData) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
     ];
     var SMS_INPUT_CONFIG = [
-        { label: 'SMS BODY', name: 'smsBody', value: ((_b = template.sms) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
+        { label: 'SMS BODY', name: 'smsBody', value: ((_b = template.templateData) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
     ];
     return (React__default.createElement("div", null,
         React__default.createElement(core.Paper, null,
-            React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" },
-                props.handleBack ?
-                    React__default.createElement(core.IconButton, { onClick: props.handleBack },
-                        React__default.createElement(core.Icon, null, "keyboard_arrow_left")) : null,
+            React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" }, ((_c = props.template) === null || _c === void 0 ? void 0 : _c.flow) ? (React__default.createElement(React__default.Fragment, null,
+                React__default.createElement(core.IconButton, null,
+                    React__default.createElement(core.Icon, null, "keyboard_arrow_left")),
                 React__default.createElement(core.Typography, { className: classes.typeLabel },
                     "Template type ",
-                    React__default.createElement("span", null, props.type)))),
-        React__default.createElement(core.Box, { my: 3, position: "relative" },
-            React__default.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_e = (_d = (_c = template) === null || _c === void 0 ? void 0 : _c.email) === null || _d === void 0 ? void 0 : _d.banner) === null || _e === void 0 ? void 0 : _e.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
-        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
-            React__default.createElement(core.FormControlLabel, { value: !!template.enabled, onChange: function () { return onChange('enabled', !template.enabled); }, control: React__default.createElement(core.Checkbox, null), label: "Enabled" })),
-        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
-            template.slug ?
-                React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
-            React__default.createElement(core.Typography, null, "EMAIL"),
-            React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-                EMAIL_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
-                    React__default.createElement(core.FormControl, { fullWidth: true },
-                        React__default.createElement(core.InputLabel, null, config.label),
-                        React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }),
-                React__default.createElement(core.Box, { my: 2, width: "100%" },
-                    React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                    React__default.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_f = template.email) === null || _f === void 0 ? void 0 : _f.body) || '', onChange: handleRteChange })))),
-        React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
+                    React__default.createElement("span", null, props.template.flow)))) : (React__default.createElement("div", null, "picker")))),
+        props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
+            React__default.createElement(core.Box, { my: 3, position: "relative" },
+                React__default.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_f = (_e = (_d = template) === null || _d === void 0 ? void 0 : _d.templateData) === null || _e === void 0 ? void 0 : _e.banner) === null || _f === void 0 ? void 0 : _f.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+            React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
+                React__default.createElement(core.FormControlLabel, { value: !!template.enabled, onChange: function () { return onChange('enabled', !template.enabled); }, control: React__default.createElement(core.Checkbox, null), label: "Enabled" })),
+            React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
+                template.slug ?
+                    React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
+                React__default.createElement(core.Typography, null, "EMAIL"),
+                React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+                    EMAIL_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
+                        React__default.createElement(core.FormControl, { fullWidth: true },
+                            React__default.createElement(core.InputLabel, null, config.label),
+                            React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }),
+                    React__default.createElement(core.Box, { my: 2, width: "100%" },
+                        React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
+                        React__default.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_g = template.templateData) === null || _g === void 0 ? void 0 : _g.body) || '', onChange: handleRteChange })))))) : null,
+        template.channel === 'sms' ? (React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React__default.createElement(core.Typography, null, "SMS"),
             React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
                 React__default.createElement(core.FormControl, { fullWidth: true },
                     React__default.createElement(core.InputLabel, null, config.label),
-                    React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }))),
+                    React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); })))) : null,
         props.fields ? (React__default.createElement(core.Paper, { className: classes.bodyFields, elevation: 1 },
             React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$8 = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
     container: {
         margin: '16px 0px',
         position: 'relative',
@@ -22107,116 +21891,20 @@ var useStyles$8 = core.makeStyles(function (theme) { return core.createStyles({
     }
 }); });
 
-var DialogHeader = function (props) {
-    var dialogProps = config.dialogProps;
-    var _a = props.loading, loading = _a === void 0 ? false : _a, handleClose = props.handleClose, handleSubmit = props.handleSubmit, dialogTitle = props.dialogTitle;
-    var classes = useStyles$9(props);
-    return (React__default.createElement(core.AppBar, __assign({}, dialogProps.appbarProps),
-        React__default.createElement(core.Toolbar, null,
-            React__default.createElement(core.Box, null,
-                React__default.createElement(core.Typography, null, dialogTitle)),
-            React__default.createElement(core.Box, { flex: 1 }),
-            React__default.createElement(core.Box, { display: "flex", alignItems: "center" },
-                React__default.createElement(core.Box, { mr: 2 },
-                    React__default.createElement(core.Button, __assign({}, dialogProps.secondaryActionButtonProps, { onClick: handleClose }), "Cancel")),
-                React__default.createElement(core.Button, __assign({ variant: "contained", color: "primary" }, dialogProps.mainActionButtonProps, { onClick: handleSubmit }), loading ? React__default.createElement(core.CircularProgress, null) : 'Submit')))));
-};
-var useStyles$9 = core.makeStyles(function (theme) { return core.createStyles({}); });
+var useStyles$8 = core.makeStyles(function (theme) { return core.createStyles({}); });
 
-function Transition(props) {
-    return React__default.createElement(core.Slide, __assign({ direction: "up" }, props));
-}
-var LVL1_KEYS = ['name', 'enabled', 'fields', 'type'];
-var AddEditDialog = function () {
-    var _a;
-    var classes = useStyles$a();
-    var dialogProps = config.dialogProps;
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var dialogOpen = context.dialogOpen, closeDialog = context.closeDialog, status = context.status, templateTypes = context.templateTypes, selectedTemplate = context.selectedTemplate, saveChanges = context.saveChanges;
-    var _b = React.useState((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {})), template = _b[0], setTemplate = _b[1];
-    var _c = React.useState('forgetPassword'), templateType = _c[0], setTemplateType = _c[1];
-    var _d = React.useState(1), step = _d[0], setStep = _d[1];
-    var TEMPLATE_TYPES = Object.keys(templateTypes);
-    React.useEffect(function () {
-        if (selectedTemplate)
-            setStep(2);
-        setTemplate((selectedTemplate !== null && selectedTemplate !== void 0 ? selectedTemplate : {}));
-    }, [dialogOpen, selectedTemplate]);
-    var handleChange = function (key, value) {
-        var _a, _b;
-        if (LVL1_KEYS.indexOf(key) > -1)
-            setTemplate(__assign(__assign({}, template), (_a = {}, _a[key] = value, _a)));
-        else if (key === 'smsBody')
-            setTemplate(__assign(__assign({}, template), { sms: { 'body': value } }));
-        else
-            setTemplate(__assign(__assign({}, template), { email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), (_b = {}, _b[key] = value, _b)) }));
-    };
-    var handleTemplateSelect = function (e) {
-        setTemplateType(e.target.value);
-        // setStep(2);
-    };
-    var handleSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _template, error_1;
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _template = __assign(__assign({ enabled: false }, template), { type: templateType, email: __assign(__assign({}, (template.email || { body: '', html: '', subject: '' })), { html: generateHTML(((_a = template.email) === null || _a === void 0 ? void 0 : _a.body) || '', (_b = template.email) === null || _b === void 0 ? void 0 : _b.banner) }) });
-                    _c.label = 1;
-                case 1:
-                    _c.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, saveChanges(_template)];
-                case 2:
-                    _c.sent();
-                    setTemplate({});
-                    setStep(1);
-                    closeDialog();
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_1 = _c.sent();
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var close = function () {
-        closeDialog();
-        setStep(1);
-    };
-    var DIALOG_TITLE = selectedTemplate ? "Edit email - " + selectedTemplate.name : 'Create email';
-    return (React__default.createElement(core.Dialog, { open: dialogOpen, TransitionComponent: Transition, PaperProps: { className: classes.root }, onClose: close, fullScreen: true },
-        React__default.createElement(DialogHeader, { dialogTitle: DIALOG_TITLE, handleClose: close, handleSubmit: handleSubmit, loading: status === 'loading' }),
-        React__default.createElement(core.Box, __assign({}, dialogProps.containerProps, { margin: "100px auto", width: "600px" }),
-            React__default.createElement(core.Collapse, { in: step === 1 },
-                React__default.createElement(core.Box, { m: "0 auto", width: "300px" },
-                    React__default.createElement(core.FormControl, { fullWidth: true },
-                        React__default.createElement(core.InputLabel, null, "Select a type"),
-                        React__default.createElement(core.Select, { value: templateType, onChange: handleTemplateSelect }, TEMPLATE_TYPES.map(function (t, i) { return (React__default.createElement(core.MenuItem, { key: i, value: t }, t)); }))),
-                    React__default.createElement(core.Box, { mt: 2 },
-                        React__default.createElement(core.Button, { onClick: function () { return setStep(2); }, color: "primary", variant: "outlined" }, "Continue")))),
-            React__default.createElement(core.Collapse, { in: step === 2 },
-                React__default.createElement(Form, { handleBack: function () { return setStep(1); }, type: templateType, fields: ((_a = templateTypes[templateType]) === null || _a === void 0 ? void 0 : _a.fields) || [], template: template, onChange: handleChange })))));
-};
-var useStyles$a = core.makeStyles(function () { return core.createStyles({
+var useStyles$9 = core.makeStyles(function () { return core.createStyles({
     root: {
         backgroundColor: '#F5F5F5'
     },
 }); });
-
-var Settings = function (props) {
-    var classes = useStyles$b(props);
-    return (React__default.createElement("div", null, "Settings"));
-};
-var useStyles$b = core.makeStyles(function (theme) { return core.createStyles({}); });
 
 var ENABLED_TABS_ROUTES = ['', 'settings'];
 var shoudShowTabs = function (pathname) {
     return ENABLED_TABS_ROUTES.map(function (r) { return getPath(r); }).indexOf(pathname) > -1;
 };
 var MainTabs = function (props) {
-    var classes = useStyles$c(props);
+    var classes = useStyles$a(props);
     if (!shoudShowTabs(props.location.pathname) || config.disableTabs)
         return React__default.createElement("div", null);
     return (React__default.createElement(core.AppBar, { position: "sticky" },
@@ -22227,50 +21915,154 @@ var MainTabs = function (props) {
                 React__default.createElement(core.Tab, { label: "Settings" })),
             React__default.createElement(core.Box, { flex: 1 }))));
 };
-var useStyles$c = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$a = core.makeStyles(function (theme) { return core.createStyles({
     toolbar: {
         minHeight: 48
     }
 }); });
-var MainTabs$1 = reactRouterDom.withRouter(MainTabs);
+reactRouterDom.withRouter(MainTabs);
 
-var TAB_ROUTE_MAPPING = [
-    '',
-    'settings'
-];
-var TemplateRouter = function (props) {
-    var classes = useStyles$d();
-    var _a = React.useState(0), tabValue = _a[0], setTabValue = _a[1];
+var Context = React__default.createContext(null);
+
+var Preview = function () {
+    var _a;
+    var context = React.useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var getTemplateById = context.getTemplateById;
+    var _b = React.useState(), template = _b[0], setTemplate = _b[1];
+    var id = reactRouter.useParams().id;
     React.useEffect(function () {
-        props.history.push(getPath(TAB_ROUTE_MAPPING[tabValue] || ''));
-    }, [tabValue]);
-    return (React__default.createElement(core.MuiThemeProvider, { theme: config.theme },
-        React__default.createElement(ContextProvider, null,
-            React__default.createElement(core.Box, __assign({ className: classes.root }, config.rootContainerProps),
-                React__default.createElement(MainTabs$1, { tabValue: tabValue, onTabChange: setTabValue }),
-                React__default.createElement(reactRouterDom.Switch, null,
-                    React__default.createElement(reactRouterDom.Route, { exact: true, path: getPath('settings'), component: Settings }),
-                    React__default.createElement(reactRouterDom.Route, { exact: true, path: getPath(':id'), component: Preview }),
-                    React__default.createElement(reactRouterDom.Route, { exact: true, path: getPath(''), component: AllTemplates }))))));
+        if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken)
+            init();
+    }, [config.apiConfig]);
+    // const classes = useStyles(props)
+    var init = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _template, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, getTemplateById(id)];
+                case 1:
+                    _template = _a.sent();
+                    setTemplate(_template);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    return (React__default.createElement(core.Box, { m: "30px auto", width: "900px", display: "flex", justifyContent: "space-around" },
+        React__default.createElement(TemplatePreview, { id: ((_a = template) === null || _a === void 0 ? void 0 : _a.id) || '' }),
+        template ?
+            React__default.createElement(TestTemplate, { template: template })
+            : null));
 };
-var useStyles$d = core.makeStyles(function () { return core.createStyles({
-    root: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflow: 'auto'
+
+var TemplatePreview = function (props) {
+    var _a, _b, _c, _d, _e, _f;
+    var getTemplateById = useTemplateService().getTemplateById;
+    var _g = React.useState(), template = _g[0], setTemplate = _g[1];
+    var id = props.id;
+    React.useEffect(function () {
+        if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken && id)
+            init();
+    }, [config.apiConfig, id]);
+    // const classes = useStyles(props)
+    var init = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _template, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, getTemplateById(id)];
+                case 1:
+                    _template = _a.sent();
+                    setTemplate(_template);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    return (React__default.createElement(core.Box, { minWidth: "500px" },
+        ((_a = template) === null || _a === void 0 ? void 0 : _a.channel) === 'email' ?
+            React__default.createElement("div", { dangerouslySetInnerHTML: { __html: ((_c = (_b = template) === null || _b === void 0 ? void 0 : _b.templateData) === null || _c === void 0 ? void 0 : _c.html) || '' } }) : null,
+        ((_d = template) === null || _d === void 0 ? void 0 : _d.channel) === 'sms' ?
+            React__default.createElement(core.Box, { p: 2 },
+                React__default.createElement(core.Typography, null, ((_f = (_e = template) === null || _e === void 0 ? void 0 : _e.templateData) === null || _f === void 0 ? void 0 : _f.body) || '')) : null));
+};
+
+var TemplateCard = function (props) {
+    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React__default.createElement("div", null)) : _a;
+    var classes = useStyles$b();
+    return (React__default.createElement(core.Paper, null,
+        React__default.createElement(core.Box, { p: 2, borderRadius: "4px" },
+            React__default.createElement(reactRouterDom.Link, { to: redirectUrl || '#' },
+                React__default.createElement(core.Box, { pl: 1, display: "flex", justifyContent: "space-between" },
+                    React__default.createElement(core.Typography, null, data.name))),
+            React__default.createElement(core.Box, { display: "flex" }, actions))));
+};
+var useStyles$b = core.makeStyles(function () { return core.createStyles({
+    img: {
+        borderRadius: '4px 4px 0px 0px',
+        width: '100%'
     }
 }); });
-var TemplateRouter$1 = reactRouterDom.withRouter(TemplateRouter);
+
+var Settings = function (props) {
+    var classes = useStyles$c(props);
+    return (React__default.createElement("div", null, "Settings"));
+};
+var useStyles$c = core.makeStyles(function (theme) { return core.createStyles({}); });
+
+var TemplateContext = React__default.createContext({
+    templates: [],
+    templateTypes: {},
+    createTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/];
+    }); }); },
+    updateTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/];
+    }); }); },
+});
+var TemplateContextProvider = function (props) {
+    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, types = _a.types;
+    // const saveChanges = async (template: Partial<Template>) => {
+    //     try {
+    //         if (template.id) {
+    //             const { id, created, updated, slug, ...templateData } = template;
+    //             await updateTemplate(template.id, templateData)
+    //         } else {
+    //             await createTemplate(template);
+    //         }
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+    var value = {
+        templates: templates,
+        templateTypes: types,
+        updateTemplate: updateTemplate,
+        createTemplate: createTemplate,
+    };
+    return (React__default.createElement(TemplateContext.Provider, { value: value }, props.children));
+};
 
 exports.Form = Form;
+exports.Pagination = Pagination;
+exports.Preview = Preview;
 exports.Settings = Settings;
-exports.TemplateRouter = TemplateRouter;
+exports.TemplateCard = TemplateCard;
+exports.TemplateContext = TemplateContext;
+exports.TemplateContextProvider = TemplateContextProvider;
+exports.TemplatePreview = TemplatePreview;
 exports.TemplateService = TemplateService;
-exports.TestTemplate = TestTemplate;
-exports.default = TemplateRouter$1;
 exports.generateHTML = generateHTML;
 exports.initializeTemplater = initializeTemplater;
 exports.usePagination = usePagination;

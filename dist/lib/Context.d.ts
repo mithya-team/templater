@@ -1,6 +1,6 @@
 import React from 'react';
 import { Template } from '..';
-import { TemplateServiceStatus, TemplateTypeConfig, TemplateContentType, TemplateProviderConfig } from './types';
+import { TemplateServiceStatus, TemplateTypeConfig, TemplateProviderConfig } from './types';
 export declare const Context: React.Context<ProviderValue | null>;
 declare type ProviderValue = {
     templates: Template[];
@@ -15,7 +15,7 @@ declare type ProviderValue = {
     openTemplateEditor: (template?: Template) => void;
     closeDialog: () => void;
     getTemplateById: (id: string) => Promise<Template>;
-    testTemplate: (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Promise<void>;
+    testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>;
 };
 export declare const ContextProvider: React.FC;
 export {};

@@ -1,4 +1,4 @@
-import { Template, TemplateProviderConfig } from '..';
+import { Template } from '..';
 /**
  * @class TemplateService
  * @description Services related to templates and CRUD operation
@@ -33,17 +33,4 @@ export declare class TemplateService {
     * @return Array<Type of templates with its fields>
     */
     static getTemplateTypes: () => Promise<import("axios").AxiosResponse<any>>;
-    /**
-    * Test a template
-    * @param id ID of the template to be sent
-    * @param type email | sms
-    * @param providerConfig configuration
-    * @example
-    * {
-    *   to: "jagzmz...com",
-    *   cc: ["a....com","b...com"]
-    * }
-    * @return Promise<AxiosResponse<void>>>
-    */
-    static testTemplate: (id: string, type: "email" | "sms", providerConfig: TemplateProviderConfig) => Promise<import("axios").AxiosResponse<any>>;
 }

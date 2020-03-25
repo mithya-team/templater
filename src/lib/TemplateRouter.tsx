@@ -1,11 +1,12 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Switch, Route, withRouter, RouteComponentProps } from 'react-router-dom';
-import { AllTemplates, Preview, Settings } from './components';
+import { Preview, Settings } from './components';
+import { AllTemplates } from './screens';
 import { getPath } from './utils';
 import { ContextProvider } from './Context';
 import { Box, makeStyles, createStyles, useTheme, MuiThemeProvider } from '@material-ui/core';
 import { config } from './Config';
-import MainTabs from './components/MainTabs';
+import MainTabs from './screens/MainTabs';
 
 interface ITemplateRouterProps extends RouteComponentProps {
 
@@ -25,18 +26,18 @@ export const TemplateRouter: FC<ITemplateRouterProps> = (props) => {
     }, [tabValue])
 
     return (
-        <MuiThemeProvider theme={config.theme}>
-            <ContextProvider>
-                <Box className={classes.root} {...config.rootContainerProps}>
-                    <MainTabs tabValue={tabValue} onTabChange={setTabValue} />
-                    <Switch>
-                        <Route exact path={getPath('settings')} component={Settings} />
-                        <Route exact path={getPath(':id')} component={Preview} />
-                        <Route exact path={getPath('')} component={AllTemplates} />
-                    </Switch>
-                </Box>
-            </ContextProvider>
-        </MuiThemeProvider>
+        // <MuiThemeProvider theme={config.theme}>
+        <ContextProvider>
+            <Box className={classes.root} {...config.rootContainerProps}>
+                <MainTabs tabValue={tabValue} onTabChange={setTabValue} />
+                <Switch>
+                    <Route exact path={getPath('settings')} component={Settings} />
+                    <Route exact path={getPath(':id')} component={Preview} />
+                    <Route exact path={getPath('')} component={AllTemplates} />
+                </Switch>
+            </Box>
+        </ContextProvider>
+        // </MuiThemeProvider>
     )
 }
 

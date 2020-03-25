@@ -2,19 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig } from '../types';
 import { TemplateService } from '../template.service';
 import { config } from '../Config';
+import { templateCreate, templateUpdate, templateSend } from '../notification';
 
 
-const templateCreate = (success: boolean) => {
-    config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
-}
-
-const templateUpdate = (success: boolean) => {
-    config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
-}
-
-const templateSend = (success: boolean) => {
-    config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
-}
 
 
 
@@ -22,7 +12,7 @@ const SORT = { order: 'created DESC' }
 
 export const useTemplateService = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
-    const [types, setTypes] = useState<Partial<TemplateTypeConfig>>({})
+    const [flows, setFlows] = useState<Partial<TemplateTypeConfig>>({})
     const [status, setStatus] = useState<TemplateServiceStatus>('done');
     const [isInitialized, setIsInitialized] = useState(false);
 
@@ -44,7 +34,7 @@ export const useTemplateService = () => {
         try {
             const [res1, res2] = await Promise.all([TemplateService.fetchTemplates({ filter: SORT }), TemplateService.getTemplateTypes()]);
             setTemplates(res1.data);
-            setTypes(res2.data);
+            setFlows(res2.data);
             setStatus('done')
         } catch (error) {
             setStatus('error')
@@ -106,7 +96,7 @@ export const useTemplateService = () => {
 
 
     return {
-        types,
+        flows,
         templates,
         status,
         createTemplate,

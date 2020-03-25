@@ -2,6 +2,8 @@ import { TemplaterConfig } from "./types";
 import Axios from 'axios';
 import { createMuiTheme } from "@material-ui/core";
 
+
+
 export let config: TemplaterConfig = {
     urlPrefix: '',
     apiConfig: {
@@ -22,6 +24,9 @@ export let config: TemplaterConfig = {
     }
 }
 
+export let API_URL = 'templates'
+
+
 
 /**
  * @function initializeTemplater
@@ -29,8 +34,9 @@ export let config: TemplaterConfig = {
  * @description Initialize the templater with provided configurations
  */
 export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => {
-    config = { ...config, ...configuration, dialogProps: { ...config.dialogProps, ...configuration.dialogProps } };
+    config = { ...config, ...configuration, apiConfig: { ...config.apiConfig, ...configuration.apiConfig }, dialogProps: { ...config.dialogProps, ...configuration.dialogProps } };
     Axios.defaults.baseURL = config.apiConfig.baseUrl;
     Axios.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
+    API_URL = config.apiConfig.customModel || 'templates'
     console.log("Templater Initialized", config);
 }

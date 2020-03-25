@@ -1521,7 +1521,39 @@ axios_1.default = default_1;
 
 var axios$1 = axios_1;
 
-var API_URL = '';
+var config = {
+    urlPrefix: '',
+    apiConfig: {
+        baseUrl: '',
+        accessToken: '',
+    },
+    theme: core.createMuiTheme(),
+    disableTabs: false,
+    onActionCompleted: function () { },
+    listingType: 'list',
+    rootContainerProps: {},
+    dialogProps: {
+        containerProps: {},
+        formContainerProps: {},
+        mainActionButtonProps: {},
+        secondaryActionButtonProps: {},
+        appbarProps: {}
+    }
+};
+var API_URL = 'templates';
+/**
+ * @function initializeTemplater
+ * @param configuration Partial<TemplaterConfig>
+ * @description Initialize the templater with provided configurations
+ */
+var initializeTemplater = function (configuration) {
+    config = __assign(__assign(__assign({}, config), configuration), { apiConfig: __assign(__assign({}, config.apiConfig), configuration.apiConfig), dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
+    axios$1.defaults.baseURL = config.apiConfig.baseUrl;
+    axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
+    API_URL = config.apiConfig.customModel || 'templates';
+    console.log("Templater Initialized", config);
+};
+
 /**
  * @class TemplateService
  * @description Services related to templates and CRUD operation
@@ -1576,37 +1608,6 @@ var TemplateService = /** @class */ (function () {
     return TemplateService;
 }());
 
-var config = {
-    urlPrefix: '',
-    apiConfig: {
-        baseUrl: '',
-        accessToken: '',
-    },
-    theme: core.createMuiTheme(),
-    disableTabs: false,
-    onActionCompleted: function () { },
-    listingType: 'list',
-    rootContainerProps: {},
-    dialogProps: {
-        containerProps: {},
-        formContainerProps: {},
-        mainActionButtonProps: {},
-        secondaryActionButtonProps: {},
-        appbarProps: {}
-    }
-};
-/**
- * @function initializeTemplater
- * @param configuration Partial<TemplaterConfig>
- * @description Initialize the templater with provided configurations
- */
-var initializeTemplater = function (configuration) {
-    config = __assign(__assign(__assign({}, config), configuration), { dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
-    axios$1.defaults.baseURL = config.apiConfig.baseUrl;
-    axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
-    console.log("Templater Initialized", config);
-};
-
 var templateCreate = function (success) {
     config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
 };
@@ -1616,10 +1617,11 @@ var templateUpdate = function (success) {
 var templateSend = function (success) {
     config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
 };
+
 var SORT = { order: 'created DESC' };
 var useTemplateService = function () {
     var _a = React.useState([]), templates = _a[0], setTemplates = _a[1];
-    var _b = React.useState({}), types = _b[0], setTypes = _b[1];
+    var _b = React.useState({}), flows = _b[0], setFlows = _b[1];
     var _c = React.useState('done'), status = _c[0], setStatus = _c[1];
     var _d = React.useState(false), isInitialized = _d[0], setIsInitialized = _d[1];
     React.useEffect(function () {
@@ -1644,7 +1646,7 @@ var useTemplateService = function () {
                 case 2:
                     _a = _b.sent(), res1 = _a[0], res2 = _a[1];
                     setTemplates(res1.data);
-                    setTypes(res2.data);
+                    setFlows(res2.data);
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
@@ -1740,7 +1742,7 @@ var useTemplateService = function () {
         });
     }); };
     return {
-        types: types,
+        flows: flows,
         templates: templates,
         status: status,
         createTemplate: createTemplate,
@@ -21772,15 +21774,20 @@ var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
 
 var curQuillInputIndex = 0;
 var Form = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g;
-    var template = props.template, onChange = props.onChange;
+    var _a, _b, _c, _d, _e, _f;
+    var template = props.template, onChange = props.onChange, fields = props.fields, _g = props.flows, flows = _g === void 0 ? [] : _g;
     var _h = React.useState(false), loading = _h[0], setLoading = _h[1];
     var dialogProps = config.dialogProps;
+    var _j = React.useState(1), step = _j[0], setStep = _j[1];
     var classes = useStyles$7(props);
     var quillRef = React.createRef();
     var onImagesSelected = function (file) {
         setLoading(true);
     };
+    React.useEffect(function () {
+        if (template.flow && template.flow !== '' && step === 1)
+            setStep(2);
+    }, [template]);
     React.useEffect(function () {
         if (!quillRef.current)
             return;
@@ -21820,21 +21827,29 @@ var Form = function (props) {
         { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.templateData) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
     ];
     var SMS_INPUT_CONFIG = [
-        { label: 'SMS BODY', name: 'smsBody', value: ((_b = template.templateData) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
+        { label: 'SMS BODY', name: 'body', value: ((_b = template.templateData) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
     ];
     return (React__default.createElement("div", null,
         React__default.createElement(core.Paper, null,
-            React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" }, ((_c = props.template) === null || _c === void 0 ? void 0 : _c.flow) ? (React__default.createElement(React__default.Fragment, null,
-                React__default.createElement(core.IconButton, null,
+            React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" }, step === 1 ? (React__default.createElement(core.FormControl, { fullWidth: true },
+                React__default.createElement(core.InputLabel, null,
+                    "Select ",
+                    template.channel,
+                    " type"),
+                React__default.createElement(core.Select, { name: "flow", value: template.flow || '', onChange: _handleChange },
+                    React__default.createElement(core.MenuItem, { value: "" },
+                        React__default.createElement("em", null, "None")),
+                    flows.map(function (flow) { return (React__default.createElement(core.MenuItem, { key: flow, value: flow }, flow)); })))) : (React__default.createElement(core.Box, { display: "flex", alignItems: "center" },
+                React__default.createElement(core.IconButton, { onClick: function () { return setStep(1); } },
                     React__default.createElement(core.Icon, null, "keyboard_arrow_left")),
                 React__default.createElement(core.Typography, { className: classes.typeLabel },
                     "Template type ",
-                    React__default.createElement("span", null, props.template.flow)))) : (React__default.createElement("div", null, "picker")))),
+                    React__default.createElement("span", null, template.flow)))))),
         props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
             React__default.createElement(core.Box, { my: 3, position: "relative" },
-                React__default.createElement(SingleImageUpload, { placeholderText: "600 x 250", dimension: { width: '600px', height: '250px' }, folderName: 'template', imageUrl: (_f = (_e = (_d = template) === null || _d === void 0 ? void 0 : _d.templateData) === null || _e === void 0 ? void 0 : _e.banner) === null || _f === void 0 ? void 0 : _f.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
-            React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
-                React__default.createElement(core.FormControlLabel, { value: !!template.enabled, onChange: function () { return onChange('enabled', !template.enabled); }, control: React__default.createElement(core.Checkbox, null), label: "Enabled" })),
+                React__default.createElement(SingleImageUpload, { placeholderText: " ", 
+                    // dimension={{ height: '250px' }}
+                    folderName: 'template', imageUrl: (_e = (_d = (_c = template) === null || _c === void 0 ? void 0 : _c.templateData) === null || _d === void 0 ? void 0 : _d.banner) === null || _e === void 0 ? void 0 : _e.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?
                     React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
@@ -21846,7 +21861,7 @@ var Form = function (props) {
                             React__default.createElement(core.Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }),
                     React__default.createElement(core.Box, { my: 2, width: "100%" },
                         React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                        React__default.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_g = template.templateData) === null || _g === void 0 ? void 0 : _g.body) || '', onChange: handleRteChange })))))) : null,
+                        React__default.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_f = template.templateData) === null || _f === void 0 ? void 0 : _f.body) || '', onChange: handleRteChange })))))) : null,
         template.channel === 'sms' ? (React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React__default.createElement(core.Typography, null, "SMS"),
             React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
@@ -22023,7 +22038,7 @@ var useStyles$c = core.makeStyles(function (theme) { return core.createStyles({}
 
 var TemplateContext = React__default.createContext({
     templates: [],
-    templateTypes: {},
+    templateFlows: {},
     createTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
         return [2 /*return*/];
     }); }); },
@@ -22032,7 +22047,7 @@ var TemplateContext = React__default.createContext({
     }); }); },
 });
 var TemplateContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, types = _a.types;
+    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows;
     // const saveChanges = async (template: Partial<Template>) => {
     //     try {
     //         if (template.id) {
@@ -22047,7 +22062,7 @@ var TemplateContextProvider = function (props) {
     // }
     var value = {
         templates: templates,
-        templateTypes: types,
+        templateFlows: flows,
         updateTemplate: updateTemplate,
         createTemplate: createTemplate,
     };

@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme, Box, Typography } from '@material-ui/core'
-import { TemplateType, TemplateTypeField } from '../../types'
+import { TemplateTypeField } from '../../types'
 
 interface IProps {
     fields: TemplateTypeField[]

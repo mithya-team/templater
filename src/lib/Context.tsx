@@ -25,7 +25,7 @@ type ProviderValue = {
 const LIMIT = 8;
 
 export const ContextProvider: React.FC = (props) => {
-    const { templates, status, createTemplate, updateTemplate, getTemplateById, types, testTemplate } = useTemplateService();
+    const { templates, status, createTemplate, updateTemplate, getTemplateById, flows, testTemplate } = useTemplateService();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>()
     const { paginatedList, curPage, handlePageChange } = usePagination<Template>(templates, { limit: LIMIT })
@@ -70,7 +70,7 @@ export const ContextProvider: React.FC = (props) => {
         paginatedList,
         curPage,
         handlePageChange,
-        templateTypes: types,
+        templateTypes: flows,
         testTemplate
     }
     return (

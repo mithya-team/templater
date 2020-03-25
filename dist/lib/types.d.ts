@@ -3,6 +3,7 @@ export declare type TemplaterConfig = {
     urlPrefix: string;
     apiConfig: {
         baseUrl: string;
+        customModel?: string;
         accessToken: string;
     };
     disableTabs: boolean;
@@ -25,8 +26,7 @@ export declare type TemplateTypeField = {
     default: string;
     isRequired: boolean;
 };
-export declare type TemplateType = 'forgetPassword';
-export declare type TemplateTypeConfig = Record<TemplateType, {
+export declare type TemplateTypeConfig = Record<string, {
     fields: TemplateTypeField[];
 }>;
 export declare type TemplateProviderConfig = {
@@ -42,6 +42,7 @@ export declare type TPicture = {
     thumbnail: string;
     url: string;
 };
+export declare type FormKey = keyof Template | keyof Template['templateData'];
 export declare type TemplateField = {
     value: string;
     description: string;
@@ -50,7 +51,6 @@ export declare type TemplateField = {
 };
 export declare type Template = {
     name: string;
-    type: TemplateType;
     enabled: boolean;
     modified: boolean;
     channel: TemplateChannel;

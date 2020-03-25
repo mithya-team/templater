@@ -1,6 +1,6 @@
 import { Template, TemplateServiceStatus, TemplateProviderConfig } from '../types';
 export declare const useTemplateService: () => {
-    types: Partial<Record<"forgetPassword", {
+    flows: Partial<Record<string, {
         fields: import("../types").TemplateTypeField[];
     }>>;
     templates: Template[];

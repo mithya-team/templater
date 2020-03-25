@@ -4,7 +4,7 @@ import { TemplateTypeConfig } from './types';
 export declare const TemplateContext: React.Context<TemplateContextProvider>;
 export declare type TemplateContextProvider = {
     templates: Template[];
-    templateTypes: Partial<TemplateTypeConfig>;
+    templateFlows: Partial<TemplateTypeConfig>;
     createTemplate: (template: Partial<Template>) => Promise<any>;
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>;
 };

@@ -7,13 +7,12 @@ import {
 import { Context } from '../../Context';
 import Form from '../../Form';
 import { config } from '../../Config';
-import { Template, TemplateType } from '../../types';
+import { Template, FormKey } from '../../types';
 import { generateHTML } from '../../utils';
 import DialogHeader from './DialogHeader';
 
 interface IProps { }
 
-export type FormKey = 'name' | 'subject' | 'body' | 'banner' | 'smsBody' | 'enabled' | 'fields' | 'type'
 
 
 
@@ -22,7 +21,7 @@ function Transition(props: any) {
 }
 
 
-const LVL1_KEYS: FormKey[] = ['name', 'enabled', 'fields', 'type'];
+// const LVL1_KEYS: FormKey[] = ['name', 'enabled', 'flow'];
 
 const AddEditDialog: React.FC<IProps> = () => {
 
@@ -40,8 +39,8 @@ const AddEditDialog: React.FC<IProps> = () => {
     } = context;
 
     const [template, setTemplate] = useState<Partial<Template>>(selectedTemplate ?? {})
-    const [templateType, setTemplateType] = useState<TemplateType>('forgetPassword');
-    const TEMPLATE_TYPES = Object.keys(templateTypes) as TemplateType[];
+    const [templateType, setTemplateType] = useState('');
+    const TEMPLATE_FLOWS = Object.keys(templateTypes)
 
     useEffect(() => {
         setTemplate(selectedTemplate ?? {});
@@ -61,7 +60,7 @@ const AddEditDialog: React.FC<IProps> = () => {
 
 
     const handleTemplateSelect = (e: React.ChangeEvent<any>) => {
-        setTemplateType(e.target.value as TemplateType)
+        setTemplateType(e.target.value)
         // setStep(2);
     }
 
@@ -106,6 +105,7 @@ const AddEditDialog: React.FC<IProps> = () => {
                 <Form
                     // handleBack={() => setStep(1)}
                     // type={templateType}
+                    flows={TEMPLATE_FLOWS}
                     fields={templateTypes[templateType]?.fields || []}
                     template={template}
                     onChange={handleChange}

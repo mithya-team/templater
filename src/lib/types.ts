@@ -4,6 +4,7 @@ export type TemplaterConfig = {
     urlPrefix: string
     apiConfig: {
         baseUrl: string
+        customModel?: string
         accessToken: string
     },
     disableTabs: boolean
@@ -28,8 +29,7 @@ export type TemplateTypeField = {
     isRequired: boolean
 }
 
-export type TemplateType = 'forgetPassword'
-export type TemplateTypeConfig = Record<TemplateType, { fields: TemplateTypeField[] }>
+export type TemplateTypeConfig = Record<string, { fields: TemplateTypeField[] }>
 
 // export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
 export type TemplateProviderConfig = {
@@ -46,6 +46,8 @@ export type TPicture = {
     url: string
 }
 
+export type FormKey = keyof Template | keyof Template['templateData']
+
 
 export type TemplateField = {
     value: string
@@ -56,7 +58,6 @@ export type TemplateField = {
 
 export type Template = {
     name: string
-    type: TemplateType
     enabled: boolean,
     modified: boolean
     channel: TemplateChannel

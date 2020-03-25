@@ -1,8 +1,8 @@
-import { Template, TemplateProviderConfig } from '..';
+import { Template } from '..';
 import Axios from 'axios';
+import { API_URL } from './Config';
 
 
-const API_URL = ''
 
 /**
  * @class TemplateService

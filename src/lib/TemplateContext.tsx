@@ -6,7 +6,7 @@ import { AddEditDialog } from './screens';
 
 export const TemplateContext = React.createContext<TemplateContextProvider>({
     templates: [],
-    templateTypes: {},
+    templateFlows: {},
     createTemplate: async () => { },
     updateTemplate: async () => { },
     // testTemplate: async () => { }
@@ -15,7 +15,7 @@ export const TemplateContext = React.createContext<TemplateContextProvider>({
 
 export type TemplateContextProvider = {
     templates: Template[]
-    templateTypes: Partial<TemplateTypeConfig>
+    templateFlows: Partial<TemplateTypeConfig>
     createTemplate: (template: Partial<Template>) => Promise<any>
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>
     // testTemplate: (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Promise<void>
@@ -23,7 +23,7 @@ export type TemplateContextProvider = {
 
 
 export const TemplateContextProvider: React.FC = (props) => {
-    const { templates, status, createTemplate, updateTemplate, types, testTemplate } = useTemplateService();
+    const { templates, status, createTemplate, updateTemplate, flows, testTemplate } = useTemplateService();
 
 
 
@@ -45,7 +45,7 @@ export const TemplateContextProvider: React.FC = (props) => {
 
     const value: TemplateContextProvider = {
         templates,
-        templateTypes: types,
+        templateFlows: flows,
         updateTemplate,
         createTemplate,
         // testTemplate

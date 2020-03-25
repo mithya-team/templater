@@ -1,7 +1,6 @@
 import React, { useState, createRef, useEffect } from 'react'
-import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox } from '@material-ui/core'
-import { Template, TPicture, TemplateType, TemplateTypeField } from '../types';
-import { FormKey } from '../screens/AddEditDialog';
+import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox, Select, MenuItem, Collapse } from '@material-ui/core'
+import { Template, TPicture, TemplateTypeField, FormKey } from '../types';
 import { Paper } from '@material-ui/core';
 import { config } from '../Config';
 import ReactQuill, { Quill } from 'react-quill'
@@ -12,20 +11,28 @@ import BodyFields from '../components/BodyFields';
 export interface IFormProps {
     fields?: TemplateTypeField[]
     template: Partial<Template>
+    flows: string[]
     onChange: (key: FormKey, value: any) => void
 }
 
 let curQuillInputIndex = 0;
 const Form: React.FC<IFormProps> = (props) => {
-    const { template, onChange } = props;
+    const { template, onChange, fields, flows = [] } = props;
     const [loading, setLoading] = useState(false);
     const { dialogProps } = config
+    const [step, setStep] = useState<1 | 2>(1);
     const classes = useStyles(props)
     const quillRef = createRef<ReactQuill>();
 
     const onImagesSelected = (file: any) => {
         setLoading(true)
     }
+
+    useEffect(() => {
+        if (template.flow && template.flow !== '' && step === 1)
+            setStep(2);
+
+    }, [template])
 
     useEffect(() => {
         if (!quillRef.current) return;
@@ -72,23 +79,40 @@ const Form: React.FC<IFormProps> = (props) => {
     ]
 
     const SMS_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
-        { label: 'SMS BODY', name: 'smsBody', value: template.templateData?.body || '', handleChange: _handleChange },
+        { label: 'SMS BODY', name: 'body', value: template.templateData?.body || '', handleChange: _handleChange },
     ]
 
     return (
         <div>
             <Paper>
                 <Box p={3} display="flex" alignItems="center">
-                    {props.template?.flow ? (
-                        <>
-                            <IconButton>
-                                <Icon>keyboard_arrow_left</Icon>
-                            </IconButton>
-                            <Typography className={classes.typeLabel}>Template type <span>{props.template.flow}</span></Typography>
-                        </>
+                    {step === 1 ? (
+                        <FormControl fullWidth>
+                            <InputLabel>Select {template.channel} type</InputLabel>
+                            <Select
+                                name="flow"
+                                value={template.flow || ''}
+                                onChange={_handleChange}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {flows.map(flow => (
+                                    <MenuItem key={flow} value={flow}>
+                                        {flow}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     ) : (
-                            <div>picker</div>
-                        )}
+                            <Box display="flex" alignItems="center">
+                                <IconButton onClick={() => setStep(1)}>
+                                    <Icon>keyboard_arrow_left</Icon>
+                                </IconButton>
+                                <Typography className={classes.typeLabel}>Template type <span>{template.flow}</span></Typography>
+                            </Box>
+                        )
+                    }
 
                 </Box>
             </Paper>
@@ -97,8 +121,8 @@ const Form: React.FC<IFormProps> = (props) => {
                 <>
                     <Box my={3} position="relative">
                         <SingleImageUpload
-                            placeholderText="600 x 250"
-                            dimension={{ width: '600px', height: '250px' }}
+                            placeholderText=" "
+                            // dimension={{ height: '250px' }}
                             folderName={'template'}
                             imageUrl={template?.templateData?.banner?.url}
                             loading={loading}
@@ -107,9 +131,9 @@ const Form: React.FC<IFormProps> = (props) => {
                         />
                     </Box>
 
-                    <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
+                    {/* <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
                         <FormControlLabel value={!!template.enabled} onChange={() => onChange('enabled', !template.enabled)} control={<Checkbox />} label="Enabled" />
-                    </Paper>
+                    </Paper> */}
 
                     <Paper elevation={1} className={classes.container} {...dialogProps.formContainerProps}>
                         {

@@ -51,6 +51,8 @@ export declare type TemplateField = {
 };
 export declare type Template = {
     name: string;
+    eventId?: string;
+    agencyId?: string;
     enabled: boolean;
     modified: boolean;
     channel: TemplateChannel;
@@ -65,6 +67,10 @@ declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
 declare type TemplateData = {
     banner?: TPicture;
     body?: string;
+    from?: {
+        email: string;
+        name: string;
+    };
     subject?: string;
     html?: string;
 };

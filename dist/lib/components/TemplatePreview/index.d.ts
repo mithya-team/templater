@@ -1,6 +1,7 @@
 import React from 'react';
+import { Template } from '../../..';
 interface ITemplatePreviewProps {
-    id: string;
+    template?: Template;
 }
 declare const TemplatePreview: React.FC<ITemplatePreviewProps>;
 export default TemplatePreview;

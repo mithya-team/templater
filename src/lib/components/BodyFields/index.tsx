@@ -1,6 +1,7 @@
 import React from 'react'
-import { createStyles, makeStyles, Theme, Box, Typography } from '@material-ui/core'
+import { createStyles, makeStyles, Theme, Box, Typography, IconButton, Button } from '@material-ui/core'
 import { TemplateTypeField } from '../../types'
+import { copyLink } from '../../utils'
 
 interface IProps {
     fields: TemplateTypeField[]
@@ -15,15 +16,20 @@ const BodyFields: React.FC<IProps> = (props) => {
         props.onClick(value);
     }
 
+    const handleCopyLink = (str: string) => () => {
+        copyLink(`<%= ${str} %>`)
+    }
+
     return (
         <div>
+            <Typography>INSERT VARIABLE</Typography>
             {fields.map((f, i) => (
-                <Box display="flex" flexDirection="column" alignItems="center" my={1} p={2} key={i} className={classes.fieldItem} onClick={handleClick(f.value)}>
-                    <Box display="flex" width="100%" justifyContent="space-between" alignItems="center">
-                        <Typography variant="caption" color="textSecondary">{f.value}</Typography>
-                        <Typography variant="caption" color={f.isRequired ? "primary" : "textSecondary"}>{f.isRequired ? "Required field" : "Not required"}</Typography>
-                    </Box>
-                    <Typography variant="body2">{f.description}</Typography>
+                <Box display="flex" alignItems="center" justifyContent="space-between" key={i} className={classes.fieldItem} >
+                    <Button onClick={handleClick(f.value)} variant="text" color="primary">&lt;{f.value}&gt;</Button>
+                    <Box width="20px" />
+                    <IconButton onClick={handleCopyLink(f.value)}>
+                        <i className="material-icons">file_copy</i>
+                    </IconButton>
                 </Box>
             ))}
         </div>

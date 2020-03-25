@@ -8,31 +8,15 @@ import { config } from '../../Config';
 import { useTemplateService } from '../../hooks';
 
 interface ITemplatePreviewProps {
-    id: string
+    template?: Template
 }
 
 const TemplatePreview: React.FC<ITemplatePreviewProps> = (props) => {
-    const { getTemplateById } = useTemplateService();
-    const [template, setTemplate] = useState<Template | undefined>()
-    const { id } = props;
+    const { template } = props;
 
 
-    useEffect(() => {
-        if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken && id)
-            init()
 
-    }, [config.apiConfig, id])
-    // const classes = useStyles(props)
-
-    const init = async () => {
-        try {
-            const _template = await getTemplateById(id);
-            setTemplate(_template)
-        } catch (error) {
-
-        }
-    }
-
+    if (!template) return <div />
 
     return (
         <Box minWidth="500px">

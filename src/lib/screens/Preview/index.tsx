@@ -39,7 +39,7 @@ const Preview: React.FC<IProps> = () => {
 
     return (
         <Box m="30px auto" width="900px" display="flex" justifyContent="space-around">
-            <TemplatePreview id={template?.id || ''} />
+            <TemplatePreview template={template} />
             {
                 template ?
                     <TestTemplate template={template} />

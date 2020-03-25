@@ -65,7 +65,7 @@ const Form: React.FC<IFormProps> = (props) => {
     }
 
     const handleInsertValue = (value: string) => {
-        const valueToBeAppended = `{{${value}}}`;
+        const valueToBeAppended = `<%= ${value} %>`;
         if (!quillRef.current) return;
         const editor = quillRef.current.getEditor();
         console.log("quill ref selection", editor, curQuillInputIndex);
@@ -220,7 +220,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         position: 'fixed',
         right: 10,
         top: 100,
-        width: 180,
+        minWidth: 180,
+
     }
 }))
 

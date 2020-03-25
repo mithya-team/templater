@@ -1824,6 +1824,17 @@ var uploadPicture = function (file, imagesFolder) {
         }
     });
 };
+var copyLink = function (url) {
+    var el = document.createElement('textarea');
+    el.value = url;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+};
 var trimHTML = function (html) {
     return html.replace(/<p><br><\/p>/ig, '');
 };
@@ -21760,11 +21771,19 @@ var BodyFields = function (props) {
     var handleClick = function (value) { return function () {
         props.onClick(value);
     }; };
-    return (React__default.createElement("div", null, fields.map(function (f, i) { return (React__default.createElement(core.Box, { display: "flex", flexDirection: "column", alignItems: "center", my: 1, p: 2, key: i, className: classes.fieldItem, onClick: handleClick(f.value) },
-        React__default.createElement(core.Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center" },
-            React__default.createElement(core.Typography, { variant: "caption", color: "textSecondary" }, f.value),
-            React__default.createElement(core.Typography, { variant: "caption", color: f.isRequired ? "primary" : "textSecondary" }, f.isRequired ? "Required field" : "Not required")),
-        React__default.createElement(core.Typography, { variant: "body2" }, f.description))); })));
+    var handleCopyLink = function (str) { return function () {
+        copyLink("<%= " + str + " %>");
+    }; };
+    return (React__default.createElement("div", null,
+        React__default.createElement(core.Typography, null, "INSERT VARIABLE"),
+        fields.map(function (f, i) { return (React__default.createElement(core.Box, { display: "flex", alignItems: "center", justifyContent: "space-between", key: i, className: classes.fieldItem },
+            React__default.createElement(core.Button, { onClick: handleClick(f.value), variant: "text", color: "primary" },
+                "<",
+                f.value,
+                ">"),
+            React__default.createElement(core.Box, { width: "20px" }),
+            React__default.createElement(core.IconButton, { onClick: handleCopyLink(f.value) },
+                React__default.createElement("i", { className: "material-icons" }, "file_copy")))); })));
 };
 var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
     fieldItem: {
@@ -21815,7 +21834,7 @@ var Form = function (props) {
         onChange(e.target.name, e.target.value);
     };
     var handleInsertValue = function (value) {
-        var valueToBeAppended = "{{" + value + "}}";
+        var valueToBeAppended = "<%= " + value + " %>";
         if (!quillRef.current)
             return;
         var editor = quillRef.current.getEditor();
@@ -21902,7 +21921,7 @@ var useStyles$7 = core.makeStyles(function (theme) { return core.createStyles({
         position: 'fixed',
         right: 10,
         top: 100,
-        width: 180,
+        minWidth: 180,
     }
 }); });
 
@@ -21940,12 +21959,11 @@ reactRouterDom.withRouter(MainTabs);
 var Context = React__default.createContext(null);
 
 var Preview = function () {
-    var _a;
     var context = React.useContext(Context);
     if (!context)
         return React__default.createElement("div", null);
     var getTemplateById = context.getTemplateById;
-    var _b = React.useState(), template = _b[0], setTemplate = _b[1];
+    var _a = React.useState(), template = _a[0], setTemplate = _a[1];
     var id = reactRouter.useParams().id;
     React.useEffect(function () {
         if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken)
@@ -21971,7 +21989,7 @@ var Preview = function () {
         });
     }); };
     return (React__default.createElement(core.Box, { m: "30px auto", width: "900px", display: "flex", justifyContent: "space-around" },
-        React__default.createElement(TemplatePreview, { id: ((_a = template) === null || _a === void 0 ? void 0 : _a.id) || '' }),
+        React__default.createElement(TemplatePreview, { template: template }),
         template ?
             React__default.createElement(TestTemplate, { template: template })
             : null));
@@ -21979,32 +21997,9 @@ var Preview = function () {
 
 var TemplatePreview = function (props) {
     var _a, _b, _c, _d, _e, _f;
-    var getTemplateById = useTemplateService().getTemplateById;
-    var _g = React.useState(), template = _g[0], setTemplate = _g[1];
-    var id = props.id;
-    React.useEffect(function () {
-        if (!!config.apiConfig.baseUrl && !!config.apiConfig.accessToken && id)
-            init();
-    }, [config.apiConfig, id]);
-    // const classes = useStyles(props)
-    var init = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _template, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, getTemplateById(id)];
-                case 1:
-                    _template = _a.sent();
-                    setTemplate(_template);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
+    var template = props.template;
+    if (!template)
+        return React__default.createElement("div", null);
     return (React__default.createElement(core.Box, { minWidth: "500px" },
         ((_a = template) === null || _a === void 0 ? void 0 : _a.channel) === 'email' ?
             React__default.createElement("div", { dangerouslySetInnerHTML: { __html: ((_c = (_b = template) === null || _b === void 0 ? void 0 : _b.templateData) === null || _c === void 0 ? void 0 : _c.html) || '' } }) : null,

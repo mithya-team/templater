@@ -42,7 +42,7 @@ export declare type TPicture = {
     thumbnail: string;
     url: string;
 };
-export declare type FormKey = keyof Template | keyof Template['templateData'];
+export declare type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'];
 export declare type TemplateField = {
     value: string;
     description: string;
@@ -64,15 +64,18 @@ export declare type Template = {
     updated: string;
 };
 declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
-declare type TemplateData = {
-    banner?: TPicture;
-    body?: string;
-    from?: {
+declare type TemplateData = Partial<TTemplateData>;
+declare type TTemplateData = {
+    banner: TPicture;
+    body: string;
+    cc: string[];
+    bcc: string[];
+    from: {
         email: string;
         name: string;
     };
-    subject?: string;
-    html?: string;
+    subject: string;
+    html: string;
 };
 export declare type TemplateServiceStatus = 'loading' | 'done' | 'error';
 export {};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Component, createRef } from 'react';
-import { createMuiTheme, Button, makeStyles, createStyles, Box, Typography, Input, IconButton, Paper, CircularProgress, useTheme, Fab, FormControl, InputLabel, Select, MenuItem, Icon, AppBar, Toolbar as Toolbar$1, Tabs, Tab } from '@material-ui/core';
+import { createMuiTheme, Button, makeStyles, createStyles, Box, Typography, Input, IconButton, Paper, CircularProgress, useTheme, Fab, FormControl, InputLabel, Select, MenuItem, Icon, TextField, AppBar, Toolbar as Toolbar$1, Tabs, Tab } from '@material-ui/core';
 import { useParams } from 'react-router';
 import reactDom from 'react-dom';
 import server from 'react-dom/server';
@@ -1831,9 +1831,12 @@ var copyLink = function (url) {
 var trimHTML = function (html) {
     return html.replace(/<p><br><\/p>/ig, '');
 };
+var unescapeHTML = function (html) {
+    return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
+};
 var generateHTML = function (body, banner, footer) {
     var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 500px; height: 250px; object-fit: cover;\" /></td></tr>" : '';
-    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + trimHTML(body) + "</div></td></tr>";
+    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + unescapeHTML(trimHTML(body)) + "</div></td></tr>";
     var createTable = function (content) {
         return "<table style=\"width: 500px; margin: 0 auto; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">" + content + "</table>";
     };
@@ -21786,11 +21789,11 @@ var useStyles$6 = makeStyles(function (theme) { return createStyles({
 
 var curQuillInputIndex = 0;
 var Form = function (props) {
-    var _a, _b, _c, _d, _e, _f;
-    var template = props.template, onChange = props.onChange, fields = props.fields, _g = props.flows, flows = _g === void 0 ? [] : _g;
-    var _h = useState(false), loading = _h[0], setLoading = _h[1];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var template = props.template, onChange = props.onChange, fields = props.fields, _q = props.flows, flows = _q === void 0 ? [] : _q;
+    var _r = useState(false), loading = _r[0], setLoading = _r[1];
     var dialogProps = config.dialogProps;
-    var _j = useState(1), step = _j[0], setStep = _j[1];
+    var _s = useState(1), step = _s[0], setStep = _s[1];
     var classes = useStyles$7(props);
     var quillRef = createRef();
     var onImagesSelected = function (file) {
@@ -21823,23 +21826,35 @@ var Form = function (props) {
         setLoading(false);
     };
     var handleRteChange = function (content) { return onChange('body', content); };
+    var _handleSenderChange = function (e) {
+        var _a;
+        var _b;
+        onChange('from', __assign(__assign({}, (_b = template.templateData) === null || _b === void 0 ? void 0 : _b.from), (_a = {}, _a[e.target.name] = e.target.value, _a)));
+    };
     var _handleChange = function (e) {
-        onChange(e.target.name, e.target.value);
+        var _a = e.target, value = _a.value, name = _a.name;
+        if (name === 'cc' || name === 'bcc')
+            onChange(name, value.split(",").map(function (v) { return v.trim(); }));
+        else
+            onChange(name, value);
     };
     var handleInsertValue = function (value) {
         var valueToBeAppended = "<%= " + value + " %>";
         if (!quillRef.current)
             return;
         var editor = quillRef.current.getEditor();
-        console.log("quill ref selection", editor, curQuillInputIndex);
         editor.insertText(curQuillInputIndex, valueToBeAppended);
     };
     var EMAIL_INPUT_CONFIG = [
-        { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_a = template.templateData) === null || _a === void 0 ? void 0 : _a.subject) || '', handleChange: _handleChange },
+        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+        { label: 'SENDER EMAIL', name: 'email', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange },
+        { label: 'SENDER NAME', name: 'name', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange },
+        { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(", ")) || '', handleChange: _handleChange },
+        { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(", ")) || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },
     ];
     var SMS_INPUT_CONFIG = [
-        { label: 'SMS BODY', name: 'body', value: ((_b = template.templateData) === null || _b === void 0 ? void 0 : _b.body) || '', handleChange: _handleChange },
+        { label: 'SMS BODY', name: 'body', value: ((_k = template.templateData) === null || _k === void 0 ? void 0 : _k.body) || '', handleChange: _handleChange },
     ];
     return (React.createElement("div", null,
         React.createElement(Paper, null,
@@ -21861,25 +21876,22 @@ var Form = function (props) {
             React.createElement(Box, { my: 3, position: "relative" },
                 React.createElement(SingleImageUpload, { placeholderText: " ", 
                     // dimension={{ height: '250px' }}
-                    folderName: 'template', imageUrl: (_e = (_d = (_c = template) === null || _c === void 0 ? void 0 : _c.templateData) === null || _d === void 0 ? void 0 : _d.banner) === null || _e === void 0 ? void 0 : _e.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+                    folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?
                     React.createElement(Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
-                React.createElement(Typography, null, "EMAIL"),
                 React.createElement(Box, { display: "flex", flexDirection: "column" },
-                    EMAIL_INPUT_CONFIG.map(function (config) { return (React.createElement(Box, { my: 2, key: config.name, width: "100%" },
+                    EMAIL_INPUT_CONFIG.map(function (config, i) { return (React.createElement(Box, { my: 2, key: config.name + i, width: "100%" },
                         React.createElement(FormControl, { fullWidth: true },
-                            React.createElement(InputLabel, null, config.label),
-                            React.createElement(Input, { name: config.name, value: config.value, onChange: config.handleChange })))); }),
+                            React.createElement(TextField, { label: config.label, multiline: config.multiline || false, name: config.name, value: config.value, onChange: config.handleChange })))); }),
                     React.createElement(Box, { my: 2, width: "100%" },
                         React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                        React.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_f = template.templateData) === null || _f === void 0 ? void 0 : _f.body) || '', onChange: handleRteChange })))))) : null,
+                        React.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
         template.channel === 'sms' ? (React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React.createElement(Typography, null, "SMS"),
             React.createElement(Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React.createElement(Box, { my: 2, key: config.name, width: "100%" },
                 React.createElement(FormControl, { fullWidth: true },
-                    React.createElement(InputLabel, null, config.label),
-                    React.createElement(Input, { name: config.name, value: config.value, onChange: config.handleChange })))); })))) : null,
+                    React.createElement(TextField, { label: config.label, name: config.name, value: config.value, onChange: config.handleChange })))); })))) : null,
         props.fields ? (React.createElement(Paper, { className: classes.bodyFields, elevation: 1 },
             React.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };

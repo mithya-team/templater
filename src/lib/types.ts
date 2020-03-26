@@ -46,7 +46,7 @@ export type TPicture = {
     url: string
 }
 
-export type FormKey = keyof Template | keyof Template['templateData']
+export type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from']
 
 
 export type TemplateField = {
@@ -76,16 +76,21 @@ export type Template = {
 
 type TemplateChannel = 'email' | 'sms' | 'TemplateData'
 
-type TemplateData = {
-    banner?: TPicture
-    body?: string
-    from?: {
+type TemplateData = Partial<TTemplateData>
+
+type TTemplateData = {
+    banner: TPicture
+    body: string
+    cc: string[]
+    bcc: string[]
+    from: {
         email: string
         name: string
     }
-    subject?: string
-    html?: string
+    subject: string
+    html: string
 }
+
 
 // export type TemplateEmail = {
 //     banner?: TPicture

@@ -44,10 +44,14 @@ export const trimHTML = (html: string) => {
     return html.replace(/<p><br><\/p>/ig, '');
 }
 
+export const unescapeHTML = (html: string) => {
+    return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
+}
+
 export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
 
     const BANNER = banner ? `<tr><td><img src="${banner.url}" style="width: 500px; height: 250px; object-fit: cover;" /></td></tr>` : ''
-    const BODY = `<tr><td><div style="padding: 20px 24px;">${trimHTML(body)}</div></td></tr>`;
+    const BODY = `<tr><td><div style="padding: 20px 24px;">${unescapeHTML(trimHTML(body))}</div></td></tr>`;
 
 
     const createTable = (content: string) => {

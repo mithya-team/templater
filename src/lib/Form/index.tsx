@@ -1,9 +1,9 @@
 import React, { useState, createRef, useEffect } from 'react'
-import { createStyles, makeStyles, FormControl, InputLabel, Input, Box, Typography, Theme, IconButton, Icon, FormControlLabel, Checkbox, Select, MenuItem, Collapse } from '@material-ui/core'
+import { createStyles, makeStyles, FormControl, InputLabel, Box, Typography, Theme, IconButton, Icon, Select, MenuItem, TextField } from '@material-ui/core'
 import { Template, TPicture, TemplateTypeField, FormKey } from '../types';
 import { Paper } from '@material-ui/core';
 import { config } from '../Config';
-import ReactQuill, { Quill } from 'react-quill'
+import ReactQuill from 'react-quill'
 import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
 
@@ -59,22 +59,33 @@ const Form: React.FC<IFormProps> = (props) => {
 
     const handleRteChange = (content: string) => onChange('body', content)
 
+    const _handleSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange('from', { ...template.templateData?.from, [e.target.name]: e.target.value })
+    }
 
     const _handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e.target.name as FormKey, e.target.value);
+        const { value, name } = e.target;
+
+        if (name === 'cc' || name === 'bcc')
+            onChange(name, value.split(",").map(v => v.trim()));
+        else
+            onChange(name as FormKey, value);
     }
 
     const handleInsertValue = (value: string) => {
         const valueToBeAppended = `<%= ${value} %>`;
         if (!quillRef.current) return;
         const editor = quillRef.current.getEditor();
-        console.log("quill ref selection", editor, curQuillInputIndex);
         editor.insertText(curQuillInputIndex, valueToBeAppended);
 
     }
 
-    const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
-        { label: 'EMAIL NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+    const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
+        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+        { label: 'SENDER EMAIL', name: 'email', value: template.templateData?.from?.email || '', handleChange: _handleSenderChange },
+        { label: 'SENDER NAME', name: 'name', value: template.templateData?.from?.name || '', handleChange: _handleSenderChange },
+        { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: template.templateData?.cc?.join(", ") || '', handleChange: _handleChange },
+        { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: template.templateData?.bcc?.join(", ") || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },
     ]
 
@@ -140,14 +151,12 @@ const Form: React.FC<IFormProps> = (props) => {
                             template.slug ?
                                 <Typography variant="caption" className={classes.slug}>{template.slug}</Typography> : null
                         }
-                        <Typography>EMAIL</Typography>
                         <Box display="flex" flexDirection="column">
                             {
-                                EMAIL_INPUT_CONFIG.map(config => (
-                                    <Box my={2} key={config.name} width="100%">
+                                EMAIL_INPUT_CONFIG.map((config, i) => (
+                                    <Box my={2} key={config.name + i} width="100%">
                                         <FormControl fullWidth>
-                                            <InputLabel>{config.label}</InputLabel>
-                                            <Input name={config.name} value={config.value} onChange={config.handleChange} />
+                                            <TextField label={config.label} multiline={config.multiline || false} name={config.name} value={config.value} onChange={config.handleChange} />
                                         </FormControl>
                                     </Box>
                                 ))
@@ -170,8 +179,7 @@ const Form: React.FC<IFormProps> = (props) => {
                             SMS_INPUT_CONFIG.map(config => (
                                 <Box my={2} key={config.name} width="100%">
                                     <FormControl fullWidth>
-                                        <InputLabel>{config.label}</InputLabel>
-                                        <Input name={config.name} value={config.value} onChange={config.handleChange} />
+                                        <TextField label={config.label} name={config.name} value={config.value} onChange={config.handleChange} />
                                     </FormControl>
                                 </Box>
                             ))

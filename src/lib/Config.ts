@@ -9,6 +9,7 @@ export let config: TemplaterConfig = {
     apiConfig: {
         baseUrl: '',
         accessToken: '',
+        settingsModelName: ''
     },
     theme: createMuiTheme(),
     disableTabs: false,
@@ -25,6 +26,7 @@ export let config: TemplaterConfig = {
 }
 
 export let API_URL = 'templates'
+export let SETTINGS_API_URL = 'templateSettings'
 
 
 
@@ -37,6 +39,7 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
     config = { ...config, ...configuration, apiConfig: { ...config.apiConfig, ...configuration.apiConfig }, dialogProps: { ...config.dialogProps, ...configuration.dialogProps } };
     Axios.defaults.baseURL = config.apiConfig.baseUrl;
     Axios.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
-    API_URL = config.apiConfig.customModel || 'templates'
+    API_URL = config.apiConfig.modelName || 'templates'
+    SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
     console.log("Templater Initialized", config);
 }

@@ -3,7 +3,8 @@ export declare type TemplaterConfig = {
     urlPrefix: string;
     apiConfig: {
         baseUrl: string;
-        customModel?: string;
+        modelName?: string;
+        settingsModelName: string;
         accessToken: string;
     };
     disableTabs: boolean;
@@ -43,6 +44,7 @@ export declare type TPicture = {
     url: string;
 };
 export declare type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'];
+export declare type SettingFormKey = keyof TemplateFooterSetting;
 export declare type TemplateField = {
     value: string;
     description: string;
@@ -76,6 +78,18 @@ declare type TTemplateData = {
     };
     subject: string;
     html: string;
+};
+export declare type TemplateFooterSetting = {
+    id: string;
+    agencyId?: string;
+    eventId?: string;
+    channel: TemplateChannel;
+    links: TemplateFooterSettingLink[];
+    body?: string;
+};
+declare type TemplateFooterSettingLink = {
+    icon?: TPicture;
+    link: string;
 };
 export declare type TemplateServiceStatus = 'loading' | 'done' | 'error';
 export {};

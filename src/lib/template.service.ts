@@ -1,6 +1,7 @@
 import { Template } from '..';
 import Axios from 'axios';
-import { API_URL } from './Config';
+import { API_URL, SETTINGS_API_URL } from './Config';
+import { TemplateFooterSetting } from './types';
 
 
 
@@ -87,6 +88,42 @@ export class TemplateService {
     //         providerFields: providerConfig
     //     }
     // })
+
+
+
+
+    /**
+    * Fetch template settings
+    * @return Array<TemplateFooterSetting>
+    */
+    static getTemplateSettings = () => Axios.request({
+        url: SETTINGS_API_URL,
+    })
+
+
+    /**
+    * Create  a new setting
+    * @param setting TemplateFooterSetting
+    * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+    */
+    static createSetting = (setting: Partial<TemplateFooterSetting>) => Axios.request({
+        url: SETTINGS_API_URL,
+        method: 'POST',
+        data: setting
+    })
+
+    /**
+       * Update an existing setting
+       * @param id ID of the setting to be updated
+       * @param setting The setting to be updated
+       * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+       */
+    static updateSetting = (id: string, setting: Partial<TemplateFooterSetting>) => Axios.request({
+        url: `${SETTINGS_API_URL}/${id}`,
+        method: 'PATCH',
+        data: setting
+    })
+
 
 }
 

@@ -4,7 +4,8 @@ export type TemplaterConfig = {
     urlPrefix: string
     apiConfig: {
         baseUrl: string
-        customModel?: string
+        modelName?: string
+        settingsModelName: string
         accessToken: string
     },
     disableTabs: boolean
@@ -47,6 +48,7 @@ export type TPicture = {
 }
 
 export type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from']
+export type SettingFormKey = keyof TemplateFooterSetting
 
 
 export type TemplateField = {
@@ -92,15 +94,17 @@ type TTemplateData = {
 }
 
 
-// export type TemplateEmail = {
-//     banner?: TPicture
-//     subject: string
-//     body: string
-//     html: string
-// }
+export type TemplateFooterSetting = {
+    id: string
+    agencyId?: string
+    eventId?: string
+    channel: TemplateChannel
+    links: TemplateFooterSettingLink[]
+    body?: string
+}
 
-// export type TemplateSms = {
-//     body: string
-// }
-
+type TemplateFooterSettingLink = {
+    icon?: TPicture
+    link: string
+}
 export type TemplateServiceStatus = 'loading' | 'done' | 'error'

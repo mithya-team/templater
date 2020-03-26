@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig } from '../types';
+import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig, TemplateFooterSetting } from '../types';
 import { TemplateService } from '../template.service';
 import { config } from '../Config';
-import { templateCreate, templateUpdate, templateSend } from '../notification';
+import { Notifier } from '../notification';
 
 
 
@@ -12,6 +12,7 @@ const SORT = { order: 'created DESC' }
 
 export const useTemplateService = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
+    const [settings, setSettings] = useState<TemplateFooterSetting>({ channel: 'email', links: [], id: '' })
     const [flows, setFlows] = useState<Partial<TemplateTypeConfig>>({})
     const [status, setStatus] = useState<TemplateServiceStatus>('done');
     const [isInitialized, setIsInitialized] = useState(false);
@@ -24,10 +25,43 @@ export const useTemplateService = () => {
     useEffect(() => {
         if (isInitialized) {
             loadTemplates();
+            loadSettings();
         }
     }, [isInitialized])
 
+    const loadSettings = async () => {
+        try {
+            const res = await TemplateService.getTemplateSettings();
+            if (res.data[0])
+                setSettings(res.data[0])
+        } catch (error) {
 
+        }
+    }
+    const saveSettings = async (setting: TemplateFooterSetting) => {
+        if (!setting.id) createSetting(setting)
+        else updateSetting(setting.id, setting)
+    }
+
+    const createSetting = async (setting: Partial<TemplateFooterSetting>) => {
+        try {
+            const res = await TemplateService.createSetting(setting);
+            setSettings(res.data);
+            Notifier.templateCreate(true)
+        } catch (error) {
+            Notifier.templateCreate(false)
+        }
+    }
+
+    const updateSetting = async (id: string, setting: Partial<TemplateFooterSetting>) => {
+        try {
+            const res = await TemplateService.updateSetting(id, setting);
+            setSettings(res.data);
+            Notifier.templateUpdate(true)
+        } catch (error) {
+            Notifier.templateUpdate(false)
+        }
+    }
 
     const loadTemplates = async () => {
         setStatus('loading');
@@ -47,11 +81,11 @@ export const useTemplateService = () => {
             const res = await TemplateService.createTemplate(template);
             setTemplates([res.data, ...templates])
             setStatus('done');
-            templateCreate(true)
+            Notifier.templateCreate(true)
             return res.data
         } catch (error) {
             setStatus('error')
-            templateCreate(false)
+            Notifier.templateCreate(false)
             throw error;
         }
     }
@@ -62,11 +96,11 @@ export const useTemplateService = () => {
             const res = await TemplateService.updateTemplate(id, template);
             setTemplates([...templates.map(t => t.id === id ? ({ ...t, ...res.data }) : t)])
             setStatus('done');
-            templateUpdate(true);
+            Notifier.templateUpdate(true);
             return res.data
         } catch (error) {
             setStatus('error')
-            templateUpdate(false);
+            Notifier.templateUpdate(false);
             throw error;
         }
     }
@@ -87,9 +121,9 @@ export const useTemplateService = () => {
     const testTemplate = async (templateId: string, type: any, providerConfig: TemplateProviderConfig) => {
         try {
             // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
-            templateSend(true);
+            Notifier.templateSend(true);
         } catch (error) {
-            templateSend(false);
+            Notifier.templateSend(false);
 
         }
     }
@@ -98,6 +132,10 @@ export const useTemplateService = () => {
     return {
         flows,
         templates,
+        settings,
+        createSetting,
+        updateSetting,
+        saveSettings,
         status,
         createTemplate,
         updateTemplate,

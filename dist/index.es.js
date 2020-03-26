@@ -4,6 +4,7 @@ import { useParams } from 'react-router';
 import reactDom from 'react-dom';
 import server from 'react-dom/server';
 import { withRouter, Link } from 'react-router-dom';
+import { makeStyles as makeStyles$1, createStyles as createStyles$1 } from '@material-ui/core/styles';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -1519,6 +1520,7 @@ var config = {
     apiConfig: {
         baseUrl: '',
         accessToken: '',
+        settingsModelName: ''
     },
     theme: createMuiTheme(),
     disableTabs: false,
@@ -1534,6 +1536,7 @@ var config = {
     }
 };
 var API_URL = 'templates';
+var SETTINGS_API_URL = 'templateSettings';
 /**
  * @function initializeTemplater
  * @param configuration Partial<TemplaterConfig>
@@ -1543,7 +1546,8 @@ var initializeTemplater = function (configuration) {
     config = __assign(__assign(__assign({}, config), configuration), { apiConfig: __assign(__assign({}, config.apiConfig), configuration.apiConfig), dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
     axios$1.defaults.baseURL = config.apiConfig.baseUrl;
     axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
-    API_URL = config.apiConfig.customModel || 'templates';
+    API_URL = config.apiConfig.modelName || 'templates';
+    SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
     console.log("Templater Initialized", config);
 };
 
@@ -1598,25 +1602,86 @@ var TemplateService = /** @class */ (function () {
     TemplateService.getTemplateTypes = function () { return axios$1.request({
         url: API_URL + "/getTemplateConfig",
     }); };
+    /**
+    * Test a template
+    * @param id ID of the template to be sent
+    * @param type email | sms
+    * @param providerConfig configuration
+    * @example
+    * {
+    *   to: "jagzmz...com",
+    *   cc: ["a....com","b...com"]
+    * }
+    * @return Promise<AxiosResponse<void>>>
+    */
+    // static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
+    //     url: `Communications/${type}/send`,
+    //     method: 'POST',
+    //     data: {
+    //         templateId: id,
+    //         // type,
+    //         providerFields: providerConfig
+    //     }
+    // })
+    /**
+    * Fetch template settings
+    * @return Array<TemplateFooterSetting>
+    */
+    TemplateService.getTemplateSettings = function () { return axios$1.request({
+        url: SETTINGS_API_URL,
+    }); };
+    /**
+    * Create  a new setting
+    * @param setting TemplateFooterSetting
+    * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+    */
+    TemplateService.createSetting = function (setting) { return axios$1.request({
+        url: SETTINGS_API_URL,
+        method: 'POST',
+        data: setting
+    }); };
+    /**
+       * Update an existing setting
+       * @param id ID of the setting to be updated
+       * @param setting The setting to be updated
+       * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+       */
+    TemplateService.updateSetting = function (id, setting) { return axios$1.request({
+        url: SETTINGS_API_URL + "/" + id,
+        method: 'PATCH',
+        data: setting
+    }); };
     return TemplateService;
 }());
 
-var templateCreate = function (success) {
-    config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
-};
-var templateUpdate = function (success) {
-    config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
-};
-var templateSend = function (success) {
-    config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
-};
+var Notifier = /** @class */ (function () {
+    function Notifier() {
+    }
+    Notifier.templateCreate = function (success) {
+        config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
+    };
+    Notifier.templateUpdate = function (success) {
+        config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
+    };
+    Notifier.templateSend = function (success) {
+        config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
+    };
+    Notifier.templateSettingCreate = function (success) {
+        config.onActionCompleted('TEST', success ? 'Setting successfully created ' : 'Error creating setting');
+    };
+    Notifier.templateSettingUpdate = function (success) {
+        config.onActionCompleted('TEST', success ? 'Setting updated successfully ' : 'Error updating setting');
+    };
+    return Notifier;
+}());
 
 var SORT = { order: 'created DESC' };
 var useTemplateService = function () {
     var _a = useState([]), templates = _a[0], setTemplates = _a[1];
-    var _b = useState({}), flows = _b[0], setFlows = _b[1];
-    var _c = useState('done'), status = _c[0], setStatus = _c[1];
-    var _d = useState(false), isInitialized = _d[0], setIsInitialized = _d[1];
+    var _b = useState({ channel: 'email', links: [], id: '' }), settings = _b[0], setSettings = _b[1];
+    var _c = useState({}), flows = _c[0], setFlows = _c[1];
+    var _d = useState('done'), status = _d[0], setStatus = _d[1];
+    var _e = useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
     useEffect(function () {
         if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
             setIsInitialized(true);
@@ -1624,10 +1689,79 @@ var useTemplateService = function () {
     useEffect(function () {
         if (isInitialized) {
             loadTemplates();
+            loadSettings();
         }
     }, [isInitialized]);
+    var loadSettings = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, TemplateService.getTemplateSettings()];
+                case 1:
+                    res = _a.sent();
+                    if (res.data[0])
+                        setSettings(res.data[0]);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var saveSettings = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (!setting.id)
+                createSetting(setting);
+            else
+                updateSetting(setting.id, setting);
+            return [2 /*return*/];
+        });
+    }); };
+    var createSetting = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, TemplateService.createSetting(setting)];
+                case 1:
+                    res = _a.sent();
+                    setSettings(res.data);
+                    Notifier.templateCreate(true);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    Notifier.templateCreate(false);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, TemplateService.updateSetting(id, setting)];
+                case 1:
+                    res = _a.sent();
+                    setSettings(res.data);
+                    Notifier.templateUpdate(true);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_3 = _a.sent();
+                    Notifier.templateUpdate(false);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, res1, res2, error_1;
+        var _a, res1, res2, error_4;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -1643,7 +1777,7 @@ var useTemplateService = function () {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_1 = _b.sent();
+                    error_4 = _b.sent();
                     setStatus('error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -1651,7 +1785,7 @@ var useTemplateService = function () {
         });
     }); };
     var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_2;
+        var res, error_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1664,19 +1798,19 @@ var useTemplateService = function () {
                     res = _a.sent();
                     setTemplates(__spreadArrays([res.data], templates));
                     setStatus('done');
-                    templateCreate(true);
+                    Notifier.templateCreate(true);
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_2 = _a.sent();
+                    error_5 = _a.sent();
                     setStatus('error');
-                    templateCreate(false);
-                    throw error_2;
+                    Notifier.templateCreate(false);
+                    throw error_5;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_1, error_3;
+        var res_1, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1689,19 +1823,19 @@ var useTemplateService = function () {
                     res_1 = _a.sent();
                     setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_1.data)) : t; })));
                     setStatus('done');
-                    templateUpdate(true);
+                    Notifier.templateUpdate(true);
                     return [2 /*return*/, res_1.data];
                 case 3:
-                    error_3 = _a.sent();
+                    error_6 = _a.sent();
                     setStatus('error');
-                    templateUpdate(false);
-                    throw error_3;
+                    Notifier.templateUpdate(false);
+                    throw error_6;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var index, res, error_4;
+        var index, res, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1716,8 +1850,8 @@ var useTemplateService = function () {
                     res = _a.sent();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_4 = _a.sent();
-                    throw error_4;
+                    error_7 = _a.sent();
+                    throw error_7;
                 case 4: return [2 /*return*/];
             }
         });
@@ -1726,10 +1860,10 @@ var useTemplateService = function () {
         return __generator(this, function (_a) {
             try {
                 // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
-                templateSend(true);
+                Notifier.templateSend(true);
             }
             catch (error) {
-                templateSend(false);
+                Notifier.templateSend(false);
             }
             return [2 /*return*/];
         });
@@ -1737,6 +1871,10 @@ var useTemplateService = function () {
     return {
         flows: flows,
         templates: templates,
+        settings: settings,
+        createSetting: createSetting,
+        updateSetting: updateSetting,
+        saveSettings: saveSettings,
         status: status,
         createTemplate: createTemplate,
         updateTemplate: updateTemplate,
@@ -22036,18 +22174,62 @@ var Settings = function (props) {
 };
 var useStyles$c = makeStyles(function (theme) { return createStyles({}); });
 
+var FooterForm = function (props) {
+    var onChange = props.onChange, settings = props.settings;
+    var classes = useStyles$d();
+    var handleRteChange = function (content) { return onChange('body', content); };
+    var handleChange = function (index) { return function (e) {
+        var _links = __spreadArrays(settings.links);
+        if (_links[index])
+            _links[index] = __assign(__assign({}, _links[index]), { link: e.target.value });
+        else
+            _links.push({ link: e.target.value });
+        onChange('links', _links);
+    }; };
+    var handleLinkRemove = function (index) { return function () {
+        onChange('links', settings.links.filter(function (_, i) { return index !== i; }));
+    }; };
+    return (React.createElement(Paper, null,
+        React.createElement(Box, { p: 3 },
+            React.createElement(Box, { my: 2, width: "100%" },
+                React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
+                React.createElement(lib, { className: classes.rte, value: settings.body || '', onChange: handleRteChange })),
+            React.createElement(Box, { my: 2 },
+                React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"),
+                settings.links.map(function (l, i) { return (React.createElement(Box, { key: i, display: "flex", alignItems: "center", width: "100%" },
+                    React.createElement(Box, { mr: 1 }, "upload"),
+                    React.createElement(FormControl, { fullWidth: true },
+                        React.createElement(Input, { value: l.link || '', onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
+                                React.createElement("i", { className: "material-icons" }, "close")) })))); }),
+                React.createElement(Box, { display: "flex", alignItems: "center", width: "100%" },
+                    React.createElement(Box, { mr: 1 }, "upload"),
+                    React.createElement(FormControl, { fullWidth: true },
+                        React.createElement(Input, { value: '', onChange: handleChange(settings.links.length) })))))));
+};
+var useStyles$d = makeStyles$1(function (theme) { return createStyles$1({
+    rte: {
+        '& .ql-container': {
+            minHeight: 160
+        }
+    },
+}); });
+
 var TemplateContext = React.createContext({
     templates: [],
     templateFlows: {},
+    settings: { channel: 'email', links: [], id: '' },
     createTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
         return [2 /*return*/];
     }); }); },
     updateTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
         return [2 /*return*/];
     }); }); },
+    saveSettings: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/];
+    }); }); },
 });
 var TemplateContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows;
+    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows, saveSettings = _a.saveSettings, settings = _a.settings;
     // const saveChanges = async (template: Partial<Template>) => {
     //     try {
     //         if (template.id) {
@@ -22065,9 +22247,11 @@ var TemplateContextProvider = function (props) {
         templateFlows: flows,
         updateTemplate: updateTemplate,
         createTemplate: createTemplate,
+        settings: settings,
+        saveSettings: saveSettings,
     };
     return (React.createElement(TemplateContext.Provider, { value: value }, props.children));
 };
 
-export { Form, Pagination, Preview, Settings, TemplateCard, TemplateContext, TemplateContextProvider, TemplatePreview, TemplateService, generateHTML, initializeTemplater, usePagination, useTemplateService };
+export { FooterForm, Form, Pagination, Preview, Settings, TemplateCard, TemplateContext, TemplateContextProvider, TemplatePreview, TemplateService, generateHTML, initializeTemplater, usePagination, useTemplateService };
 //# sourceMappingURL=index.es.js.map

@@ -8,7 +8,7 @@ import { Notifier } from '../notification';
 
 
 
-const SORT = { order: 'created DESC' }
+let FILTER: Record<string, any> = { order: 'created DESC' }
 
 export const useTemplateService = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
@@ -16,6 +16,8 @@ export const useTemplateService = () => {
     const [flows, setFlows] = useState<Partial<TemplateTypeConfig>>({})
     const [status, setStatus] = useState<TemplateServiceStatus>('done');
     const [isInitialized, setIsInitialized] = useState(false);
+
+    if (config.eventId && config.agencyId) FILTER = { ...FILTER, where: { eventId: config.eventId, agencyId: config.agencyId } }
 
     useEffect(() => {
         if (config.apiConfig.baseUrl && config.apiConfig.accessToken) setIsInitialized(true);
@@ -31,7 +33,7 @@ export const useTemplateService = () => {
 
     const loadSettings = async () => {
         try {
-            const res = await TemplateService.getTemplateSettings();
+            const res = await TemplateService.getTemplateSettings(FILTER);
             if (res.data[0])
                 setSettings(res.data[0])
         } catch (error) {
@@ -45,7 +47,7 @@ export const useTemplateService = () => {
 
     const createSetting = async (setting: Partial<TemplateFooterSetting>) => {
         try {
-            const res = await TemplateService.createSetting(setting);
+            const res = await TemplateService.createSetting({ ...setting, eventId: config.eventId, agencyId: config.agencyId });
             setSettings(res.data);
             Notifier.templateCreate(true)
         } catch (error) {
@@ -66,7 +68,7 @@ export const useTemplateService = () => {
     const loadTemplates = async () => {
         setStatus('loading');
         try {
-            const [res1, res2] = await Promise.all([TemplateService.fetchTemplates({ filter: SORT }), TemplateService.getTemplateTypes()]);
+            const [res1, res2] = await Promise.all([TemplateService.fetchTemplates({ filter: FILTER }), TemplateService.getTemplateTypes()]);
             setTemplates(res1.data);
             setFlows(res2.data);
             setStatus('done')
@@ -78,7 +80,7 @@ export const useTemplateService = () => {
     const createTemplate = async (template: Partial<Template>) => {
         setStatus('loading');
         try {
-            const res = await TemplateService.createTemplate(template);
+            const res = await TemplateService.createTemplate({ ...template, eventId: config.eventId, agencyId: config.agencyId });
             setTemplates([res.data, ...templates])
             setStatus('done');
             Notifier.templateCreate(true)

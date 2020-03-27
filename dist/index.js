@@ -1642,8 +1642,9 @@ var TemplateService = /** @class */ (function () {
     * Fetch template settings
     * @return Array<TemplateFooterSetting>
     */
-    TemplateService.getTemplateSettings = function () { return axios$1.request({
+    TemplateService.getTemplateSettings = function (params) { return axios$1.request({
         url: SETTINGS_API_URL,
+        params: params
     }); };
     /**
     * Create  a new setting
@@ -1693,13 +1694,15 @@ var Notifier = /** @class */ (function () {
     return Notifier;
 }());
 
-var SORT = { order: 'created DESC' };
+var FILTER = { order: 'created DESC' };
 var useTemplateService = function () {
     var _a = React.useState([]), templates = _a[0], setTemplates = _a[1];
     var _b = React.useState({ channel: 'email', links: [], id: '' }), settings = _b[0], setSettings = _b[1];
     var _c = React.useState({}), flows = _c[0], setFlows = _c[1];
     var _d = React.useState('done'), status = _d[0], setStatus = _d[1];
     var _e = React.useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
+    if (config.eventId && config.agencyId)
+        FILTER = __assign(__assign({}, FILTER), { where: { eventId: config.eventId, agencyId: config.agencyId } });
     React.useEffect(function () {
         if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
             setIsInitialized(true);
@@ -1716,7 +1719,7 @@ var useTemplateService = function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.getTemplateSettings()];
+                    return [4 /*yield*/, TemplateService.getTemplateSettings(FILTER)];
                 case 1:
                     res = _a.sent();
                     if (res.data[0])
@@ -1744,7 +1747,7 @@ var useTemplateService = function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.createSetting(setting)];
+                    return [4 /*yield*/, TemplateService.createSetting(__assign(__assign({}, setting), { eventId: config.eventId, agencyId: config.agencyId }))];
                 case 1:
                     res = _a.sent();
                     setSettings(res.data);
@@ -1787,7 +1790,7 @@ var useTemplateService = function () {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: SORT }), TemplateService.getTemplateTypes()])];
+                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: FILTER }), TemplateService.getTemplateTypes()])];
                 case 2:
                     _a = _b.sent(), res1 = _a[0], res2 = _a[1];
                     setTemplates(res1.data);
@@ -1811,7 +1814,7 @@ var useTemplateService = function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.createTemplate(template)];
+                    return [4 /*yield*/, TemplateService.createTemplate(__assign(__assign({}, template), { eventId: config.eventId, agencyId: config.agencyId }))];
                 case 2:
                     res = _a.sent();
                     setTemplates(__spreadArrays([res.data], templates));

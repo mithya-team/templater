@@ -2,6 +2,8 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } fr
 
 export type TemplaterConfig = {
     urlPrefix: string
+    eventId?: string
+    agencyId?: string
     apiConfig: {
         baseUrl: string
         modelName?: string
@@ -99,6 +101,8 @@ export type TemplateFooterSetting = {
     agencyId?: string
     eventId?: string
     channel: TemplateChannel
+    // type: 'footer'
+
     links: TemplateFooterSettingLink[]
     body?: string
 }

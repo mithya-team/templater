@@ -56,7 +56,7 @@ export declare class TemplateService {
     * Fetch template settings
     * @return Array<TemplateFooterSetting>
     */
-    static getTemplateSettings: () => Promise<import("axios").AxiosResponse<any>>;
+    static getTemplateSettings: (params?: Record<string, any> | undefined) => Promise<import("axios").AxiosResponse<any>>;
     /**
     * Create  a new setting
     * @param setting TemplateFooterSetting

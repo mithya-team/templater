@@ -106,8 +106,9 @@ export class TemplateService {
     * Fetch template settings
     * @return Array<TemplateFooterSetting>
     */
-    static getTemplateSettings = () => Axios.request({
+    static getTemplateSettings = (params?: Record<string, any>) => Axios.request({
         url: SETTINGS_API_URL,
+        params
     })
 
 

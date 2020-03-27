@@ -1,6 +1,8 @@
 import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } from '@material-ui/core';
 export declare type TemplaterConfig = {
     urlPrefix: string;
+    eventId?: string;
+    agencyId?: string;
     apiConfig: {
         baseUrl: string;
         modelName?: string;

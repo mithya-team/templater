@@ -105,6 +105,22 @@ export const useTemplateService = () => {
         }
     }
 
+    const enableTemplate = async (id: string) => {
+        setStatus('loading');
+        try {
+            const res = await TemplateService.enableTemplate(id);
+            const flow = res.data.flow || '';
+            const updatedTemplates = templates.map<Template>(t => t.id === id ? ({ ...t, ...res.data }) : t.flow === flow ? ({ ...t, enabled: false }) : t);
+            setStatus('done');
+            setTemplates(updatedTemplates);
+            Notifier.templateEnabled(true)
+        } catch (error) {
+            Notifier.templateEnabled(false)
+            setStatus('error');
+
+        }
+    }
+
     const getTemplateById = async (id: string): Promise<Template> => {
         const index = templates.findIndex(t => t.id === id);
         if (index > -1)
@@ -136,6 +152,7 @@ export const useTemplateService = () => {
         createSetting,
         updateSetting,
         saveSettings,
+        enableTemplate,
         status,
         createTemplate,
         updateTemplate,

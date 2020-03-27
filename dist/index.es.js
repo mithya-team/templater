@@ -1581,6 +1581,14 @@ var TemplateService = /** @class */ (function () {
     * @param id ID of the template to be fetched
     * @return Promise<AxiosResponse<Template>>>
     */
+    TemplateService.enableTemplate = function (id) { return axios$1.request({
+        url: API_URL + "/" + id + "/enable",
+    }); };
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<AxiosResponse<Template>>>
+    */
     TemplateService.getTemplateById = function (id) { return axios$1.request({
         url: API_URL + "/" + id,
     }); };
@@ -1666,11 +1674,14 @@ var Notifier = /** @class */ (function () {
     Notifier.templateSend = function (success) {
         config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
     };
+    Notifier.templateEnabled = function (success) {
+        config.onActionCompleted('TEMPLATE ENABLE', success ? 'Template enabled successfully' : 'Error enabling template');
+    };
     Notifier.templateSettingCreate = function (success) {
-        config.onActionCompleted('TEST', success ? 'Setting successfully created ' : 'Error creating setting');
+        config.onActionCompleted('SETTINGS CREATE', success ? 'Setting successfully created ' : 'Error creating setting');
     };
     Notifier.templateSettingUpdate = function (success) {
-        config.onActionCompleted('TEST', success ? 'Setting updated successfully ' : 'Error updating setting');
+        config.onActionCompleted('SETTING UPDATE', success ? 'Setting updated successfully ' : 'Error updating setting');
     };
     return Notifier;
 }());
@@ -1834,8 +1845,35 @@ var useTemplateService = function () {
             }
         });
     }); };
+    var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var res_2, flow_1, updatedTemplates, error_7;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.enableTemplate(id)];
+                case 2:
+                    res_2 = _a.sent();
+                    flow_1 = res_2.data.flow || '';
+                    updatedTemplates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_2.data)) : t.flow === flow_1 ? (__assign(__assign({}, t), { enabled: false })) : t; });
+                    setStatus('done');
+                    setTemplates(updatedTemplates);
+                    Notifier.templateEnabled(true);
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_7 = _a.sent();
+                    Notifier.templateEnabled(false);
+                    setStatus('error');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
     var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var index, res, error_7;
+        var index, res, error_8;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1850,8 +1888,8 @@ var useTemplateService = function () {
                     res = _a.sent();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_7 = _a.sent();
-                    throw error_7;
+                    error_8 = _a.sent();
+                    throw error_8;
                 case 4: return [2 /*return*/];
             }
         });
@@ -1875,6 +1913,7 @@ var useTemplateService = function () {
         createSetting: createSetting,
         updateSetting: updateSetting,
         saveSettings: saveSettings,
+        enableTemplate: enableTemplate,
         status: status,
         createTemplate: createTemplate,
         updateTemplate: updateTemplate,
@@ -22227,9 +22266,13 @@ var TemplateContext = React.createContext({
     saveSettings: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
         return [2 /*return*/];
     }); }); },
+    enableTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
+        return [2 /*return*/];
+    }); }); }
+    // testTemplate: async () => { }
 });
 var TemplateContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows, saveSettings = _a.saveSettings, settings = _a.settings;
+    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows, saveSettings = _a.saveSettings, settings = _a.settings, enableTemplate = _a.enableTemplate;
     // const saveChanges = async (template: Partial<Template>) => {
     //     try {
     //         if (template.id) {
@@ -22248,6 +22291,7 @@ var TemplateContextProvider = function (props) {
         updateTemplate: updateTemplate,
         createTemplate: createTemplate,
         settings: settings,
+        enableTemplate: enableTemplate,
         saveSettings: saveSettings,
     };
     return (React.createElement(TemplateContext.Provider, { value: value }, props.children));

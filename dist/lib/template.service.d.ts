@@ -21,6 +21,12 @@ export declare class TemplateService {
     * @param id ID of the template to be fetched
     * @return Promise<AxiosResponse<Template>>>
     */
+    static enableTemplate: (id: string) => Promise<import("axios").AxiosResponse<any>>;
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<AxiosResponse<Template>>>
+    */
     static getTemplateById: (id: string) => Promise<import("axios").AxiosResponse<any>>;
     /**
     * Update an existing template

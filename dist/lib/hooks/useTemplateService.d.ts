@@ -8,6 +8,7 @@ export declare const useTemplateService: () => {
     createSetting: (setting: Partial<TemplateFooterSetting>) => Promise<void>;
     updateSetting: (id: string, setting: Partial<TemplateFooterSetting>) => Promise<void>;
     saveSettings: (setting: TemplateFooterSetting) => Promise<void>;
+    enableTemplate: (id: string) => Promise<void>;
     status: TemplateServiceStatus;
     createTemplate: (template: Partial<Template>) => Promise<any>;
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>;

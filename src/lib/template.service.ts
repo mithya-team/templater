@@ -40,6 +40,16 @@ export class TemplateService {
     * @param id ID of the template to be fetched
     * @return Promise<AxiosResponse<Template>>>
     */
+    static enableTemplate = (id: string) => Axios.request({
+        url: `${API_URL}/${id}/enable`,
+    })
+
+
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<AxiosResponse<Template>>>
+    */
     static getTemplateById = (id: string) => Axios.request({
         url: `${API_URL}/${id}`,
     })

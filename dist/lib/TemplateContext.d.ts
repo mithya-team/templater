@@ -7,6 +7,7 @@ export declare type TemplateContextProvider = {
     settings: TemplateFooterSetting;
     templateFlows: Partial<TemplateTypeConfig>;
     createTemplate: (template: Partial<Template>) => Promise<any>;
+    enableTemplate: (id: string) => Promise<any>;
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>;
     saveSettings: (setting: Partial<TemplateFooterSetting>) => Promise<any>;
 };

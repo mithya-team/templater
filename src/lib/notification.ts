@@ -10,11 +10,15 @@ export class Notifier {
     static templateSend = (success: boolean) => {
         config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
     }
+    static templateEnabled = (success: boolean) => {
+        config.onActionCompleted('TEMPLATE ENABLE', success ? 'Template enabled successfully' : 'Error enabling template');
+    }
 
     static templateSettingCreate = (success: boolean) => {
-        config.onActionCompleted('TEST', success ? 'Setting successfully created ' : 'Error creating setting');
+        config.onActionCompleted('SETTINGS CREATE', success ? 'Setting successfully created ' : 'Error creating setting');
     }
     static templateSettingUpdate = (success: boolean) => {
-        config.onActionCompleted('TEST', success ? 'Setting updated successfully ' : 'Error updating setting');
+        config.onActionCompleted('SETTING UPDATE', success ? 'Setting updated successfully ' : 'Error updating setting');
     }
+
 }

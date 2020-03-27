@@ -11,6 +11,7 @@ export const TemplateContext = React.createContext<TemplateContextProvider>({
     createTemplate: async () => { },
     updateTemplate: async () => { },
     saveSettings: async () => { },
+    enableTemplate: async () => { }
     // testTemplate: async () => { }
 
 });
@@ -20,6 +21,7 @@ export type TemplateContextProvider = {
     settings: TemplateFooterSetting
     templateFlows: Partial<TemplateTypeConfig>
     createTemplate: (template: Partial<Template>) => Promise<any>
+    enableTemplate: (id: string) => Promise<any>
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>
     saveSettings: (setting: Partial<TemplateFooterSetting>) => Promise<any>
     // testTemplate: (templateId: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Promise<void>
@@ -33,7 +35,8 @@ export const TemplateContextProvider: React.FC = (props) => {
         updateTemplate,
         flows, testTemplate,
         saveSettings,
-        settings
+        settings,
+        enableTemplate
     } = useTemplateService();
 
 
@@ -60,6 +63,7 @@ export const TemplateContextProvider: React.FC = (props) => {
         updateTemplate,
         createTemplate,
         settings,
+        enableTemplate,
         saveSettings,
         // testTemplate
     }

@@ -2,8 +2,6 @@ import { AppBarProps, ButtonProps, BoxProps, PaperProps, DialogProps, Theme } fr
 
 export type TemplaterConfig = {
     urlPrefix: string
-    eventId?: string
-    agencyId?: string
     apiConfig: {
         baseUrl: string
         modelName?: string

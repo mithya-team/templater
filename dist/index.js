@@ -1695,14 +1695,14 @@ var Notifier = /** @class */ (function () {
 }());
 
 var FILTER = { order: 'created DESC' };
-var useTemplateService = function () {
+var useTemplateService = function (defaultFilter) {
+    if (defaultFilter === void 0) { defaultFilter = FILTER; }
     var _a = React.useState([]), templates = _a[0], setTemplates = _a[1];
     var _b = React.useState({ channel: 'email', links: [], id: '' }), settings = _b[0], setSettings = _b[1];
     var _c = React.useState({}), flows = _c[0], setFlows = _c[1];
     var _d = React.useState('done'), status = _d[0], setStatus = _d[1];
     var _e = React.useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
-    if (config.eventId && config.agencyId)
-        FILTER = __assign(__assign({}, FILTER), { where: { eventId: config.eventId, agencyId: config.agencyId } });
+    // if (config.eventId && config.agencyId) FILTER = { ...FILTER, where: { eventId: config.eventId, agencyId: config.agencyId } }
     React.useEffect(function () {
         if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
             setIsInitialized(true);
@@ -1719,7 +1719,7 @@ var useTemplateService = function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.getTemplateSettings(FILTER)];
+                    return [4 /*yield*/, TemplateService.getTemplateSettings({ filter: defaultFilter })];
                 case 1:
                     res = _a.sent();
                     if (res.data[0])
@@ -1747,7 +1747,7 @@ var useTemplateService = function () {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.createSetting(__assign(__assign({}, setting), { eventId: config.eventId, agencyId: config.agencyId }))];
+                    return [4 /*yield*/, TemplateService.createSetting(setting)];
                 case 1:
                     res = _a.sent();
                     setSettings(res.data);
@@ -1790,7 +1790,7 @@ var useTemplateService = function () {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: FILTER }), TemplateService.getTemplateTypes()])];
+                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: defaultFilter }), TemplateService.getTemplateTypes()])];
                 case 2:
                     _a = _b.sent(), res1 = _a[0], res2 = _a[1];
                     setTemplates(res1.data);
@@ -1814,7 +1814,7 @@ var useTemplateService = function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.createTemplate(__assign(__assign({}, template), { eventId: config.eventId, agencyId: config.agencyId }))];
+                    return [4 /*yield*/, TemplateService.createTemplate(template)];
                 case 2:
                     res = _a.sent();
                     setTemplates(__spreadArrays([res.data], templates));
@@ -22263,58 +22263,12 @@ var useStyles$d = styles.makeStyles(function (theme) { return styles.createStyle
     },
 }); });
 
-var TemplateContext = React__default.createContext({
-    templates: [],
-    templateFlows: {},
-    settings: { channel: 'email', links: [], id: '' },
-    createTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); }); },
-    updateTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); }); },
-    saveSettings: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); }); },
-    enableTemplate: function () { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
-        return [2 /*return*/];
-    }); }); }
-    // testTemplate: async () => { }
-});
-var TemplateContextProvider = function (props) {
-    var _a = useTemplateService(), templates = _a.templates, createTemplate = _a.createTemplate, updateTemplate = _a.updateTemplate, flows = _a.flows, saveSettings = _a.saveSettings, settings = _a.settings, enableTemplate = _a.enableTemplate;
-    // const saveChanges = async (template: Partial<Template>) => {
-    //     try {
-    //         if (template.id) {
-    //             const { id, created, updated, slug, ...templateData } = template;
-    //             await updateTemplate(template.id, templateData)
-    //         } else {
-    //             await createTemplate(template);
-    //         }
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
-    var value = {
-        templates: templates,
-        templateFlows: flows,
-        updateTemplate: updateTemplate,
-        createTemplate: createTemplate,
-        settings: settings,
-        enableTemplate: enableTemplate,
-        saveSettings: saveSettings,
-    };
-    return (React__default.createElement(TemplateContext.Provider, { value: value }, props.children));
-};
-
 exports.FooterForm = FooterForm;
 exports.Form = Form;
 exports.Pagination = Pagination;
 exports.Preview = Preview;
 exports.Settings = Settings;
 exports.TemplateCard = TemplateCard;
-exports.TemplateContext = TemplateContext;
-exports.TemplateContextProvider = TemplateContextProvider;
 exports.TemplatePreview = TemplatePreview;
 exports.TemplateService = TemplateService;
 exports.generateHTML = generateHTML;

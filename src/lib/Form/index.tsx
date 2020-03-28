@@ -2,7 +2,7 @@ import React, { useState, createRef, useEffect } from 'react'
 import { createStyles, makeStyles, FormControl, InputLabel, Box, Typography, Theme, IconButton, Icon, Select, MenuItem, TextField } from '@material-ui/core'
 import { Template, TPicture, TemplateTypeField, FormKey } from '../types';
 import { Paper } from '@material-ui/core';
-import { config } from '../Config';
+import { config, QUILL_MODULES, QUILL_FORMATS } from '../Config';
 import ReactQuill from 'react-quill'
 import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
@@ -44,7 +44,6 @@ const Form: React.FC<IFormProps> = (props) => {
         // })
         editor.on('editor-change', () => {
             const selection = editor.getSelection();
-            console.log("selection", selection?.index)
             if (selection) curQuillInputIndex = selection.index;
         })
 
@@ -52,7 +51,6 @@ const Form: React.FC<IFormProps> = (props) => {
 
 
     const onImageUploadComplete = (current: any, response: TPicture) => {
-        console.log("upload completed", response);
         onChange('banner', response)
         setLoading(false);
     }
@@ -163,7 +161,10 @@ const Form: React.FC<IFormProps> = (props) => {
                             }
                             <Box my={2} width="100%">
                                 <Typography gutterBottom variant="caption">EMAIL BODY</Typography>
-                                <ReactQuill ref={quillRef} className={classes.rte} value={template.templateData?.body || ''}
+                                <ReactQuill
+                                    formats={QUILL_FORMATS}
+                                    modules={QUILL_MODULES}
+                                    ref={quillRef} className={classes.rte} value={template.templateData?.body || ''}
                                     onChange={handleRteChange} />
                             </Box>
                         </Box>

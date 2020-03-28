@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig, TemplateFooterSetting } from '../types';
+import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateTypeConfig, TemplateSetting } from '../types';
 import { TemplateService } from '../template.service';
 import { config } from '../Config';
 import { Notifier } from '../notification';
@@ -12,7 +12,7 @@ let FILTER: Record<string, any> = { order: 'created DESC' }
 
 export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) => {
     const [templates, setTemplates] = useState<Template[]>([]);
-    const [settings, setSettings] = useState<TemplateFooterSetting>({ channel: 'email', links: [], id: '' })
+    const [settings, setSettings] = useState<TemplateSetting[]>([])
     const [flows, setFlows] = useState<Partial<TemplateTypeConfig>>({})
     const [status, setStatus] = useState<TemplateServiceStatus>('done');
     const [isInitialized, setIsInitialized] = useState(false);
@@ -35,35 +35,43 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         try {
             const res = await TemplateService.getTemplateSettings({ filter: defaultFilter });
             if (res.data[0])
-                setSettings(res.data[0])
+                setSettings(res.data)
         } catch (error) {
 
         }
     }
-    const saveSettings = async (setting: Partial<TemplateFooterSetting>) => {
+    const saveSettings = async (setting: Partial<TemplateSetting>) => {
         if (!setting.id) createSetting(setting)
         else updateSetting(setting.id, setting)
     }
 
-    const createSetting = async (setting: Partial<TemplateFooterSetting>) => {
+    const createSetting = async (setting: Partial<TemplateSetting>) => {
+        setStatus('loading');
         try {
             const res = await TemplateService.createSetting(setting);
-            setSettings(res.data);
-            Notifier.templateCreate(true)
+            setSettings([res.data, ...settings]);
+            Notifier.templateCreate()
+            setStatus('done')
         } catch (error) {
-            Notifier.templateCreate(false)
+            Notifier.templateCreate(error)
+            setStatus('error')
         }
     }
 
-    const updateSetting = async (id: string, setting: Partial<TemplateFooterSetting>) => {
+    const updateSetting = async (id: string, setting: Partial<TemplateSetting>) => {
+        setStatus('loading');
         try {
             const res = await TemplateService.updateSetting(id, setting);
-            setSettings(res.data);
-            Notifier.templateUpdate(true)
+            setSettings([...settings.map(s => s.id === res.data?.id ? ({ ...s, ...res.data }) : s)]);
+            Notifier.templateUpdate()
+            setStatus('done')
         } catch (error) {
-            Notifier.templateUpdate(false)
+            Notifier.templateUpdate(error)
+            setStatus('error')
         }
     }
+
+    console.log("settings", settings);
 
     const loadTemplates = async () => {
         setStatus('loading');
@@ -83,11 +91,11 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
             const res = await TemplateService.createTemplate(template);
             setTemplates([res.data, ...templates])
             setStatus('done');
-            Notifier.templateCreate(true)
+            Notifier.templateCreate()
             return res.data
         } catch (error) {
             setStatus('error')
-            Notifier.templateCreate(false)
+            Notifier.templateCreate(error)
             throw error;
         }
     }
@@ -98,11 +106,11 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
             const res = await TemplateService.updateTemplate(id, template);
             setTemplates([...templates.map(t => t.id === id ? ({ ...t, ...res.data }) : t)])
             setStatus('done');
-            Notifier.templateUpdate(true);
+            Notifier.templateUpdate();
             return res.data
         } catch (error) {
             setStatus('error')
-            Notifier.templateUpdate(false);
+            Notifier.templateUpdate(error);
             throw error;
         }
     }
@@ -115,9 +123,9 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
             const updatedTemplates = templates.map<Template>(t => t.id === id ? ({ ...t, ...res.data }) : t.flow === flow ? ({ ...t, enabled: false }) : t);
             setStatus('done');
             setTemplates(updatedTemplates);
-            Notifier.templateEnabled(true)
+            Notifier.templateEnabled()
         } catch (error) {
-            Notifier.templateEnabled(false)
+            Notifier.templateEnabled(error)
             setStatus('error');
 
         }
@@ -139,9 +147,9 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
     const testTemplate = async (templateId: string, type: any, providerConfig: TemplateProviderConfig) => {
         try {
             // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
-            Notifier.templateSend(true);
+            Notifier.templateSend();
         } catch (error) {
-            Notifier.templateSend(false);
+            Notifier.templateSend(error);
 
         }
     }

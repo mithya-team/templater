@@ -10,7 +10,7 @@ export type TemplaterConfig = {
     },
     disableTabs: boolean
     listingType: 'grid' | 'list'
-    onActionCompleted: (action: string, message: string) => void
+    onActionCompleted: (action: 'success' | 'error', message: string) => void
     theme: Theme
     rootContainerProps: BoxProps
     dialogProps: Partial<{
@@ -30,7 +30,7 @@ export type TemplateTypeField = {
     isRequired: boolean
 }
 
-export type TemplateTypeConfig = Record<string, { fields: TemplateTypeField[] }>
+export type TemplateTypeConfig = Record<string, { name: string, fields: TemplateTypeField[] }>
 
 // export type TemplateContentType = keyof Pick<Template, 'email' | 'sms'>
 export type TemplateProviderConfig = {
@@ -48,7 +48,7 @@ export type TPicture = {
 }
 
 export type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from']
-export type SettingFormKey = keyof TemplateFooterSetting
+export type SettingFormKey = keyof TemplateSettingData
 
 
 export type TemplateField = {
@@ -93,16 +93,21 @@ type TTemplateData = {
     html: string
 }
 
+type TemplateSettingType = 'footer'
+type TemplateSettingData = {
+    html?: string
+    links: TemplateFooterSettingLink[]
+    body?: string
+}
 
-export type TemplateFooterSetting = {
+export type TemplateSetting = {
     id: string
     agencyId?: string
     eventId?: string
     channel: TemplateChannel
-    // type: 'footer'
+    type: TemplateSettingType
+    settingData: TemplateSettingData
 
-    links: TemplateFooterSettingLink[]
-    body?: string
 }
 
 type TemplateFooterSettingLink = {

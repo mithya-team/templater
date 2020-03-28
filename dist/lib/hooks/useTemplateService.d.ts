@@ -1,13 +1,14 @@
-import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateFooterSetting } from '../types';
+import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateSetting } from '../types';
 export declare const useTemplateService: (defaultFilter?: Record<string, any>) => {
     flows: Partial<Record<string, {
+        name: string;
         fields: import("../types").TemplateTypeField[];
     }>>;
     templates: Template[];
-    settings: TemplateFooterSetting;
-    createSetting: (setting: Partial<TemplateFooterSetting>) => Promise<void>;
-    updateSetting: (id: string, setting: Partial<TemplateFooterSetting>) => Promise<void>;
-    saveSettings: (setting: Partial<TemplateFooterSetting>) => Promise<void>;
+    settings: TemplateSetting[];
+    createSetting: (setting: Partial<TemplateSetting>) => Promise<void>;
+    updateSetting: (id: string, setting: Partial<TemplateSetting>) => Promise<void>;
+    saveSettings: (setting: Partial<TemplateSetting>) => Promise<void>;
     enableTemplate: (id: string) => Promise<void>;
     status: TemplateServiceStatus;
     createTemplate: (template: Partial<Template>) => Promise<any>;

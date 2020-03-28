@@ -43,3 +43,33 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
     console.log("Templater Initialized", config);
 }
+
+
+export const QUILL_MODULES = {
+    history: {
+        delay: 100,
+        maxStack: 200,
+        userOnly: false
+    },
+    toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        // [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'color': [] }],
+        [{ 'align': [] }],
+        // [{ 'direction': 'rtl' }],
+        // ['clean'],
+    ],
+
+}
+
+export const QUILL_FORMATS = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'indent',
+    'link', 'image', 'color', 'script', 'font', 'align',
+    'direction',
+    'size', 'list',
+    'blockquote', 'code-block'
+]

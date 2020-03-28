@@ -9,7 +9,7 @@ export declare type TemplaterConfig = {
     };
     disableTabs: boolean;
     listingType: 'grid' | 'list';
-    onActionCompleted: (action: string, message: string) => void;
+    onActionCompleted: (action: 'success' | 'error', message: string) => void;
     theme: Theme;
     rootContainerProps: BoxProps;
     dialogProps: Partial<{
@@ -28,6 +28,7 @@ export declare type TemplateTypeField = {
     isRequired: boolean;
 };
 export declare type TemplateTypeConfig = Record<string, {
+    name: string;
     fields: TemplateTypeField[];
 }>;
 export declare type TemplateProviderConfig = {
@@ -44,7 +45,7 @@ export declare type TPicture = {
     url: string;
 };
 export declare type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'];
-export declare type SettingFormKey = keyof TemplateFooterSetting;
+export declare type SettingFormKey = keyof TemplateSettingData;
 export declare type TemplateField = {
     value: string;
     description: string;
@@ -79,13 +80,19 @@ declare type TTemplateData = {
     subject: string;
     html: string;
 };
-export declare type TemplateFooterSetting = {
+declare type TemplateSettingType = 'footer';
+declare type TemplateSettingData = {
+    html?: string;
+    links: TemplateFooterSettingLink[];
+    body?: string;
+};
+export declare type TemplateSetting = {
     id: string;
     agencyId?: string;
     eventId?: string;
     channel: TemplateChannel;
-    links: TemplateFooterSettingLink[];
-    body?: string;
+    type: TemplateSettingType;
+    settingData: TemplateSettingData;
 };
 declare type TemplateFooterSettingLink = {
     icon?: TPicture;

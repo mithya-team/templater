@@ -5,6 +5,8 @@ interface IProps<T = unknown> {
         width: string;
         height: string;
     };
+    avatar?: boolean;
+    mini?: boolean;
     folderName?: string;
     placeholderText?: string;
     loading?: boolean;

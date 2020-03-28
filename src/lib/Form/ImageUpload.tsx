@@ -11,6 +11,8 @@ interface IProps<T = unknown> {
         width: string,
         height: string
     }
+    avatar?: boolean
+    mini?: boolean
     folderName?: string
     placeholderText?: string
     loading?: boolean
@@ -23,7 +25,7 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
     const theme = useTheme<Theme>()
     const classes = useStyles(props)
 
-    const { dimension = { width: '100%', height: '250px' }, placeholderText = '' } = props
+    const { mini = false, avatar = false, dimension = { width: '100%', height: '250px' }, placeholderText = '' } = props
 
     const uploadFiles = async (files: any[]) => {
 
@@ -53,10 +55,10 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
 
 
     return props.loading ? <Typography align="center"><CircularProgress /> </Typography> : (
-        <Paper square>
+        <Paper square={avatar ? false : true} style={{ borderRadius: avatar ? '50%' : undefined }}>
             {
                 props.imageUrl ?
-                    <img src={props.imageUrl} width={dimension.width} height={dimension.height} className={classes.image} /> :
+                    <img src={props.imageUrl} width={dimension.width} height={dimension.height} className={classes.image} style={{ borderRadius: avatar ? '50%' : 0 }} /> :
                     <div style={{ width: dimension.width, height: dimension.height }} className={classes.imagePlaceholder} />
             }
 
@@ -64,12 +66,11 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
                 {
                     !props.imageUrl ?
                         <>
-                            <Typography variant="body2">ADD IMAGE</Typography>
                             <Typography variant="body2">{placeholderText}</Typography>
                         </> : null
                 }
-                <Fab size="small" color="primary" className={classes.uploadBtn}>
-                    <i className="material-icons">camera_alt</i>
+                <Fab size="small" color="primary" className={classes.uploadBtn} style={mini ? { width: 30, height: 30, minHeight: 0, opacity: !!props.imageUrl ? 0 : 1 } : {}}>
+                    <i style={mini ? { fontSize: 14 } : {}} className="material-icons">camera_alt</i>
                     <FileInput
                         accept="image/*"
                         multiple={false}

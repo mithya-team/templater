@@ -1,7 +1,7 @@
 import { Template } from '..';
 import Axios from 'axios';
 import { API_URL, SETTINGS_API_URL } from './Config';
-import { TemplateFooterSetting } from './types';
+import { TemplateSetting } from './types';
 
 
 
@@ -117,7 +117,7 @@ export class TemplateService {
     * @param setting TemplateFooterSetting
     * @return Promise<AxiosResponse<TemplateFooterSetting>>>
     */
-    static createSetting = (setting: Partial<TemplateFooterSetting>) => Axios.request({
+    static createSetting = (setting: Partial<TemplateSetting>) => Axios.request({
         url: SETTINGS_API_URL,
         method: 'POST',
         data: setting
@@ -129,7 +129,7 @@ export class TemplateService {
        * @param setting The setting to be updated
        * @return Promise<AxiosResponse<TemplateFooterSetting>>>
        */
-    static updateSetting = (id: string, setting: Partial<TemplateFooterSetting>) => Axios.request({
+    static updateSetting = (id: string, setting: Partial<TemplateSetting>) => Axios.request({
         url: `${SETTINGS_API_URL}/${id}`,
         method: 'PATCH',
         data: setting

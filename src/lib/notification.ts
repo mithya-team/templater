@@ -1,24 +1,24 @@
 import { config } from "./Config";
 
 export class Notifier {
-    static templateCreate = (success: boolean) => {
-        config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
+    static templateCreate = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : error?.response?.data?.error?.message || 'Error creating template');
     }
-    static templateUpdate = (success: boolean) => {
-        config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
+    static templateUpdate = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template updated successfully' : error?.response?.data?.error?.message || 'Error updating template');
     }
-    static templateSend = (success: boolean) => {
-        config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
+    static templateSend = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Test message sent' : error?.response?.data?.error?.message || 'Error sending test message');
     }
-    static templateEnabled = (success: boolean) => {
-        config.onActionCompleted('TEMPLATE ENABLE', success ? 'Template enabled successfully' : 'Error enabling template');
+    static templateEnabled = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template enabled successfully' : error?.response?.data?.error?.message || 'Error enabling template');
     }
 
-    static templateSettingCreate = (success: boolean) => {
-        config.onActionCompleted('SETTINGS CREATE', success ? 'Setting successfully created ' : 'Error creating setting');
+    static templateSettingCreate = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting successfully created ' : error?.response?.data?.error?.message || 'Error creating setting');
     }
-    static templateSettingUpdate = (success: boolean) => {
-        config.onActionCompleted('SETTING UPDATE', success ? 'Setting updated successfully ' : 'Error updating setting');
+    static templateSettingUpdate = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : error?.response?.data?.error?.message || 'Error updating setting');
     }
 
 }

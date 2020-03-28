@@ -1,8 +1,8 @@
 import React from 'react';
-import { SettingFormKey, TemplateFooterSetting } from '../types';
+import { SettingFormKey, TemplateSetting } from '../types';
 interface FooterFormProps {
     onChange: (key: SettingFormKey, value: any) => void;
-    settings: TemplateFooterSetting;
+    setting: Partial<TemplateSetting>;
 }
 declare const FooterForm: React.FC<FooterFormProps>;
 export default FooterForm;

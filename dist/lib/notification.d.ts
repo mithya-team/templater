@@ -1,8 +1,8 @@
 export declare class Notifier {
-    static templateCreate: (success: boolean) => void;
-    static templateUpdate: (success: boolean) => void;
-    static templateSend: (success: boolean) => void;
-    static templateEnabled: (success: boolean) => void;
-    static templateSettingCreate: (success: boolean) => void;
-    static templateSettingUpdate: (success: boolean) => void;
+    static templateCreate: (error?: any) => void;
+    static templateUpdate: (error?: any) => void;
+    static templateSend: (error?: any) => void;
+    static templateEnabled: (error?: any) => void;
+    static templateSettingCreate: (error?: any) => void;
+    static templateSettingUpdate: (error?: any) => void;
 }

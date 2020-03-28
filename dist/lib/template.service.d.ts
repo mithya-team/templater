@@ -1,5 +1,5 @@
 import { Template } from '..';
-import { TemplateFooterSetting } from './types';
+import { TemplateSetting } from './types';
 /**
  * @class TemplateService
  * @description Services related to templates and CRUD operation
@@ -62,12 +62,12 @@ export declare class TemplateService {
     * @param setting TemplateFooterSetting
     * @return Promise<AxiosResponse<TemplateFooterSetting>>>
     */
-    static createSetting: (setting: Partial<TemplateFooterSetting>) => Promise<import("axios").AxiosResponse<any>>;
+    static createSetting: (setting: Partial<TemplateSetting>) => Promise<import("axios").AxiosResponse<any>>;
     /**
        * Update an existing setting
        * @param id ID of the setting to be updated
        * @param setting The setting to be updated
        * @return Promise<AxiosResponse<TemplateFooterSetting>>>
        */
-    static updateSetting: (id: string, setting: Partial<TemplateFooterSetting>) => Promise<import("axios").AxiosResponse<any>>;
+    static updateSetting: (id: string, setting: Partial<TemplateSetting>) => Promise<import("axios").AxiosResponse<any>>;
 }

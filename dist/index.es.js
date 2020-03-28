@@ -1550,6 +1550,30 @@ var initializeTemplater = function (configuration) {
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
     console.log("Templater Initialized", config);
 };
+var QUILL_MODULES = {
+    history: {
+        delay: 100,
+        maxStack: 200,
+        userOnly: false
+    },
+    toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        // [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'color': [] }],
+        [{ 'align': [] }],
+    ],
+};
+var QUILL_FORMATS = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'indent',
+    'link', 'image', 'color', 'script', 'font', 'align',
+    'direction',
+    'size', 'list',
+    'blockquote', 'code-block'
+];
 
 /**
  * @class TemplateService
@@ -1666,23 +1690,29 @@ var TemplateService = /** @class */ (function () {
 var Notifier = /** @class */ (function () {
     function Notifier() {
     }
-    Notifier.templateCreate = function (success) {
-        config.onActionCompleted('CREATE', success ? 'Template successfully created' : 'Error creating template');
+    Notifier.templateCreate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating template');
     };
-    Notifier.templateUpdate = function (success) {
-        config.onActionCompleted('UPDATE', success ? 'Template updated successfully' : 'Error updating template');
+    Notifier.templateUpdate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template updated successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating template');
     };
-    Notifier.templateSend = function (success) {
-        config.onActionCompleted('TEST', success ? 'Test message sent' : 'Error sending test message');
+    Notifier.templateSend = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Test message sent' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error sending test message');
     };
-    Notifier.templateEnabled = function (success) {
-        config.onActionCompleted('TEMPLATE ENABLE', success ? 'Template enabled successfully' : 'Error enabling template');
+    Notifier.templateEnabled = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template enabled successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error enabling template');
     };
-    Notifier.templateSettingCreate = function (success) {
-        config.onActionCompleted('SETTINGS CREATE', success ? 'Setting successfully created ' : 'Error creating setting');
+    Notifier.templateSettingCreate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting successfully created ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating setting');
     };
-    Notifier.templateSettingUpdate = function (success) {
-        config.onActionCompleted('SETTING UPDATE', success ? 'Setting updated successfully ' : 'Error updating setting');
+    Notifier.templateSettingUpdate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating setting');
     };
     return Notifier;
 }());
@@ -1691,7 +1721,7 @@ var FILTER = { order: 'created DESC' };
 var useTemplateService = function (defaultFilter) {
     if (defaultFilter === void 0) { defaultFilter = FILTER; }
     var _a = useState([]), templates = _a[0], setTemplates = _a[1];
-    var _b = useState({ channel: 'email', links: [], id: '' }), settings = _b[0], setSettings = _b[1];
+    var _b = useState([]), settings = _b[0], setSettings = _b[1];
     var _c = useState({}), flows = _c[0], setFlows = _c[1];
     var _d = useState('done'), status = _d[0], setStatus = _d[1];
     var _e = useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
@@ -1716,7 +1746,7 @@ var useTemplateService = function (defaultFilter) {
                 case 1:
                     res = _a.sent();
                     if (res.data[0])
-                        setSettings(res.data[0]);
+                        setSettings(res.data);
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
@@ -1739,38 +1769,49 @@ var useTemplateService = function (defaultFilter) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.createSetting(setting)];
+                    setStatus('loading');
+                    _a.label = 1;
                 case 1:
-                    res = _a.sent();
-                    setSettings(res.data);
-                    Notifier.templateCreate(true);
-                    return [3 /*break*/, 3];
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.createSetting(setting)];
                 case 2:
+                    res = _a.sent();
+                    console.log("setting created", res.data);
+                    setSettings(__spreadArrays([res.data], settings));
+                    Notifier.templateCreate();
+                    setStatus('done');
+                    return [3 /*break*/, 4];
+                case 3:
                     error_2 = _a.sent();
-                    Notifier.templateCreate(false);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    Notifier.templateCreate(error_2);
+                    setStatus('error');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_3;
+        var res_1, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.updateSetting(id, setting)];
+                    setStatus('loading');
+                    _a.label = 1;
                 case 1:
-                    res = _a.sent();
-                    setSettings(res.data);
-                    Notifier.templateUpdate(true);
-                    return [3 /*break*/, 3];
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.updateSetting(id, setting)];
                 case 2:
+                    res_1 = _a.sent();
+                    setSettings(__spreadArrays(settings.map(function (s) { var _a; return s.id === ((_a = res_1.data) === null || _a === void 0 ? void 0 : _a.id) ? (__assign(__assign({}, s), res_1.data)) : s; })));
+                    Notifier.templateUpdate();
+                    setStatus('done');
+                    return [3 /*break*/, 4];
+                case 3:
                     error_3 = _a.sent();
-                    Notifier.templateUpdate(false);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    Notifier.templateUpdate(error_3);
+                    setStatus('error');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
@@ -1812,19 +1853,19 @@ var useTemplateService = function (defaultFilter) {
                     res = _a.sent();
                     setTemplates(__spreadArrays([res.data], templates));
                     setStatus('done');
-                    Notifier.templateCreate(true);
+                    Notifier.templateCreate();
                     return [2 /*return*/, res.data];
                 case 3:
                     error_5 = _a.sent();
                     setStatus('error');
-                    Notifier.templateCreate(false);
+                    Notifier.templateCreate(error_5);
                     throw error_5;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_1, error_6;
+        var res_2, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1834,22 +1875,22 @@ var useTemplateService = function (defaultFilter) {
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, TemplateService.updateTemplate(id, template)];
                 case 2:
-                    res_1 = _a.sent();
-                    setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_1.data)) : t; })));
+                    res_2 = _a.sent();
+                    setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_2.data)) : t; })));
                     setStatus('done');
-                    Notifier.templateUpdate(true);
-                    return [2 /*return*/, res_1.data];
+                    Notifier.templateUpdate();
+                    return [2 /*return*/, res_2.data];
                 case 3:
                     error_6 = _a.sent();
                     setStatus('error');
-                    Notifier.templateUpdate(false);
+                    Notifier.templateUpdate(error_6);
                     throw error_6;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_2, flow_1, updatedTemplates, error_7;
+        var res_3, flow_1, updatedTemplates, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1859,16 +1900,16 @@ var useTemplateService = function (defaultFilter) {
                     _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, TemplateService.enableTemplate(id)];
                 case 2:
-                    res_2 = _a.sent();
-                    flow_1 = res_2.data.flow || '';
-                    updatedTemplates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_2.data)) : t.flow === flow_1 ? (__assign(__assign({}, t), { enabled: false })) : t; });
+                    res_3 = _a.sent();
+                    flow_1 = res_3.data.flow || '';
+                    updatedTemplates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_3.data)) : t.flow === flow_1 ? (__assign(__assign({}, t), { enabled: false })) : t; });
                     setStatus('done');
                     setTemplates(updatedTemplates);
-                    Notifier.templateEnabled(true);
+                    Notifier.templateEnabled();
                     return [3 /*break*/, 4];
                 case 3:
                     error_7 = _a.sent();
-                    Notifier.templateEnabled(false);
+                    Notifier.templateEnabled(error_7);
                     setStatus('error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -1901,10 +1942,10 @@ var useTemplateService = function (defaultFilter) {
         return __generator(this, function (_a) {
             try {
                 // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
-                Notifier.templateSend(true);
+                Notifier.templateSend();
             }
             catch (error) {
-                Notifier.templateSend(false);
+                Notifier.templateSend(error);
             }
             return [2 /*return*/];
         });
@@ -2015,13 +2056,14 @@ var unescapeHTML = function (html) {
     return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
 };
 var generateHTML = function (body, banner, footer) {
-    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 500px; height: 250px; object-fit: cover;\" /></td></tr>" : '';
+    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 500px; height: 250px; object-fit: cover; border-radius: 4px 4px 0px 0px\" /></td></tr>" : '';
     var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + unescapeHTML(trimHTML(body)) + "</div></td></tr>";
     var createTable = function (content) {
-        return "<table style=\"width: 500px; margin: 0 auto; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">" + content + "</table>";
+        return "<table style=\"width: 500px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">" + content + "</table>";
     };
-    return createTable(BANNER + BODY);
+    return wrapWithHTML(createTable(BANNER + BODY));
 };
+var wrapWithHTML = function (body) { return ("\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html \n    xmlns=3D\"http://www.w3.org/1999/xhtml\" \n    xmlns=3D\"http://www.w3.org/1999/xhtml\" \n    style=3D\"height: 100% !important; width: 100% !important; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; padding: 0;\"\n>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n\n<!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->\n  <!--[if mso]>\n    <style>\n      * {\n        font-family: sans-serif !important;\n      }\n    </style>\n<![endif] -->\n    <!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->\n    <!--[if !mso]><!-->\n    <!-- insert web font reference, eg: <link href=3D'https://fonts.googleapis.com/css?family=3DRoboto:400,700' rel=3D'stylesheet' type=3D'text/css'> -->\n    <!--<![endif]-->\n\n    <!-- Web Font / @font-face : END -->\n\n    <!-- CSS Reset -->\n    <style type=3D\"text/css\">\n\n      /* What it does: Remove spaces around the email design added by some email clients. */\n      /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */\n      html,\n      body {\n        Margin: 0 !important;\n        padding: 0 !important;\n        height: 100% !important;\n        width: 100% !important;\n      }\n\n      /* What it does: Stops email clients resizing small text. */\n      * {\n        -ms-text-size-adjust: 100%;\n        -webkit-text-size-adjust: 100%;\n      }\n\n      /* What it does: Forces Outlook.com to display emails full width. */\n      .ExternalClass {\n        width: 100%;\n      }\n\n      /* What it does: Centers email on Android 4.4 */\n      div[style*=3D\"margin: 16px 0\"] {\n        margin:0 !important;\n      }\n\n      /* What it does: Stops Outlook from adding extra spacing to tables. */\n      table,\n      td {\n        mso-table-lspace: 0pt !important;\n        mso-table-rspace: 0pt !important;\n      }\n\n      /* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */\n      table {\n        border-spacing: 0 !important;\n        border-collapse: collapse !important;\n        table-layout: fixed !important;\n        Margin: 0 auto !important;\n      }\n      table table table {\n        table-layout: auto;\n      }\n\n      /* What it does: Uses a better rendering method when resizing images in IE. */\n      img {\n        -ms-interpolation-mode:bicubic;\n      }\n\n      h1 {\n        font-size: 24px;\n        color: #2d2d2d;\n      }\n\n      p {\n        color:       #2d2d2d;\n        line-height: 26px;\n        font-size:   16px;\n\n      }\n\n      a {\n        color: #423bd8;\n        text-decoration: none;\n        font-weight: bold;\n      }\n\n      /* What it does: Overrides styles added when Yahoo's auto-senses a link. */\n      .yshortcuts a {\n        border-bottom: none !important;\n      }\n\n      /* What it does: A work-around for iOS meddling in triggered links. */\n      .mobile-link--footer a,\n      a[x-apple-data-detectors] {\n        color:inherit !important;\n        text-decoration: underline !important;\n      }\n\n    </style>\n\n    <!-- Progressive Enhancements -->\n    <style>\n\n      /* What it does: Hover styles for buttons */\n      .button-td,\n      .button-a {\n        transition: all 100ms ease-in;\n      }\n      .button-td:hover,\n      .button-a:hover {\n        background: #4675DC !important;\n        border-color: #4675DC !important;\n      }\n\n      /* Media Queries */\n      @media screen and (max-width: 480px) {\n        /* What it does: Forces elements to resize to the full width of their container. Useful for resizing images beyond their max-width. */\n        .fluid,\n        .fluid-centered {\n          width: 100% !important;\n          max-width: 100% !important;\n          height: auto !important;\n          Margin-left: auto !important;\n          Margin-right: auto !important;\n        }\n        /* And center justify these ones. */\n        .fluid-centered {\n          Margin-left: auto !important;\n          Margin-right: auto !important;\n        }\n\n        /* What it does: Forces table cells into full-width rows. */\n        .stack-column,\n        .stack-column-center {\n          display: block !important;\n          width: 100% !important;\n          max-width: 100% !important;\n          direction: ltr !important;\n        }\n        /* And center justify these ones. */\n        .stack-column-center {\n          text-align: center !important;\n        }\n\n        /* What it does: Generic utility class for centering. Useful for images, buttons, and nested tables. */\n        \n\n      }\n\n</style>\n\n<style>\n  body {\n    margin: 0 !important; \n    padding: 0 !important; height: 100% !important; \n    width: 100% !important;\n}\n.ExternalClass {\n    width: 100%;\n}\nimg {\n    -ms-interpolation-mode: bicubic;\n}\n</style>\n</head>\n<body>\n<div style=\"background-color: #F5F5F5; padding: 20px 0px;\">\n" + body + "\n</div></body>\n</html>\n").replace(/(\n)/ig, ''); };
 
 var useStyles$1 = makeStyles(function () { return createStyles({
     fabContainer: {
@@ -21867,7 +21909,7 @@ function SingleImageUpload(props) {
     var _this = this;
     var theme = useTheme();
     var classes = useStyles$5(props);
-    var _a = props.dimension, dimension = _a === void 0 ? { width: '100%', height: '250px' } : _a, _b = props.placeholderText, placeholderText = _b === void 0 ? '' : _b;
+    var _a = props.mini, mini = _a === void 0 ? false : _a, _b = props.avatar, avatar = _b === void 0 ? false : _b, _c = props.dimension, dimension = _c === void 0 ? { width: '100%', height: '250px' } : _c, _d = props.placeholderText, placeholderText = _d === void 0 ? '' : _d;
     var uploadFiles = function (files) { return __awaiter(_this, void 0, void 0, function () {
         var file, filePromises;
         var _this = this;
@@ -21903,17 +21945,16 @@ function SingleImageUpload(props) {
     }); };
     return props.loading ? React.createElement(Typography, { align: "center" },
         React.createElement(CircularProgress, null),
-        " ") : (React.createElement(Paper, { square: true },
+        " ") : (React.createElement(Paper, { square: avatar ? false : true, style: { borderRadius: avatar ? '50%' : undefined } },
         props.imageUrl ?
-            React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image }) :
+            React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: { borderRadius: avatar ? '50%' : 0 } }) :
             React.createElement("div", { style: { width: dimension.width, height: dimension.height }, className: classes.imagePlaceholder }),
         React.createElement("div", { className: classes.buttonContainer, style: { top: !!props.imageUrl ? undefined : '50%' } },
             !props.imageUrl ?
                 React.createElement(React.Fragment, null,
-                    React.createElement(Typography, { variant: "body2" }, "ADD IMAGE"),
                     React.createElement(Typography, { variant: "body2" }, placeholderText)) : null,
-            React.createElement(Fab, { size: "small", color: "primary", className: classes.uploadBtn },
-                React.createElement("i", { className: "material-icons" }, "camera_alt"),
+            React.createElement(Fab, { size: "small", color: "primary", className: classes.uploadBtn, style: mini ? { width: 30, height: 30, minHeight: 0, opacity: !!props.imageUrl ? 0 : 1 } : {} },
+                React.createElement("i", { style: mini ? { fontSize: 14 } : {}, className: "material-icons" }, "camera_alt"),
                 React.createElement(FileInput, { accept: "image/*", multiple: false, onDone: uploadFiles })))));
 }
 var useStyles$5 = makeStyles(function (theme) { return createStyles({
@@ -21993,15 +22034,12 @@ var Form = function (props) {
         //         curQuillInputIndex = range.index;
         // })
         editor.on('editor-change', function () {
-            var _a;
             var selection = editor.getSelection();
-            console.log("selection", (_a = selection) === null || _a === void 0 ? void 0 : _a.index);
             if (selection)
                 curQuillInputIndex = selection.index;
         });
     }, [quillRef]);
     var onImageUploadComplete = function (current, response) {
-        console.log("upload completed", response);
         onChange('banner', response);
         setLoading(false);
     };
@@ -22066,7 +22104,7 @@ var Form = function (props) {
                             React.createElement(TextField, { label: config.label, multiline: config.multiline || false, name: config.name, value: config.value, onChange: config.handleChange })))); }),
                     React.createElement(Box, { my: 2, width: "100%" },
                         React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                        React.createElement(lib, { ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
+                        React.createElement(lib, { formats: QUILL_FORMATS, modules: QUILL_MODULES, ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
         template.channel === 'sms' ? (React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React.createElement(Typography, null, "SMS"),
             React.createElement(Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React.createElement(Box, { my: 2, key: config.name, width: "100%" },
@@ -22217,36 +22255,59 @@ var Settings = function (props) {
 var useStyles$c = makeStyles(function (theme) { return createStyles({}); });
 
 var FooterForm = function (props) {
-    var onChange = props.onChange, settings = props.settings;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var onChange = props.onChange, _k = props.setting, setting = _k === void 0 ? {} : _k;
     var classes = useStyles$d();
+    var _l = useState(false), loading = _l[0], setLoading = _l[1];
+    var onImagesSelected = function (file) {
+        setLoading(true);
+    };
     var handleRteChange = function (content) { return onChange('body', content); };
     var handleChange = function (index) { return function (e) {
-        var _links = __spreadArrays(settings.links);
+        var _a, _b;
+        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
         if (_links[index])
             _links[index] = __assign(__assign({}, _links[index]), { link: e.target.value });
         else
             _links.push({ link: e.target.value });
         onChange('links', _links);
     }; };
-    var handleLinkRemove = function (index) { return function () {
-        onChange('links', settings.links.filter(function (_, i) { return index !== i; }));
+    var onImageUploadComplete = function (index) { return function (current, response) {
+        var _a, _b;
+        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
+        if (_links[index])
+            _links[index] = __assign(__assign({}, _links[index]), { icon: response });
+        else
+            _links.push({ icon: response, link: '' });
+        onChange('links', _links);
+        setLoading(false);
     }; };
+    var handleLinkRemove = function (index) { return function () {
+        var _a, _b;
+        onChange('links', ((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links.filter(function (_, i) { return index !== i; })) || []);
+    }; };
+    var linksLength = ((_b = (_a = setting.settingData) === null || _a === void 0 ? void 0 : _a.links) === null || _b === void 0 ? void 0 : _b.length) || 0;
     return (React.createElement(Paper, null,
         React.createElement(Box, { p: 3 },
             React.createElement(Box, { my: 2, width: "100%" },
                 React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
-                React.createElement(lib, { className: classes.rte, value: settings.body || '', onChange: handleRteChange })),
+                React.createElement(lib, { formats: QUILL_FORMATS, modules: QUILL_MODULES, className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
             React.createElement(Box, { my: 2 },
-                React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"),
-                settings.links.map(function (l, i) { return (React.createElement(Box, { key: i, display: "flex", alignItems: "center", width: "100%" },
-                    React.createElement(Box, { mr: 1 }, "upload"),
+                React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"), (_e = (_d = setting.settingData) === null || _d === void 0 ? void 0 : _d.links) === null || _e === void 0 ? void 0 :
+                _e.map(function (l, i) {
+                    var _a, _b, _c, _d;
+                    return (React.createElement(Box, { key: i, my: 1, display: "flex", alignItems: "center", width: "100%" },
+                        React.createElement(Box, { mr: 1, position: "relative" },
+                            React.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: '30px', height: '30px' }, folderName: 'template', imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || '', loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i) })),
+                        React.createElement(FormControl, { fullWidth: true },
+                            React.createElement(Input, { value: l.link || '', onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
+                                    React.createElement("i", { className: "material-icons" }, "close")) }))));
+                }),
+                React.createElement(Box, { my: 1, display: "flex", alignItems: "center", width: "100%" },
+                    React.createElement(Box, { mr: 1, position: "relative" },
+                        React.createElement(SingleImageUpload, { avatar: true, mini: true, placeholderText: " ", dimension: { width: '30px', height: '30px' }, folderName: 'template', imageUrl: ((_j = (_h = (_g = (_f = setting) === null || _f === void 0 ? void 0 : _f.settingData) === null || _g === void 0 ? void 0 : _g.links[linksLength]) === null || _h === void 0 ? void 0 : _h.icon) === null || _j === void 0 ? void 0 : _j.url) || '', loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(linksLength) })),
                     React.createElement(FormControl, { fullWidth: true },
-                        React.createElement(Input, { value: l.link || '', onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
-                                React.createElement("i", { className: "material-icons" }, "close")) })))); }),
-                React.createElement(Box, { display: "flex", alignItems: "center", width: "100%" },
-                    React.createElement(Box, { mr: 1 }, "upload"),
-                    React.createElement(FormControl, { fullWidth: true },
-                        React.createElement(Input, { value: '', onChange: handleChange(settings.links.length) })))))));
+                        React.createElement(Input, { value: '', onChange: handleChange(linksLength) })))))));
 };
 var useStyles$d = makeStyles$1(function (theme) { return createStyles$1({
     rte: {

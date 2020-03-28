@@ -8,3 +8,20 @@ export declare let SETTINGS_API_URL: string;
  * @description Initialize the templater with provided configurations
  */
 export declare const initializeTemplater: (configuration: Partial<TemplaterConfig>) => void;
+export declare const QUILL_MODULES: {
+    history: {
+        delay: number;
+        maxStack: number;
+        userOnly: boolean;
+    };
+    toolbar: (string[] | {
+        'header': (number | boolean)[];
+    }[] | {
+        'indent': string;
+    }[] | {
+        'color': never[];
+    }[] | {
+        'align': never[];
+    }[])[];
+};
+export declare const QUILL_FORMATS: string[];

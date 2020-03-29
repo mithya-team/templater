@@ -5,3 +5,7 @@ export declare const copyLink: (url: string) => void;
 export declare const trimHTML: (html: string) => string;
 export declare const unescapeHTML: (html: string) => string;
 export declare const generateHTML: (body: string, banner?: TPicture | undefined, footer?: any) => string;
+export declare const getFooterHTML: (content: string, links: {
+    icon?: TPicture | undefined;
+    link: string;
+}[]) => string;

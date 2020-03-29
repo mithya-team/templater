@@ -9,7 +9,7 @@ export * from './lib/Form';
 export { default as FooterForm } from './lib/FooterForm';
 export * from './lib/FooterForm';
 
-export { generateHTML } from './lib/utils';
+export { generateHTML, getFooterHTML } from './lib/utils';
 export { initializeTemplater } from './lib/Config';
 
 export * from './lib/template.service';

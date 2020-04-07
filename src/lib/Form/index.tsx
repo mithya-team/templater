@@ -212,7 +212,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         border: `1px solid ${theme.palette.primary.main}`
     },
     rte: {
-        '& .ql-container': {
+        '& .ql-editor': {
             minHeight: 160
         }
     },

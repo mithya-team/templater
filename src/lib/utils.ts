@@ -51,18 +51,18 @@ export const unescapeHTML = (html: string) => {
 
 export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
 
-  const BANNER = banner ? `<tr><td><img src="${banner.url}" style="width: 500px; height: 250px; object-fit: cover; border-radius: 4px 4px 0px 0px" /></td></tr>` : ''
+  const BANNER = banner ? `<tr><td><img src="${banner.url}" style="width: 600px; height: 250px; object-fit: cover; border-radius: 4px 4px 0px 0px" /></td></tr>` : ''
   const BODY = `<tr><td><div style="padding: 20px 24px;">${unescapeHTML(trimHTML(body))}</div></td></tr>`;
   const FOOTER = `<tr><td><div style="padding:24px">${footer}</div></td></tr>`;
 
   const createTable = (content: string, footer: string = '') => {
     return `
-      <table style="width: 500px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
+      <table style="width: 600px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
       <tbody>
       ${content}
       </tbody>
       </table>
-      <table style="width: 500px; margin: 0 auto; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
+      <table style="width: 600px; margin: 0 auto; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
       <tbody>
       ${footer}
       </tbody>
@@ -283,7 +283,7 @@ const wrapWithHTML = (body: string) => `
   </style>
   </head>
   <body>
-  <div style="background-color: #F5F5F5; padding: 20px 0px;">
+  <div style="background-color: #F5F5F5; padding: 60px 0px;">
   ${body}
   </div></body>
   </html>

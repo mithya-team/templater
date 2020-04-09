@@ -108,7 +108,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     rte: {
-        '& .ql-container': {
+        '& .ql-editor': {
             minHeight: 160
         }
     },

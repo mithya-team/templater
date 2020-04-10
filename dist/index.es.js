@@ -22325,11 +22325,11 @@ var FooterForm = function (props) {
 };
 var useStyles$d = makeStyles$1(function (theme) { return createStyles$1({
     rte: {
-        '& .ql-container': {
+        '& .ql-editor': {
             minHeight: 160
         }
     },
 }); });
 
-export { FooterForm, Form, Pagination, Preview, Settings, TemplateCard, TemplatePreview, TemplateService, generateHTML, getFooterHTML, initializeTemplater, usePagination, useTemplateService };
+export { FooterForm, Form, Pagination, Preview, QUILL_FORMATS, QUILL_MODULES, Settings, TemplateCard, TemplatePreview, TemplateService, generateHTML, getFooterHTML, initializeTemplater, usePagination, useTemplateService };
 //# sourceMappingURL=index.es.js.map

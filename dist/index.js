@@ -22332,7 +22332,7 @@ var FooterForm = function (props) {
 };
 var useStyles$d = styles.makeStyles(function (theme) { return styles.createStyles({
     rte: {
-        '& .ql-container': {
+        '& .ql-editor': {
             minHeight: 160
         }
     },
@@ -22342,6 +22342,8 @@ exports.FooterForm = FooterForm;
 exports.Form = Form;
 exports.Pagination = Pagination;
 exports.Preview = Preview;
+exports.QUILL_FORMATS = QUILL_FORMATS;
+exports.QUILL_MODULES = QUILL_MODULES;
 exports.Settings = Settings;
 exports.TemplateCard = TemplateCard;
 exports.TemplatePreview = TemplatePreview;

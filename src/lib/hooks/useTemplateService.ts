@@ -100,6 +100,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         }
     }
 
+
     const updateTemplate = async (id: string, template: Partial<Template>) => {
         setStatus('loading');
         try {

@@ -12,6 +12,7 @@ export interface IFormProps {
     fields?: TemplateTypeField[]
     template: Partial<Template>
     flows: string[]
+    onLinkCopy?: (link: string) => void
     onChange: (key: FormKey, value: any) => void
 }
 
@@ -75,6 +76,9 @@ const Form: React.FC<IFormProps> = (props) => {
         if (!quillRef.current) return;
         const editor = quillRef.current.getEditor();
         editor.insertText(curQuillInputIndex, valueToBeAppended);
+
+        if (props.onLinkCopy)
+            props.onLinkCopy(valueToBeAppended)
 
     }
 

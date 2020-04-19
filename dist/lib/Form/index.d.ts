@@ -4,6 +4,7 @@ export interface IFormProps {
     fields?: TemplateTypeField[];
     template: Partial<Template>;
     flows: string[];
+    onLinkCopy?: (link: string) => void;
     onChange: (key: FormKey, value: any) => void;
 }
 declare const Form: React.FC<IFormProps>;

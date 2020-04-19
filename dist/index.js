@@ -22087,6 +22087,8 @@ var Form = function (props) {
             return;
         var editor = quillRef.current.getEditor();
         editor.insertText(curQuillInputIndex, valueToBeAppended);
+        if (props.onLinkCopy)
+            props.onLinkCopy(valueToBeAppended);
     };
     var EMAIL_INPUT_CONFIG = [
         { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },

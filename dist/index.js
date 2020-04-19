@@ -21934,7 +21934,7 @@ function SingleImageUpload(props) {
     var _this = this;
     var theme = core.useTheme();
     var classes = useStyles$5(props);
-    var _a = props.mini, mini = _a === void 0 ? false : _a, _b = props.avatar, avatar = _b === void 0 ? false : _b, _c = props.dimension, dimension = _c === void 0 ? { width: '100%', height: '250px' } : _c, _d = props.placeholderText, placeholderText = _d === void 0 ? '' : _d;
+    var _a = props.mini, mini = _a === void 0 ? false : _a, _b = props.avatar, avatar = _b === void 0 ? false : _b, _c = props.dimension, dimension = _c === void 0 ? { width: '100%', height: 'unset' } : _c, _d = props.placeholderText, placeholderText = _d === void 0 ? '' : _d;
     var uploadFiles = function (files) { return __awaiter(_this, void 0, void 0, function () {
         var file, filePromises;
         var _this = this;
@@ -22118,7 +22118,7 @@ var Form = function (props) {
         props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
             React__default.createElement(core.Box, { my: 3, position: "relative" },
                 React__default.createElement(SingleImageUpload, { placeholderText: " ", 
-                    // dimension={{ height: '250px' }}
+                    // dimension={{ height: 'unset' }}
                     folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?

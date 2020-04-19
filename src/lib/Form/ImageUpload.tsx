@@ -25,7 +25,7 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
     const theme = useTheme<Theme>()
     const classes = useStyles(props)
 
-    const { mini = false, avatar = false, dimension = { width: '100%', height: '250px' }, placeholderText = '' } = props
+    const { mini = false, avatar = false, dimension = { width: '100%', height: 'unset' }, placeholderText = '' } = props
 
     const uploadFiles = async (files: any[]) => {
 

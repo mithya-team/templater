@@ -102,6 +102,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
       </table>
   `.replace(/(\n)/ig, '');
 
+
   return HTML
 }
 

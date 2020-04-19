@@ -42,7 +42,10 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
     }
     const saveSettings = async (setting: Partial<TemplateSetting>) => {
         if (!setting.id) createSetting(setting)
-        else updateSetting(setting.id, setting)
+        else {
+            // const _s = settings.findIndex(s => s.i)
+            updateSetting(setting.id, setting)
+        }
     }
 
     const createSetting = async (setting: Partial<TemplateSetting>) => {
@@ -55,6 +58,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         } catch (error) {
             Notifier.templateCreate(error)
             setStatus('error')
+            throw error;
         }
     }
 
@@ -68,6 +72,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         } catch (error) {
             Notifier.templateUpdate(error)
             setStatus('error')
+            throw error;
         }
     }
 

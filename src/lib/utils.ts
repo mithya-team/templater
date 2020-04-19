@@ -96,7 +96,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
       `.replace(/(\n)/ig, '')
 
   const HTML = `
-      <table>
+      <table style="margin: 0 auto;">
           <tr><td>${LINKS}</td></tr>
           <tr><td>${BODY}</td></tr>
       </table>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Theme, Paper, Box, Typography, Avatar, Input, IconButton, FormControl } from '@material-ui/core'
+import React, { useState, useEffect } from 'react'
+import { Theme, Paper, Box, Typography, Avatar, Input, IconButton, FormControl, Icon } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ReactQuill from 'react-quill'
 import { SettingFormKey, TemplateSetting, TPicture } from '../types'
@@ -16,17 +16,29 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
     const classes = useStyles()
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        const _links = [...setting?.settingData?.links || []];
+        if (_links.length === 0) {
+            onChange('links', [{ link: '' }])
+        }
+    }, [])
     const onImagesSelected = (file: any) => {
         setLoading(true)
     }
 
     const handleRteChange = (content: string) => onChange('body', content)
+
+    const newMediaData = () => {
+        const _links = [...setting?.settingData?.links || []];
+        onChange('links', [..._links, { link: '' }])
+    }
+
     const handleChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
         let _links = [...setting?.settingData?.links || []];
         if (_links[index])
             _links[index] = { ..._links[index], link: e.target.value }
-        else
-            _links.push({ link: e.target.value })
+        // else
+        //     _links.push({ link: e.target.value })
         onChange('links', _links)
     }
 
@@ -34,8 +46,8 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
         let _links = [...setting?.settingData?.links || []];
         if (_links[index])
             _links[index] = { ..._links[index], icon: response }
-        else
-            _links.push({ icon: response, link: '' })
+        // else
+        //     _links.push({ icon: response, link: '' })
         onChange('links', _links)
         setLoading(false);
     }
@@ -82,23 +94,11 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                             </FormControl>
                         </Box>
                     ))}
+
                     <Box my={1} display="flex" alignItems="center" width="100%">
-                        <Box mr={1} position="relative">
-                            <SingleImageUpload
-                                avatar={true}
-                                mini={true}
-                                placeholderText=" "
-                                dimension={{ width: '30px', height: '30px' }}
-                                folderName={'template'}
-                                imageUrl={setting?.settingData?.links[linksLength]?.icon?.url || ''}
-                                loading={loading}
-                                onImageSelected={onImagesSelected}
-                                onImageUploadComplete={onImageUploadComplete(linksLength)}
-                            />
-                        </Box>
-                        <FormControl fullWidth>
-                            <Input value={''} onChange={handleChange(linksLength)} />
-                        </FormControl>
+                        <IconButton size="small" onClick={newMediaData}>
+                            <Icon>add</Icon>
+                        </IconButton>
                     </Box>
                 </Box>
             </Box>

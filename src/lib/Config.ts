@@ -58,6 +58,7 @@ export const QUILL_MODULES = {
         // [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'color': [] }],
         [{ 'align': [] }],
+        ['image'],
         // [{ 'direction': 'rtl' }],
         // ['clean'],
     ],
@@ -66,6 +67,7 @@ export const QUILL_MODULES = {
 
 export const QUILL_FORMATS = [
     'header',
+    'image',
     'bold', 'italic', 'underline', 'strike',
     'indent',
     'link', 'image', 'color', 'script', 'font', 'align',

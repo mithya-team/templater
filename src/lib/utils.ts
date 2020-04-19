@@ -274,6 +274,9 @@ const wrapWithHTML = (body: string) => `
       padding: 0 !important; height: 100% !important; 
       width: 100% !important;
   }
+  p > img {
+    width: 100%;
+  }
   .ExternalClass {
       width: 100%;
   }

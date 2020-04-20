@@ -87,11 +87,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     image: {
         display: 'block',
         // height: '250px',
+        minHeight: 250,
         objectFit: 'cover'
     },
     imagePlaceholder: {
         // width: '250px',
         // height: '250px',
+        minHeight: 250,
         background: 'white',
     },
     buttonContainer: {

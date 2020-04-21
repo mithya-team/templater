@@ -2061,7 +2061,7 @@ var unescapeHTML = function (html) {
     return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
 };
 var generateHTML = function (body, banner, footer) {
-    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 600px; height: 250px; object-fit: cover; border-radius: 4px 4px 0px 0px\" /></td></tr>" : '';
+    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 600px; object-fit: cover; border-radius: 4px 4px 0px 0px\" /></td></tr>" : '';
     var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + unescapeHTML(trimHTML(body)) + "</div></td></tr>";
     var FOOTER = "<tr><td><div style=\"padding:24px\">" + footer + "</div></td></tr>";
     var createTable = function (content, footer) {
@@ -2075,7 +2075,7 @@ var getFooterHTML = function (content, links) {
     var _links = [];
     links.forEach(function (l) {
         var _a;
-        _links.push(("\n          <td>\n              <a href=\"" + l.link + "\" target=\"_blank\">\n              <img src=\"" + ((_a = l.icon) === null || _a === void 0 ? void 0 : _a.url) + "\" width=\"30px\" height=\"30px\" style=\"border-radius: 15px\"/>\n              </a>\n          </td>\n      ").replace(/(\n)/ig, ''));
+        _links.push(("\n          <td>\n              <a href=\"" + l.link + "\" target=\"_blank\">\n              <img src=\"" + ((_a = l.icon) === null || _a === void 0 ? void 0 : _a.url) + "\" width=\"30px\" height=\"30px\"  style=\"border-radius: 15px\"/>\n              </a>\n          </td>\n      ").replace(/(\n)/ig, ''));
     });
     var LINKS = ("\n      <table align=\"center\">\n          <tr>\n              " + _links.join('') + "\n          </tr>\n      </table>\n      ").replace(/(\n)/ig, '');
     var HTML = ("\n      <table style=\"margin: 0 auto;\">\n          <tr><td>" + LINKS + "</td></tr>\n          <tr><td>" + BODY + "</td></tr>\n      </table>\n  ").replace(/(\n)/ig, '');
@@ -21979,7 +21979,7 @@ function SingleImageUpload(props) {
 var useStyles$5 = makeStyles(function (theme) { return createStyles({
     image: {
         display: 'block',
-        objectFit: 'cover'
+        objectFit: 'contain'
     },
     imagePlaceholder: {
         background: 'white',
@@ -22110,7 +22110,7 @@ var Form = function (props) {
                     React.createElement("span", null, template.flow)))))),
         props.template.channel === 'email' ? (React.createElement(React.Fragment, null,
             React.createElement(Box, { my: 3, position: "relative" },
-                React.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '250px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+                React.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '150px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?
                     React.createElement(Typography, { variant: "caption", className: classes.slug }, template.slug) : null,

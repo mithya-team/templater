@@ -87,7 +87,7 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
 const useStyles = makeStyles((theme: Theme) => createStyles({
     image: {
         display: 'block',
-        objectFit: 'cover'
+        objectFit: 'contain'
     },
     imagePlaceholder: {
         background: 'white',

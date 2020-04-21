@@ -51,7 +51,7 @@ export const unescapeHTML = (html: string) => {
 
 export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
 
-  const BANNER = banner ? `<tr><td><img src="${banner.url}" style="width: 600px; height: 250px; object-fit: cover; border-radius: 4px 4px 0px 0px" /></td></tr>` : ''
+  const BANNER = banner ? `<tr><td><img src="${banner.url}" style="width: 600px; object-fit: cover; border-radius: 4px 4px 0px 0px" /></td></tr>` : ''
   const BODY = `<tr><td><div style="padding: 20px 24px;">${unescapeHTML(trimHTML(body))}</div></td></tr>`;
   const FOOTER = `<tr><td><div style="padding:24px">${footer}</div></td></tr>`;
 
@@ -81,7 +81,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
     _links.push(`
           <td>
               <a href="${l.link}" target="_blank">
-              <img src="${l.icon?.url}" width="30px" height="30px" style="border-radius: 15px"/>
+              <img src="${l.icon?.url}" width="30px" height="30px"  style="border-radius: 15px"/>
               </a>
           </td>
       `.replace(/(\n)/ig, ''))

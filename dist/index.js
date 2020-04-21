@@ -1923,7 +1923,7 @@ var useTemplateService = function (defaultFilter) {
                     error_7 = _a.sent();
                     Notifier.templateEnabled(error_7);
                     setStatus('error');
-                    return [3 /*break*/, 4];
+                    throw error_7;
                 case 4: return [2 /*return*/];
             }
         });
@@ -21974,7 +21974,7 @@ function SingleImageUpload(props) {
         " ") : (React__default.createElement(core.Paper, { square: avatar ? false : true, style: { borderRadius: avatar ? '50%' : undefined } },
         props.imageUrl ?
             React__default.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: { borderRadius: avatar ? '50%' : 0, minHeight: dimension.minHeight } }) :
-            React__default.createElement("div", { style: { width: dimension.width, height: dimension.height }, className: classes.imagePlaceholder }),
+            React__default.createElement("div", { style: { width: dimension.width, height: dimension.height, minHeight: dimension.minHeight }, className: classes.imagePlaceholder }),
         React__default.createElement("div", { className: classes.buttonContainer, style: { top: !!props.imageUrl ? undefined : '50%' } },
             !props.imageUrl ?
                 React__default.createElement(React__default.Fragment, null,
@@ -21986,14 +21986,9 @@ function SingleImageUpload(props) {
 var useStyles$5 = core.makeStyles(function (theme) { return core.createStyles({
     image: {
         display: 'block',
-        // height: '250px',
-        // minHeight: 250,
         objectFit: 'cover'
     },
     imagePlaceholder: {
-        // width: '250px',
-        // height: '250px',
-        minHeight: 250,
         background: 'white',
     },
     buttonContainer: {
@@ -22122,7 +22117,7 @@ var Form = function (props) {
                     React__default.createElement("span", null, template.flow)))))),
         props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
             React__default.createElement(core.Box, { my: 3, position: "relative" },
-                React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '250px' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+                React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '250px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?
                     React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,

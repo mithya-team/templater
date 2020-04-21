@@ -60,7 +60,7 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
             {
                 props.imageUrl ?
                     <img src={props.imageUrl} width={dimension.width} height={dimension.height} className={classes.image} style={{ borderRadius: avatar ? '50%' : 0, minHeight: dimension.minHeight }} /> :
-                    <div style={{ width: dimension.width, height: dimension.height }} className={classes.imagePlaceholder} />
+                    <div style={{ width: dimension.width, height: dimension.height, minHeight: dimension.minHeight }} className={classes.imagePlaceholder} />
             }
 
             <div className={classes.buttonContainer} style={{ top: !!props.imageUrl ? undefined : '50%' }}>
@@ -87,14 +87,9 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
 const useStyles = makeStyles((theme: Theme) => createStyles({
     image: {
         display: 'block',
-        // height: '250px',
-        // minHeight: 250,
         objectFit: 'cover'
     },
     imagePlaceholder: {
-        // width: '250px',
-        // height: '250px',
-        minHeight: 250,
         background: 'white',
     },
     buttonContainer: {

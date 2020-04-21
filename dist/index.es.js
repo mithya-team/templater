@@ -1609,6 +1609,7 @@ var TemplateService = /** @class */ (function () {
     */
     TemplateService.enableTemplate = function (id) { return axios$1.request({
         url: API_URL + "/" + id + "/enable",
+        method: 'POST'
     }); };
     /**
     * Get an existing template
@@ -21965,7 +21966,7 @@ function SingleImageUpload(props) {
         React.createElement(CircularProgress, null),
         " ") : (React.createElement(Paper, { square: avatar ? false : true, style: { borderRadius: avatar ? '50%' : undefined } },
         props.imageUrl ?
-            React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: { borderRadius: avatar ? '50%' : 0 } }) :
+            React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: { borderRadius: avatar ? '50%' : 0, minHeight: dimension.minHeight } }) :
             React.createElement("div", { style: { width: dimension.width, height: dimension.height }, className: classes.imagePlaceholder }),
         React.createElement("div", { className: classes.buttonContainer, style: { top: !!props.imageUrl ? undefined : '50%' } },
             !props.imageUrl ?
@@ -21979,7 +21980,7 @@ var useStyles$5 = makeStyles(function (theme) { return createStyles({
     image: {
         display: 'block',
         // height: '250px',
-        minHeight: 250,
+        // minHeight: 250,
         objectFit: 'cover'
     },
     imagePlaceholder: {
@@ -22114,9 +22115,7 @@ var Form = function (props) {
                     React.createElement("span", null, template.flow)))))),
         props.template.channel === 'email' ? (React.createElement(React.Fragment, null,
             React.createElement(Box, { my: 3, position: "relative" },
-                React.createElement(SingleImageUpload, { placeholderText: " ", 
-                    // dimension={{ height: 'unset' }}
-                    folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+                React.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '250px' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ?
                     React.createElement(Typography, { variant: "caption", className: classes.slug }, template.slug) : null,

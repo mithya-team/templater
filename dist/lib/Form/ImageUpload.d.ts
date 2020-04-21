@@ -2,8 +2,9 @@
 interface IProps<T = unknown> {
     onImageSelected?: (files: any[]) => void;
     dimension?: {
-        width: string;
-        height: string;
+        width?: string;
+        height?: string;
+        minHeight?: string;
     };
     avatar?: boolean;
     mini?: boolean;

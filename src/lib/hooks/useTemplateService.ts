@@ -133,7 +133,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         } catch (error) {
             Notifier.templateEnabled(error)
             setStatus('error');
-
+            throw error;
         }
     }
 

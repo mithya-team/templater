@@ -135,7 +135,7 @@ const Form: React.FC<IFormProps> = (props) => {
                     <Box my={3} position="relative">
                         <SingleImageUpload
                             placeholderText=" "
-                            // dimension={{ height: 'unset' }}
+                            dimension={{ minHeight: '250px' }}
                             folderName={'template'}
                             imageUrl={template?.templateData?.banner?.url}
                             loading={loading}

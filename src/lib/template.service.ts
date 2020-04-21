@@ -42,6 +42,7 @@ export class TemplateService {
     */
     static enableTemplate = (id: string) => Axios.request({
         url: `${API_URL}/${id}/enable`,
+        method: 'POST'
     })
 
 

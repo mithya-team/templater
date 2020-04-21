@@ -8,8 +8,9 @@ import { Paper } from '@material-ui/core';
 interface IProps<T = unknown> {
     onImageSelected?: (files: any[]) => void
     dimension?: {
-        width: string,
-        height: string
+        width?: string,
+        height?: string,
+        minHeight?: string
     }
     avatar?: boolean
     mini?: boolean
@@ -58,7 +59,7 @@ function SingleImageUpload<T extends any>(props: IProps<T>) {
         <Paper square={avatar ? false : true} style={{ borderRadius: avatar ? '50%' : undefined }}>
             {
                 props.imageUrl ?
-                    <img src={props.imageUrl} width={dimension.width} height={dimension.height} className={classes.image} style={{ borderRadius: avatar ? '50%' : 0 }} /> :
+                    <img src={props.imageUrl} width={dimension.width} height={dimension.height} className={classes.image} style={{ borderRadius: avatar ? '50%' : 0, minHeight: dimension.minHeight }} /> :
                     <div style={{ width: dimension.width, height: dimension.height }} className={classes.imagePlaceholder} />
             }
 
@@ -87,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     image: {
         display: 'block',
         // height: '250px',
-        minHeight: 250,
+        // minHeight: 250,
         objectFit: 'cover'
     },
     imagePlaceholder: {

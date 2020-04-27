@@ -1564,7 +1564,7 @@ var QUILL_MODULES = {
         userOnly: false
     },
     toolbar: [
-        [{ 'header': [1, 2, false] }],
+        [{ size: ['small', 'normal', 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         // [{ 'script': 'sub' }, { 'script': 'super' }],

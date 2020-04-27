@@ -15,7 +15,7 @@ export declare const QUILL_MODULES: {
         userOnly: boolean;
     };
     toolbar: (string[] | {
-        'header': (number | boolean)[];
+        size: string[];
     }[] | {
         'indent': string;
     }[] | {

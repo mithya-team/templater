@@ -1529,6 +1529,7 @@ var config = {
         accessToken: '',
         settingsModelName: ''
     },
+    singleInstances: true,
     theme: core.createMuiTheme(),
     disableTabs: false,
     onActionCompleted: function () { },
@@ -1565,9 +1566,8 @@ var QUILL_MODULES = {
     },
     toolbar: [
         [{ size: ['small', 'normal', 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
-        // [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'color': [] }],
         [{ 'align': [] }],
         ['image'],
@@ -22027,7 +22027,10 @@ var BodyFields = function (props) {
 };
 var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
     fieldItem: {
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '& button > span': {
+            fontSize: 14
+        }
     }
 }); });
 
@@ -22051,11 +22054,6 @@ var Form = function (props) {
         if (!quillRef.current)
             return;
         var editor = quillRef.current.getEditor();
-        // editor.on('selection-change', (range) => {
-        //     console.log("seclection change", range?.index)
-        //     if (range)
-        //         curQuillInputIndex = range.index;
-        // })
         editor.on('editor-change', function () {
             var selection = editor.getSelection();
             if (selection)
@@ -22088,17 +22086,29 @@ var Form = function (props) {
         if (props.onLinkCopy)
             props.onLinkCopy(valueToBeAppended);
     };
+    var _i = flows.findIndex(function (f) { return f.value === template.flow; });
+    var templateName = config.singleInstances && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
     var EMAIL_INPUT_CONFIG = [
-        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
         { label: 'SENDER EMAIL', name: 'email', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange },
         { label: 'SENDER NAME', name: 'name', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(", ")) || '', handleChange: _handleChange },
         { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(", ")) || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },
     ];
+    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(function (f) { return config.singleInstances ? f.name !== 'name' : true; });
     var SMS_INPUT_CONFIG = [
         { label: 'SMS BODY', name: 'body', value: ((_k = template.templateData) === null || _k === void 0 ? void 0 : _k.body) || '', handleChange: _handleChange },
     ];
+    var getLabel = function (flow) {
+        if (!flow)
+            return '';
+        var _i = flows.findIndex(function (f) { return f.value === flow; });
+        if (_i > -1)
+            return flows[_i].name;
+        else
+            return flow;
+    };
     return (React__default.createElement("div", null,
         React__default.createElement(core.Paper, null,
             React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" }, step === 1 ? (React__default.createElement(core.FormControl, { fullWidth: true },
@@ -22109,12 +22119,12 @@ var Form = function (props) {
                 React__default.createElement(core.Select, { name: "flow", value: template.flow || '', onChange: _handleChange },
                     React__default.createElement(core.MenuItem, { value: "" },
                         React__default.createElement("em", null, "None")),
-                    flows.map(function (flow) { return (React__default.createElement(core.MenuItem, { key: flow, value: flow }, flow)); })))) : (React__default.createElement(core.Box, { display: "flex", alignItems: "center" },
-                React__default.createElement(core.IconButton, { onClick: function () { return setStep(1); } },
-                    React__default.createElement(core.Icon, null, "keyboard_arrow_left")),
+                    flows.map(function (flow) { return (React__default.createElement(core.MenuItem, { key: flow.value, value: flow.value }, flow.name)); })))) : (React__default.createElement(core.Box, { display: "flex", alignItems: "center" },
+                config.singleInstances ? null : (React__default.createElement(core.IconButton, { onClick: function () { return setStep(1); } },
+                    React__default.createElement(core.Icon, null, "keyboard_arrow_left"))),
                 React__default.createElement(core.Typography, { className: classes.typeLabel },
                     "Template type ",
-                    React__default.createElement("span", null, template.flow)))))),
+                    React__default.createElement("span", null, getLabel(template.flow))))))),
         props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
             React__default.createElement(core.Box, { my: 3, position: "relative" },
                 React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '150px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
@@ -22257,8 +22267,12 @@ var TemplatePreview = function (props) {
 var TemplateCard = function (props) {
     var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React__default.createElement("div", null)) : _a;
     var classes = useStyles$b();
-    return (React__default.createElement(core.Paper, null,
+    var CUSTOM = '<sup>*</sup>custom';
+    var AUTO = '<sup>*</sup>auto triggered';
+    return (React__default.createElement(core.Paper, { className: classes.root },
         React__default.createElement(core.Box, { p: 2, borderRadius: "4px" },
+            React__default.createElement("div", { className: classes.tags },
+                React__default.createElement(core.Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: data.flow === 'defaultFlow' ? CUSTOM : AUTO } })),
             React__default.createElement(reactRouterDom.Link, { to: redirectUrl || '#' },
                 React__default.createElement(core.Box, { pl: 1, display: "flex", justifyContent: "space-between" },
                     React__default.createElement(core.Typography, null, data.name))),
@@ -22268,6 +22282,14 @@ var useStyles$b = core.makeStyles(function () { return core.createStyles({
     img: {
         borderRadius: '4px 4px 0px 0px',
         width: '100%'
+    },
+    root: {
+        position: 'relative'
+    },
+    tags: {
+        position: 'absolute',
+        top: 4,
+        right: 4
     }
 }); });
 
@@ -22277,11 +22299,23 @@ var Settings = function (props) {
 };
 var useStyles$c = core.makeStyles(function (theme) { return core.createStyles({}); });
 
+var curQuillInputIndex$1 = 0;
 var FooterForm = function (props) {
     var _a, _b, _c, _d, _e;
     var onChange = props.onChange, _f = props.setting, setting = _f === void 0 ? {} : _f;
     var classes = useStyles$d();
     var _g = React.useState(false), loading = _g[0], setLoading = _g[1];
+    var quillRef = React.createRef();
+    React.useEffect(function () {
+        if (!quillRef.current)
+            return;
+        var editor = quillRef.current.getEditor();
+        editor.on('editor-change', function () {
+            var selection = editor.getSelection();
+            if (selection)
+                curQuillInputIndex$1 = selection.index;
+        });
+    }, [quillRef]);
     React.useEffect(function () {
         var _a, _b;
         var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
@@ -22317,6 +22351,15 @@ var FooterForm = function (props) {
         onChange('links', _links);
         setLoading(false);
     }; };
+    var handleInsertValue = function (value) {
+        var valueToBeAppended = "<%= " + value + " %>";
+        if (!quillRef.current)
+            return;
+        var editor = quillRef.current.getEditor();
+        editor.insertText(curQuillInputIndex$1, valueToBeAppended);
+        if (props.onLinkCopy)
+            props.onLinkCopy(valueToBeAppended);
+    };
     var handleLinkRemove = function (index) { return function () {
         var _a, _b;
         onChange('links', ((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links.filter(function (_, i) { return index !== i; })) || []);
@@ -22326,7 +22369,7 @@ var FooterForm = function (props) {
         React__default.createElement(core.Box, { p: 3 },
             React__default.createElement(core.Box, { my: 2, width: "100%" },
                 React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
-                React__default.createElement(lib, { formats: QUILL_FORMATS, modules: QUILL_MODULES, className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
+                React__default.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: QUILL_MODULES, className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
             React__default.createElement(core.Box, { my: 2 },
                 React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"), (_e = (_d = setting.settingData) === null || _d === void 0 ? void 0 : _d.links) === null || _e === void 0 ? void 0 :
                 _e.map(function (l, i) {
@@ -22340,7 +22383,9 @@ var FooterForm = function (props) {
                 }),
                 React__default.createElement(core.Box, { my: 1, display: "flex", alignItems: "center", width: "100%" },
                     React__default.createElement(core.IconButton, { size: "small", onClick: newMediaData },
-                        React__default.createElement(core.Icon, null, "add")))))));
+                        React__default.createElement(core.Icon, null, "add"))))),
+        props.fields ? (React__default.createElement(core.Paper, { className: classes.bodyFields, elevation: 1 },
+            React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
 var useStyles$d = styles.makeStyles(function (theme) { return styles.createStyles({
     rte: {
@@ -22348,8 +22393,16 @@ var useStyles$d = styles.makeStyles(function (theme) { return styles.createStyle
             minHeight: 160
         }
     },
+    bodyFields: {
+        padding: '20px 10px',
+        position: 'fixed',
+        right: 10,
+        top: 150,
+        minWidth: 180,
+    }
 }); });
 
+exports.BodyFields = BodyFields;
 exports.FooterForm = FooterForm;
 exports.Form = Form;
 exports.Pagination = Pagination;

@@ -11,7 +11,8 @@ import BodyFields from '../components/BodyFields';
 export interface IFormProps {
     fields?: TemplateTypeField[]
     template: Partial<Template>
-    flows: string[]
+    // flows: string[]
+    flows: Array<{ name: string, value: string }>
     onLinkCopy?: (link: string) => void
     onChange: (key: FormKey, value: any) => void
 }
@@ -38,11 +39,6 @@ const Form: React.FC<IFormProps> = (props) => {
     useEffect(() => {
         if (!quillRef.current) return;
         const editor = quillRef.current.getEditor();
-        // editor.on('selection-change', (range) => {
-        //     console.log("seclection change", range?.index)
-        //     if (range)
-        //         curQuillInputIndex = range.index;
-        // })
         editor.on('editor-change', () => {
             const selection = editor.getSelection();
             if (selection) curQuillInputIndex = selection.index;
@@ -82,8 +78,11 @@ const Form: React.FC<IFormProps> = (props) => {
 
     }
 
-    const EMAIL_INPUT_CONFIG: { label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
-        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: template.name || '', handleChange: _handleChange },
+    const _i = flows.findIndex(f => f.value === template.flow);
+    const templateName = config.singleInstances && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
+
+    let EMAIL_INPUT_CONFIG: { label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
+        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
         { label: 'SENDER EMAIL', name: 'email', value: template.templateData?.from?.email || '', handleChange: _handleSenderChange },
         { label: 'SENDER NAME', name: 'name', value: template.templateData?.from?.name || '', handleChange: _handleSenderChange },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: template.templateData?.cc?.join(", ") || '', handleChange: _handleChange },
@@ -91,9 +90,19 @@ const Form: React.FC<IFormProps> = (props) => {
         { label: 'EMAIL SUBJECT', name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },
     ]
 
+    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(f => config.singleInstances ? f.name !== 'name' : true);
+
     const SMS_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
         { label: 'SMS BODY', name: 'body', value: template.templateData?.body || '', handleChange: _handleChange },
     ]
+
+
+    const getLabel = (flow?: string) => {
+        if (!flow) return '';
+        const _i = flows.findIndex(f => f.value === flow);
+        if (_i > -1) return flows[_i].name
+        else return flow
+    }
 
     return (
         <div>
@@ -111,18 +120,20 @@ const Form: React.FC<IFormProps> = (props) => {
                                     <em>None</em>
                                 </MenuItem>
                                 {flows.map(flow => (
-                                    <MenuItem key={flow} value={flow}>
-                                        {flow}
+                                    <MenuItem key={flow.value} value={flow.value}>
+                                        {flow.name}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     ) : (
                             <Box display="flex" alignItems="center">
-                                <IconButton onClick={() => setStep(1)}>
-                                    <Icon>keyboard_arrow_left</Icon>
-                                </IconButton>
-                                <Typography className={classes.typeLabel}>Template type <span>{template.flow}</span></Typography>
+                                {config.singleInstances ? null : (
+                                    <IconButton onClick={() => setStep(1)}>
+                                        <Icon>keyboard_arrow_left</Icon>
+                                    </IconButton>
+                                )}
+                                <Typography className={classes.typeLabel}>Template type <span>{getLabel(template.flow)}</span></Typography>
                             </Box>
                         )
                     }

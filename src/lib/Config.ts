@@ -11,6 +11,7 @@ export let config: TemplaterConfig = {
         accessToken: '',
         settingsModelName: ''
     },
+    singleInstances: true,
     theme: createMuiTheme(),
     disableTabs: false,
     onActionCompleted: () => { },
@@ -53,12 +54,12 @@ export const QUILL_MODULES = {
     },
     toolbar: [
         [{ size: ['small', 'normal', 'large', 'huge'] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
-        // [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'color': [] }],
         [{ 'align': [] }],
         ['image'],
+        // [{ 'script': 'sub' }, { 'script': 'super' }],
         // [{ 'direction': 'rtl' }],
         // ['clean'],
     ],

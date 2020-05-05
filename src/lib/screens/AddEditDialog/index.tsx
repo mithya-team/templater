@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, Provider } from 'react'
 import {
     createStyles, makeStyles,
     Slide,
@@ -7,7 +7,7 @@ import {
 import { Context } from '../../Context';
 import Form from '../../Form';
 import { config } from '../../Config';
-import { Template, FormKey } from '../../types';
+import { Template, FormKey, TemplateTypeConfig } from '../../types';
 import { generateHTML } from '../../utils';
 import DialogHeader from './DialogHeader';
 
@@ -40,7 +40,8 @@ const AddEditDialog: React.FC<IProps> = () => {
 
     const [template, setTemplate] = useState<Partial<Template>>(selectedTemplate ?? {})
     const [templateType, setTemplateType] = useState('');
-    const TEMPLATE_FLOWS = Object.keys(templateTypes)
+    const TEMPLATE_FLOWS = getTemplateFlows(templateTypes)
+
 
     useEffect(() => {
         setTemplate(selectedTemplate ?? {});
@@ -113,6 +114,15 @@ const AddEditDialog: React.FC<IProps> = () => {
             </Box>
         </Dialog>
     )
+}
+
+
+const getTemplateFlows = (templateFlows: Partial<TemplateTypeConfig>) => {
+    const ITEMS: Array<{ name: string, value: string }> = [];
+    Object.keys(templateFlows).forEach(k => {
+        ITEMS.push({ name: templateFlows[k]?.name || k, value: k });
+    })
+    return ITEMS;
 }
 
 const useStyles = makeStyles(() => createStyles({

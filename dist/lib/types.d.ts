@@ -7,6 +7,7 @@ export declare type TemplaterConfig = {
         settingsModelName: string;
         accessToken: string;
     };
+    singleInstances: boolean;
     disableTabs: boolean;
     listingType: 'grid' | 'list';
     onActionCompleted: (action: 'success' | 'error', message: string) => void;
@@ -26,6 +27,7 @@ export declare type TemplateTypeField = {
     description: string;
     default: string;
     isRequired: boolean;
+    type: string;
 };
 export declare type TemplateTypeConfig = Record<string, {
     name: string;

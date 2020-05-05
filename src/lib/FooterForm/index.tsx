@@ -1,20 +1,38 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createRef } from 'react'
 import { Theme, Paper, Box, Typography, Avatar, Input, IconButton, FormControl, Icon } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ReactQuill from 'react-quill'
-import { SettingFormKey, TemplateSetting, TPicture } from '../types'
+import { SettingFormKey, TemplateSetting, TPicture, TemplateTypeField } from '../types'
 import SingleImageUpload from '../Form/ImageUpload'
 import { QUILL_FORMATS, QUILL_MODULES } from '../Config'
+import { BodyFields } from '../components'
 
 interface FooterFormProps {
     onChange: (key: SettingFormKey, value: any) => void
     setting: Partial<TemplateSetting>
+    fields?: TemplateTypeField[]
+    onLinkCopy?: (link: string) => void
 }
+
+
+let curQuillInputIndex = 0;
+
 
 const FooterForm: React.FC<FooterFormProps> = (props) => {
     const { onChange, setting = {} } = props;
     const classes = useStyles()
     const [loading, setLoading] = useState(false);
+    const quillRef = createRef<ReactQuill>();
+
+    useEffect(() => {
+        if (!quillRef.current) return;
+        const editor = quillRef.current.getEditor();
+        editor.on('editor-change', () => {
+            const selection = editor.getSelection();
+            if (selection) curQuillInputIndex = selection.index;
+        })
+
+    }, [quillRef])
 
     useEffect(() => {
         const _links = [...setting?.settingData?.links || []];
@@ -52,6 +70,16 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
         setLoading(false);
     }
 
+    const handleInsertValue = (value: string) => {
+        const valueToBeAppended = `<%= ${value} %>`;
+        if (!quillRef.current) return;
+        const editor = quillRef.current.getEditor();
+        editor.insertText(curQuillInputIndex, valueToBeAppended);
+
+        if (props.onLinkCopy)
+            props.onLinkCopy(valueToBeAppended)
+
+    }
 
     const handleLinkRemove = (index: number) => () => {
         onChange('links', setting?.settingData?.links.filter((_, i) => index !== i) || [])
@@ -65,6 +93,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                 <Box my={2} width="100%">
                     <Typography gutterBottom variant="caption">FOOTER TEXT</Typography>
                     <ReactQuill
+                        ref={quillRef}
                         formats={QUILL_FORMATS}
                         modules={QUILL_MODULES}
                         className={classes.rte}
@@ -102,6 +131,11 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                     </Box>
                 </Box>
             </Box>
+            {props.fields ? (
+                <Paper className={classes.bodyFields} elevation={1}>
+                    <BodyFields onClick={handleInsertValue} fields={props.fields || []} />
+                </Paper>
+            ) : null}
         </Paper>
     )
 }
@@ -112,6 +146,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             minHeight: 160
         }
     },
+    bodyFields: {
+        padding: '20px 10px',
+        position: 'fixed',
+        right: 10,
+        top: 150,
+        minWidth: 180,
+
+    }
 }))
 
 export default FooterForm

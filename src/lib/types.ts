@@ -8,6 +8,7 @@ export type TemplaterConfig = {
         settingsModelName: string
         accessToken: string
     },
+    singleInstances: boolean
     disableTabs: boolean
     listingType: 'grid' | 'list'
     onActionCompleted: (action: 'success' | 'error', message: string) => void
@@ -28,6 +29,7 @@ export type TemplateTypeField = {
     description: string
     default: string
     isRequired: boolean
+    type: string
 }
 
 export type TemplateTypeConfig = Record<string, { name: string, fields: TemplateTypeField[] }>

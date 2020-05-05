@@ -38,7 +38,10 @@ const BodyFields: React.FC<IProps> = (props) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     fieldItem: {
-        cursor: 'pointer'
+        cursor: 'pointer',
+        '& button > span': {
+            fontSize: 14
+        }
     }
 }))
 

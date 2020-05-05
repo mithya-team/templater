@@ -49,7 +49,7 @@ export type TPicture = {
     url: string
 }
 
-export type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from']
+export type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'] | 'senderName' | 'senderEmail'
 export type SettingFormKey = keyof TemplateSettingData
 
 

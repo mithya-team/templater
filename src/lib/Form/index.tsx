@@ -59,8 +59,8 @@ const Form: React.FC<IFormProps> = (props) => {
 
     const handleRteChange = (content: string) => onChange('body', content)
 
-    const _handleSenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange('from', { ...template.templateData?.from, [e.target.name]: e.target.value })
+    const _handleSenderChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange('from', { ...template.templateData?.from, [name]: e.target.value })
     }
 
     const _handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,9 +87,9 @@ const Form: React.FC<IFormProps> = (props) => {
     const templateName = config.singleInstances && template.flow !== DEFAULT_FLOW && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
 
     let EMAIL_INPUT_CONFIG: { required?: boolean, label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
-        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
-        { label: 'SENDER EMAIL', name: 'email', value: template.templateData?.from?.email || '', handleChange: _handleSenderChange },
-        { label: 'SENDER NAME', name: 'name', value: template.templateData?.from?.name || '', handleChange: _handleSenderChange },
+        { label: 'TEMPLATE NAME (internal purpose only)', required: true, name: 'name', value: templateName, handleChange: _handleChange },
+        { label: 'SENDER EMAIL', name: 'senderEmail', value: template.templateData?.from?.email || '', handleChange: _handleSenderChange('email') },
+        { label: 'SENDER NAME', name: 'senderName', value: template.templateData?.from?.name || '', handleChange: _handleSenderChange('name') },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: template.templateData?.cc?.join(", ") || '', handleChange: _handleChange },
         { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: template.templateData?.bcc?.join(", ") || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', required: true, name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },

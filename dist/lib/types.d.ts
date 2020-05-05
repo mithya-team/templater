@@ -46,7 +46,7 @@ export declare type TPicture = {
     thumbnail: string;
     url: string;
 };
-export declare type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'];
+export declare type FormKey = keyof Template | keyof Template['templateData'] | keyof TTemplateData['from'] | 'senderName' | 'senderEmail';
 export declare type SettingFormKey = keyof TemplateSettingData;
 export declare type TemplateField = {
     value: string;

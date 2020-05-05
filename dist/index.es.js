@@ -22062,11 +22062,11 @@ var Form = function (props) {
         setLoading(false);
     };
     var handleRteChange = function (content) { return onChange('body', content); };
-    var _handleSenderChange = function (e) {
+    var _handleSenderChange = function (name) { return function (e) {
         var _a;
         var _b;
-        onChange('from', __assign(__assign({}, (_b = template.templateData) === null || _b === void 0 ? void 0 : _b.from), (_a = {}, _a[e.target.name] = e.target.value, _a)));
-    };
+        onChange('from', __assign(__assign({}, (_b = template.templateData) === null || _b === void 0 ? void 0 : _b.from), (_a = {}, _a[name] = e.target.value, _a)));
+    }; };
     var _handleChange = function (e) {
         var _a = e.target, value = _a.value, name = _a.name;
         if (name === 'cc' || name === 'bcc')
@@ -22086,9 +22086,9 @@ var Form = function (props) {
     var _i = flows.findIndex(function (f) { return f.value === template.flow; });
     var templateName = config.singleInstances && template.flow !== DEFAULT_FLOW && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
     var EMAIL_INPUT_CONFIG = [
-        { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
-        { label: 'SENDER EMAIL', name: 'email', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange },
-        { label: 'SENDER NAME', name: 'name', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange },
+        { label: 'TEMPLATE NAME (internal purpose only)', required: true, name: 'name', value: templateName, handleChange: _handleChange },
+        { label: 'SENDER EMAIL', name: 'senderEmail', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange('email') },
+        { label: 'SENDER NAME', name: 'senderName', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange('name') },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(", ")) || '', handleChange: _handleChange },
         { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(", ")) || '', handleChange: _handleChange },
         { label: 'EMAIL SUBJECT', required: true, name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },

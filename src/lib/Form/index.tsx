@@ -8,10 +8,12 @@ import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
 
 
+const DEFAULT_FLOW = 'defaultFlow'
 export interface IFormProps {
     fields?: TemplateTypeField[]
     template: Partial<Template>
     // flows: string[]
+    errors?: Record<string, any>
     flows: Array<{ name: string, value: string }>
     onLinkCopy?: (link: string) => void
     onChange: (key: FormKey, value: any) => void
@@ -19,7 +21,7 @@ export interface IFormProps {
 
 let curQuillInputIndex = 0;
 const Form: React.FC<IFormProps> = (props) => {
-    const { template, onChange, fields, flows = [] } = props;
+    const { template, onChange, fields, flows = [], errors = {} } = props;
     const [loading, setLoading] = useState(false);
     const { dialogProps } = config
     const [step, setStep] = useState<1 | 2>(1);
@@ -33,6 +35,9 @@ const Form: React.FC<IFormProps> = (props) => {
     useEffect(() => {
         if (template.flow && template.flow !== '' && step === 1)
             setStep(2);
+        else if (config.singleInstances && !template.flow) {
+            props.onChange('flow', DEFAULT_FLOW);
+        }
 
     }, [template])
 
@@ -79,18 +84,18 @@ const Form: React.FC<IFormProps> = (props) => {
     }
 
     const _i = flows.findIndex(f => f.value === template.flow);
-    const templateName = config.singleInstances && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
+    const templateName = config.singleInstances && template.flow !== DEFAULT_FLOW && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
 
-    let EMAIL_INPUT_CONFIG: { label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
+    let EMAIL_INPUT_CONFIG: { required?: boolean, label: string, name: FormKey, multiline?: boolean, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
         { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
         { label: 'SENDER EMAIL', name: 'email', value: template.templateData?.from?.email || '', handleChange: _handleSenderChange },
         { label: 'SENDER NAME', name: 'name', value: template.templateData?.from?.name || '', handleChange: _handleSenderChange },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: template.templateData?.cc?.join(", ") || '', handleChange: _handleChange },
         { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: template.templateData?.bcc?.join(", ") || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', required: true, name: 'subject', value: template.templateData?.subject || '', handleChange: _handleChange },
     ]
 
-    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(f => config.singleInstances ? f.name !== 'name' : true);
+    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(f => (config.singleInstances && template.flow !== DEFAULT_FLOW) ? f.name !== 'name' : true);
 
     const SMS_INPUT_CONFIG: { label: string, name: FormKey, value: string, handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }[] = [
         { label: 'SMS BODY', name: 'body', value: template.templateData?.body || '', handleChange: _handleChange },
@@ -104,6 +109,10 @@ const Form: React.FC<IFormProps> = (props) => {
         else return flow
     }
 
+
+
+    const FLOWS = config.singleInstances ? flows.filter(f => f.value === DEFAULT_FLOW) : flows;
+
     return (
         <div>
             <Paper>
@@ -116,10 +125,12 @@ const Form: React.FC<IFormProps> = (props) => {
                                 value={template.flow || ''}
                                 onChange={_handleChange}
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                {flows.map(flow => (
+                                {/* {config.singleInstances ? null : (
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                )} */}
+                                {FLOWS.map(flow => (
                                     <MenuItem key={flow.value} value={flow.value}>
                                         {flow.name}
                                     </MenuItem>
@@ -169,7 +180,7 @@ const Form: React.FC<IFormProps> = (props) => {
                                 EMAIL_INPUT_CONFIG.map((config, i) => (
                                     <Box my={2} key={config.name + i} width="100%">
                                         <FormControl fullWidth>
-                                            <TextField label={config.label} multiline={config.multiline || false} name={config.name} value={config.value} onChange={config.handleChange} />
+                                            <TextField error={!!errors[config.name]} label={config.label} required={config.required} multiline={config.multiline || false} name={config.name} value={config.value} onChange={config.handleChange} />
                                         </FormControl>
                                     </Box>
                                 ))

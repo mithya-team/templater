@@ -22027,13 +22027,14 @@ var useStyles$6 = makeStyles(function (theme) { return createStyles({
     }
 }); });
 
+var DEFAULT_FLOW = 'defaultFlow';
 var curQuillInputIndex = 0;
 var Form = function (props) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-    var template = props.template, onChange = props.onChange, fields = props.fields, _q = props.flows, flows = _q === void 0 ? [] : _q;
-    var _r = useState(false), loading = _r[0], setLoading = _r[1];
+    var template = props.template, onChange = props.onChange, fields = props.fields, _q = props.flows, flows = _q === void 0 ? [] : _q, _r = props.errors, errors = _r === void 0 ? {} : _r;
+    var _s = useState(false), loading = _s[0], setLoading = _s[1];
     var dialogProps = config.dialogProps;
-    var _s = useState(1), step = _s[0], setStep = _s[1];
+    var _t = useState(1), step = _t[0], setStep = _t[1];
     var classes = useStyles$7(props);
     var quillRef = createRef();
     var onImagesSelected = function (file) {
@@ -22042,6 +22043,9 @@ var Form = function (props) {
     useEffect(function () {
         if (template.flow && template.flow !== '' && step === 1)
             setStep(2);
+        else if (config.singleInstances && !template.flow) {
+            props.onChange('flow', DEFAULT_FLOW);
+        }
     }, [template]);
     useEffect(function () {
         if (!quillRef.current)
@@ -22080,16 +22084,16 @@ var Form = function (props) {
             props.onLinkCopy(valueToBeAppended);
     };
     var _i = flows.findIndex(function (f) { return f.value === template.flow; });
-    var templateName = config.singleInstances && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
+    var templateName = config.singleInstances && template.flow !== DEFAULT_FLOW && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
     var EMAIL_INPUT_CONFIG = [
         { label: 'TEMPLATE NAME (internal purpose only)', name: 'name', value: templateName, handleChange: _handleChange },
         { label: 'SENDER EMAIL', name: 'email', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange },
         { label: 'SENDER NAME', name: 'name', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange },
         { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(", ")) || '', handleChange: _handleChange },
         { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(", ")) || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },
+        { label: 'EMAIL SUBJECT', required: true, name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },
     ];
-    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(function (f) { return config.singleInstances ? f.name !== 'name' : true; });
+    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(function (f) { return (config.singleInstances && template.flow !== DEFAULT_FLOW) ? f.name !== 'name' : true; });
     var SMS_INPUT_CONFIG = [
         { label: 'SMS BODY', name: 'body', value: ((_k = template.templateData) === null || _k === void 0 ? void 0 : _k.body) || '', handleChange: _handleChange },
     ];
@@ -22102,6 +22106,7 @@ var Form = function (props) {
         else
             return flow;
     };
+    var FLOWS = config.singleInstances ? flows.filter(function (f) { return f.value === DEFAULT_FLOW; }) : flows;
     return (React.createElement("div", null,
         React.createElement(Paper, null,
             React.createElement(Box, { p: 3, display: "flex", alignItems: "center" }, step === 1 ? (React.createElement(FormControl, { fullWidth: true },
@@ -22109,10 +22114,7 @@ var Form = function (props) {
                     "Select ",
                     template.channel,
                     " type"),
-                React.createElement(Select, { name: "flow", value: template.flow || '', onChange: _handleChange },
-                    React.createElement(MenuItem, { value: "" },
-                        React.createElement("em", null, "None")),
-                    flows.map(function (flow) { return (React.createElement(MenuItem, { key: flow.value, value: flow.value }, flow.name)); })))) : (React.createElement(Box, { display: "flex", alignItems: "center" },
+                React.createElement(Select, { name: "flow", value: template.flow || '', onChange: _handleChange }, FLOWS.map(function (flow) { return (React.createElement(MenuItem, { key: flow.value, value: flow.value }, flow.name)); })))) : (React.createElement(Box, { display: "flex", alignItems: "center" },
                 config.singleInstances ? null : (React.createElement(IconButton, { onClick: function () { return setStep(1); } },
                     React.createElement(Icon, null, "keyboard_arrow_left"))),
                 React.createElement(Typography, { className: classes.typeLabel },
@@ -22127,7 +22129,7 @@ var Form = function (props) {
                 React.createElement(Box, { display: "flex", flexDirection: "column" },
                     EMAIL_INPUT_CONFIG.map(function (config, i) { return (React.createElement(Box, { my: 2, key: config.name + i, width: "100%" },
                         React.createElement(FormControl, { fullWidth: true },
-                            React.createElement(TextField, { label: config.label, multiline: config.multiline || false, name: config.name, value: config.value, onChange: config.handleChange })))); }),
+                            React.createElement(TextField, { error: !!errors[config.name], label: config.label, required: config.required, multiline: config.multiline || false, name: config.name, value: config.value, onChange: config.handleChange })))); }),
                     React.createElement(Box, { my: 2, width: "100%" },
                         React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
                         React.createElement(lib, { formats: QUILL_FORMATS, modules: QUILL_MODULES, ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,

@@ -3,6 +3,7 @@ import { Template, TemplateTypeField, FormKey } from '../types';
 export interface IFormProps {
     fields?: TemplateTypeField[];
     template: Partial<Template>;
+    errors?: Record<string, any>;
     flows: Array<{
         name: string;
         value: string;

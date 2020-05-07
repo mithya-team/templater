@@ -41,7 +41,7 @@ export const copyLink = (url: string) => {
 }
 
 export const trimHTML = (html: string) => {
-  return html.replace(/<p><br><\/p>/ig, '');
+  return html.replace(/<p><br><\/p>/ig, '<br/>');
 }
 
 export const unescapeHTML = (html: string) => {
@@ -57,15 +57,15 @@ export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
 
   const createTable = (content: string, footer: string = '') => {
     return `
-      <table style="width: 600px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
-      <tbody>
-      ${content}
-      </tbody>
+      <table style="width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
+        <tbody>
+          ${content}
+        </tbody>
       </table>
-      <table style="width: 600px; margin: 0 auto; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
-      <tbody>
-      ${footer}
-      </tbody>
+      <table style="width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;" cellPadding="0px" cellSpacing="0px">
+        <tbody>
+          ${footer}
+        </tbody>
       </table>`.replace(/(\n)/ig, '')
   }
 
@@ -97,7 +97,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
 
   const HTML = `
       <table style="margin: 0 auto;">
-          <tr><td>${LINKS}</td></tr>
+          <tr style="text-align: center;"><td>${LINKS}</td></tr>
           <tr><td style="text-align: center;">${BODY}</td></tr>
       </table>
   `.replace(/(\n)/ig, '');
@@ -284,10 +284,16 @@ const wrapWithHTML = (body: string) => `
   img {
       -ms-interpolation-mode: bicubic;
   }
+  p {
+    margin: 0 !important;
+  }
+  td {
+    font-family: Calibri,Arial !important;
+  }
   </style>
   </head>
   <body>
-  <div style="background-color: #F5F5F5; padding: 60px 0px;">
+  <div style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
   ${body}
   </div></body>
   </html>

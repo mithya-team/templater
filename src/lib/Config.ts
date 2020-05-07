@@ -1,6 +1,7 @@
 import { TemplaterConfig } from "./types";
 import Axios from 'axios';
 import { createMuiTheme } from "@material-ui/core";
+import { Quill } from "react-quill";
 
 
 
@@ -43,6 +44,10 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
     API_URL = config.apiConfig.modelName || 'templates'
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
     console.log("Templater Initialized", config);
+    // var Size = Quill.import('attributors/style/size');
+    // Size.whitelist = ['12px', '16px', '20px'];
+
+    // Quill.register(Size, true);
 }
 
 
@@ -53,7 +58,7 @@ export const QUILL_MODULES = {
         userOnly: false
     },
     toolbar: [
-        [{ size: ['small', 'normal', 'large', 'huge'] }],
+        [{ size: [] }],
         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'color': [] }],
@@ -73,7 +78,8 @@ export const QUILL_MODULES_ALT = {
         userOnly: false
     },
     toolbar: [
-        [{ size: ['small', 'normal', 'large', 'huge'] }],
+        // [{ size: ['small', 'normal', 'large', 'huge'] }],
+        // [{ 'size': ['12px', '16px', '20px'] }],
         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'color': [] }],

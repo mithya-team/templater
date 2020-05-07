@@ -15,7 +15,7 @@ export declare const QUILL_MODULES: {
         userOnly: boolean;
     };
     toolbar: (string[] | {
-        size: string[];
+        size: never[];
     }[] | {
         'indent': string;
     }[] | {
@@ -31,8 +31,6 @@ export declare const QUILL_MODULES_ALT: {
         userOnly: boolean;
     };
     toolbar: (string[] | {
-        size: string[];
-    }[] | {
         'indent': string;
     }[] | {
         'color': never[];

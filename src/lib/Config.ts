@@ -66,6 +66,27 @@ export const QUILL_MODULES = {
 
 }
 
+export const QUILL_MODULES_ALT = {
+    history: {
+        delay: 100,
+        maxStack: 200,
+        userOnly: false
+    },
+    toolbar: [
+        [{ size: ['small', 'normal', 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'color': [] }],
+        // [{ 'align': ['center'] }],
+        ['image'],
+        // [{ 'script': 'sub' }, { 'script': 'super' }],
+        // [{ 'direction': 'rtl' }],
+        // ['clean'],
+    ],
+
+}
+
+
 export const QUILL_FORMATS = [
     'header',
     'image',

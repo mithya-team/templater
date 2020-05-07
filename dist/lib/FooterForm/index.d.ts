@@ -4,6 +4,7 @@ interface FooterFormProps {
     onChange: (key: SettingFormKey, value: any) => void;
     setting: Partial<TemplateSetting>;
     fields?: TemplateTypeField[];
+    variableContainerClass?: any;
     onLinkCopy?: (link: string) => void;
 }
 declare const FooterForm: React.FC<FooterFormProps>;

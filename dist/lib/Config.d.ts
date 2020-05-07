@@ -24,4 +24,18 @@ export declare const QUILL_MODULES: {
         'align': never[];
     }[])[];
 };
+export declare const QUILL_MODULES_ALT: {
+    history: {
+        delay: number;
+        maxStack: number;
+        userOnly: boolean;
+    };
+    toolbar: (string[] | {
+        size: string[];
+    }[] | {
+        'indent': string;
+    }[] | {
+        'color': never[];
+    }[])[];
+};
 export declare const QUILL_FORMATS: string[];

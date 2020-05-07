@@ -98,7 +98,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
   const HTML = `
       <table style="margin: 0 auto;">
           <tr><td>${LINKS}</td></tr>
-          <tr><td>${BODY}</td></tr>
+          <tr><td style="text-align: center;">${BODY}</td></tr>
       </table>
   `.replace(/(\n)/ig, '');
 
@@ -322,61 +322,16 @@ const quillStyles = `
   margin: 0;
   padding: 0;
 }
-.ql-editor {
-  box-sizing: border-box;
-  counter-reset: list-0;
-  line-height: 1.42;
-  height: 100%;
-  outline: none;
-  overflow-y: auto;
-  padding: 12px 15px;
-  tab-size: 4;
-  -moz-tab-size: 4;
-  text-align: left;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-.ql-editor > * {
-  cursor: text;
-}
-.ql-editor p,
-.ql-editor ol,
-.ql-editor pre,
-.ql-editor blockquote,
-.ql-editor h1,
-.ql-editor h2,
-.ql-editor h3,
-.ql-editor h4,
-.ql-editor h5,
-.ql-editor h6 {
-  margin: 0;
-  padding: 0;
-}
-.ql-editor p,
-.ql-editor h1,
-.ql-editor h2,
-.ql-editor h3,
-.ql-editor h4,
-.ql-editor h5,
-.ql-editor h6 {
-  counter-reset: list-0 list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
-}
-.ql-editor table {
-  border-collapse: collapse;
-}
-.ql-editor td {
-  border: 1px solid #000;
-  padding: 2px 5px;
-}
-.ql-editor ol {
+ 
+ ol {
   padding-left: 1.5em;
 }
-.ql-editor li {
+ li {
   list-style-type: none;
   padding-left: 1.5em;
   position: relative;
 }
-.ql-editor li > .ql-ui:before {
+ li > .ql-ui:before {
   display: inline-block;
   margin-left: -1.5em;
   margin-right: 0.3em;
@@ -384,314 +339,314 @@ const quillStyles = `
   white-space: nowrap;
   width: 1.2em;
 }
-.ql-editor li[data-list=checked] > .ql-ui,
-.ql-editor li[data-list=unchecked] > .ql-ui {
+ li[data-list=checked] > .ql-ui,
+ li[data-list=unchecked] > .ql-ui {
   color: #777;
 }
-.ql-editor li[data-list=bullet] > .ql-ui:before {
+ li[data-list=bullet] > .ql-ui:before {
   content: '\2022';
 }
-.ql-editor li[data-list=checked] > .ql-ui:before {
+ li[data-list=checked] > .ql-ui:before {
   content: '\2611';
 }
-.ql-editor li[data-list=unchecked] > .ql-ui:before {
+ li[data-list=unchecked] > .ql-ui:before {
   content: '\2610';
 }
-.ql-editor li[data-list=ordered] {
+ li[data-list=ordered] {
   counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
   counter-increment: list-0;
 }
-.ql-editor li[data-list=ordered] > .ql-ui:before {
+ li[data-list=ordered] > .ql-ui:before {
   content: counter(list-0, decimal) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-1 {
+ li[data-list=ordered].ql-indent-1 {
   counter-increment: list-1;
 }
-.ql-editor li[data-list=ordered].ql-indent-1 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-1 > .ql-ui:before {
   content: counter(list-1, lower-alpha) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-1 {
+ li[data-list=ordered].ql-indent-1 {
   counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-2 {
+ li[data-list=ordered].ql-indent-2 {
   counter-increment: list-2;
 }
-.ql-editor li[data-list=ordered].ql-indent-2 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-2 > .ql-ui:before {
   content: counter(list-2, lower-roman) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-2 {
+ li[data-list=ordered].ql-indent-2 {
   counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-3 {
+ li[data-list=ordered].ql-indent-3 {
   counter-increment: list-3;
 }
-.ql-editor li[data-list=ordered].ql-indent-3 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-3 > .ql-ui:before {
   content: counter(list-3, decimal) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-3 {
+ li[data-list=ordered].ql-indent-3 {
   counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-4 {
+ li[data-list=ordered].ql-indent-4 {
   counter-increment: list-4;
 }
-.ql-editor li[data-list=ordered].ql-indent-4 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-4 > .ql-ui:before {
   content: counter(list-4, lower-alpha) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-4 {
+ li[data-list=ordered].ql-indent-4 {
   counter-reset: list-5 list-6 list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-5 {
+ li[data-list=ordered].ql-indent-5 {
   counter-increment: list-5;
 }
-.ql-editor li[data-list=ordered].ql-indent-5 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-5 > .ql-ui:before {
   content: counter(list-5, lower-roman) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-5 {
+ li[data-list=ordered].ql-indent-5 {
   counter-reset: list-6 list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-6 {
+ li[data-list=ordered].ql-indent-6 {
   counter-increment: list-6;
 }
-.ql-editor li[data-list=ordered].ql-indent-6 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-6 > .ql-ui:before {
   content: counter(list-6, decimal) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-6 {
+ li[data-list=ordered].ql-indent-6 {
   counter-reset: list-7 list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-7 {
+ li[data-list=ordered].ql-indent-7 {
   counter-increment: list-7;
 }
-.ql-editor li[data-list=ordered].ql-indent-7 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-7 > .ql-ui:before {
   content: counter(list-7, lower-alpha) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-7 {
+ li[data-list=ordered].ql-indent-7 {
   counter-reset: list-8 list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-8 {
+ li[data-list=ordered].ql-indent-8 {
   counter-increment: list-8;
 }
-.ql-editor li[data-list=ordered].ql-indent-8 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-8 > .ql-ui:before {
   content: counter(list-8, lower-roman) '. ';
 }
-.ql-editor li[data-list=ordered].ql-indent-8 {
+ li[data-list=ordered].ql-indent-8 {
   counter-reset: list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-9 {
+ li[data-list=ordered].ql-indent-9 {
   counter-increment: list-9;
 }
-.ql-editor li[data-list=ordered].ql-indent-9 > .ql-ui:before {
+ li[data-list=ordered].ql-indent-9 > .ql-ui:before {
   content: counter(list-9, decimal) '. ';
 }
-.ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+ .ql-indent-1:not(.ql-direction-rtl) {
   padding-left: 3em;
 }
-.ql-editor li.ql-indent-1:not(.ql-direction-rtl) {
+ li.ql-indent-1:not(.ql-direction-rtl) {
   padding-left: 4.5em;
 }
-.ql-editor .ql-indent-1.ql-direction-rtl.ql-align-right {
+ .ql-indent-1.ql-direction-rtl.ql-align-right {
   padding-right: 3em;
 }
-.ql-editor li.ql-indent-1.ql-direction-rtl.ql-align-right {
+ li.ql-indent-1.ql-direction-rtl.ql-align-right {
   padding-right: 4.5em;
 }
-.ql-editor .ql-indent-2:not(.ql-direction-rtl) {
+ .ql-indent-2:not(.ql-direction-rtl) {
   padding-left: 6em;
 }
-.ql-editor li.ql-indent-2:not(.ql-direction-rtl) {
+ li.ql-indent-2:not(.ql-direction-rtl) {
   padding-left: 7.5em;
 }
-.ql-editor .ql-indent-2.ql-direction-rtl.ql-align-right {
+ .ql-indent-2.ql-direction-rtl.ql-align-right {
   padding-right: 6em;
 }
-.ql-editor li.ql-indent-2.ql-direction-rtl.ql-align-right {
+ li.ql-indent-2.ql-direction-rtl.ql-align-right {
   padding-right: 7.5em;
 }
-.ql-editor .ql-indent-3:not(.ql-direction-rtl) {
+ .ql-indent-3:not(.ql-direction-rtl) {
   padding-left: 9em;
 }
-.ql-editor li.ql-indent-3:not(.ql-direction-rtl) {
+ li.ql-indent-3:not(.ql-direction-rtl) {
   padding-left: 10.5em;
 }
-.ql-editor .ql-indent-3.ql-direction-rtl.ql-align-right {
+ .ql-indent-3.ql-direction-rtl.ql-align-right {
   padding-right: 9em;
 }
-.ql-editor li.ql-indent-3.ql-direction-rtl.ql-align-right {
+ li.ql-indent-3.ql-direction-rtl.ql-align-right {
   padding-right: 10.5em;
 }
-.ql-editor .ql-indent-4:not(.ql-direction-rtl) {
+ .ql-indent-4:not(.ql-direction-rtl) {
   padding-left: 12em;
 }
-.ql-editor li.ql-indent-4:not(.ql-direction-rtl) {
+ li.ql-indent-4:not(.ql-direction-rtl) {
   padding-left: 13.5em;
 }
-.ql-editor .ql-indent-4.ql-direction-rtl.ql-align-right {
+ .ql-indent-4.ql-direction-rtl.ql-align-right {
   padding-right: 12em;
 }
-.ql-editor li.ql-indent-4.ql-direction-rtl.ql-align-right {
+ li.ql-indent-4.ql-direction-rtl.ql-align-right {
   padding-right: 13.5em;
 }
-.ql-editor .ql-indent-5:not(.ql-direction-rtl) {
+ .ql-indent-5:not(.ql-direction-rtl) {
   padding-left: 15em;
 }
-.ql-editor li.ql-indent-5:not(.ql-direction-rtl) {
+ li.ql-indent-5:not(.ql-direction-rtl) {
   padding-left: 16.5em;
 }
-.ql-editor .ql-indent-5.ql-direction-rtl.ql-align-right {
+ .ql-indent-5.ql-direction-rtl.ql-align-right {
   padding-right: 15em;
 }
-.ql-editor li.ql-indent-5.ql-direction-rtl.ql-align-right {
+ li.ql-indent-5.ql-direction-rtl.ql-align-right {
   padding-right: 16.5em;
 }
-.ql-editor .ql-indent-6:not(.ql-direction-rtl) {
+ .ql-indent-6:not(.ql-direction-rtl) {
   padding-left: 18em;
 }
-.ql-editor li.ql-indent-6:not(.ql-direction-rtl) {
+ li.ql-indent-6:not(.ql-direction-rtl) {
   padding-left: 19.5em;
 }
-.ql-editor .ql-indent-6.ql-direction-rtl.ql-align-right {
+ .ql-indent-6.ql-direction-rtl.ql-align-right {
   padding-right: 18em;
 }
-.ql-editor li.ql-indent-6.ql-direction-rtl.ql-align-right {
+ li.ql-indent-6.ql-direction-rtl.ql-align-right {
   padding-right: 19.5em;
 }
-.ql-editor .ql-indent-7:not(.ql-direction-rtl) {
+ .ql-indent-7:not(.ql-direction-rtl) {
   padding-left: 21em;
 }
-.ql-editor li.ql-indent-7:not(.ql-direction-rtl) {
+ li.ql-indent-7:not(.ql-direction-rtl) {
   padding-left: 22.5em;
 }
-.ql-editor .ql-indent-7.ql-direction-rtl.ql-align-right {
+ .ql-indent-7.ql-direction-rtl.ql-align-right {
   padding-right: 21em;
 }
-.ql-editor li.ql-indent-7.ql-direction-rtl.ql-align-right {
+ li.ql-indent-7.ql-direction-rtl.ql-align-right {
   padding-right: 22.5em;
 }
-.ql-editor .ql-indent-8:not(.ql-direction-rtl) {
+ .ql-indent-8:not(.ql-direction-rtl) {
   padding-left: 24em;
 }
-.ql-editor li.ql-indent-8:not(.ql-direction-rtl) {
+ li.ql-indent-8:not(.ql-direction-rtl) {
   padding-left: 25.5em;
 }
-.ql-editor .ql-indent-8.ql-direction-rtl.ql-align-right {
+ .ql-indent-8.ql-direction-rtl.ql-align-right {
   padding-right: 24em;
 }
-.ql-editor li.ql-indent-8.ql-direction-rtl.ql-align-right {
+ li.ql-indent-8.ql-direction-rtl.ql-align-right {
   padding-right: 25.5em;
 }
-.ql-editor .ql-indent-9:not(.ql-direction-rtl) {
+ .ql-indent-9:not(.ql-direction-rtl) {
   padding-left: 27em;
 }
-.ql-editor li.ql-indent-9:not(.ql-direction-rtl) {
+ li.ql-indent-9:not(.ql-direction-rtl) {
   padding-left: 28.5em;
 }
-.ql-editor .ql-indent-9.ql-direction-rtl.ql-align-right {
+ .ql-indent-9.ql-direction-rtl.ql-align-right {
   padding-right: 27em;
 }
-.ql-editor li.ql-indent-9.ql-direction-rtl.ql-align-right {
+ li.ql-indent-9.ql-direction-rtl.ql-align-right {
   padding-right: 28.5em;
 }
-.ql-editor li.ql-direction-rtl {
+ li.ql-direction-rtl {
   padding-right: 1.5em;
 }
-.ql-editor li.ql-direction-rtl > .ql-ui:before {
+ li.ql-direction-rtl > .ql-ui:before {
   margin-left: 0.3em;
   margin-right: -1.5em;
   text-align: left;
 }
-.ql-editor table {
+ table {
   table-layout: fixed;
   width: 100%;
 }
-.ql-editor table td {
+ table td {
   outline: none;
 }
-.ql-editor .ql-code-block-container {
+ .ql-code-block-container {
   font-family: monospace;
 }
-.ql-editor .ql-video {
+ .ql-video {
   display: block;
   max-width: 100%;
 }
-.ql-editor .ql-video.ql-align-center {
+ .ql-video.ql-align-center {
   margin: 0 auto;
 }
-.ql-editor .ql-video.ql-align-right {
+ .ql-video.ql-align-right {
   margin: 0 0 0 auto;
 }
-.ql-editor .ql-bg-black {
+ .ql-bg-black {
   background-color: #000;
 }
-.ql-editor .ql-bg-red {
+ .ql-bg-red {
   background-color: #e60000;
 }
-.ql-editor .ql-bg-orange {
+ .ql-bg-orange {
   background-color: #f90;
 }
-.ql-editor .ql-bg-yellow {
+ .ql-bg-yellow {
   background-color: #ff0;
 }
-.ql-editor .ql-bg-green {
+ .ql-bg-green {
   background-color: #008a00;
 }
-.ql-editor .ql-bg-blue {
+ .ql-bg-blue {
   background-color: #06c;
 }
-.ql-editor .ql-bg-purple {
+ .ql-bg-purple {
   background-color: #93f;
 }
-.ql-editor .ql-color-white {
+ .ql-color-white {
   color: #fff;
 }
-.ql-editor .ql-color-red {
+ .ql-color-red {
   color: #e60000;
 }
-.ql-editor .ql-color-orange {
+ .ql-color-orange {
   color: #f90;
 }
-.ql-editor .ql-color-yellow {
+ .ql-color-yellow {
   color: #ff0;
 }
-.ql-editor .ql-color-green {
+ .ql-color-green {
   color: #008a00;
 }
-.ql-editor .ql-color-blue {
+ .ql-color-blue {
   color: #06c;
 }
-.ql-editor .ql-color-purple {
+ .ql-color-purple {
   color: #93f;
 }
-.ql-editor .ql-font-serif {
+ .ql-font-serif {
   font-family: Georgia, Times New Roman, serif;
 }
-.ql-editor .ql-font-monospace {
+ .ql-font-monospace {
   font-family: Monaco, Courier New, monospace;
 }
-.ql-editor .ql-size-small {
+ .ql-size-small {
   font-size: 0.75em;
 }
-.ql-editor .ql-size-large {
+ .ql-size-large {
   font-size: 1.5em;
 }
-.ql-editor .ql-size-huge {
+ .ql-size-huge {
   font-size: 2.5em;
 }
-.ql-editor .ql-direction-rtl {
+ .ql-direction-rtl {
   direction: rtl;
   text-align: inherit;
 }
-.ql-editor .ql-align-center {
+ .ql-align-center {
   text-align: center;
 }
-.ql-editor .ql-align-justify {
+ .ql-align-justify {
   text-align: justify;
 }
-.ql-editor .ql-align-right {
+ .ql-align-right {
   text-align: right;
 }
-.ql-editor .ql-ui {
+ .ql-ui {
   position: absolute;
 }
-.ql-editor.ql-blank::before {
+.ql-blank::before {
   color: rgba(0,0,0,0.6);
   content: attr(data-placeholder);
   font-style: italic;

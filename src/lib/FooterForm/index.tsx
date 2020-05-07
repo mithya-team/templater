@@ -4,13 +4,14 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ReactQuill from 'react-quill'
 import { SettingFormKey, TemplateSetting, TPicture, TemplateTypeField } from '../types'
 import SingleImageUpload from '../Form/ImageUpload'
-import { QUILL_FORMATS, QUILL_MODULES } from '../Config'
+import { QUILL_FORMATS, QUILL_MODULES_ALT } from '../Config'
 import { BodyFields } from '../components'
 
 interface FooterFormProps {
     onChange: (key: SettingFormKey, value: any) => void
     setting: Partial<TemplateSetting>
     fields?: TemplateTypeField[]
+    variableContainerClass?: any
     onLinkCopy?: (link: string) => void
 }
 
@@ -31,6 +32,9 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
             const selection = editor.getSelection();
             if (selection) curQuillInputIndex = selection.index;
         })
+
+        // const delta = editor.getContents();
+        editor.format('align', 'center')
 
     }, [quillRef])
 
@@ -95,7 +99,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                     <ReactQuill
                         ref={quillRef}
                         formats={QUILL_FORMATS}
-                        modules={QUILL_MODULES}
+                        modules={QUILL_MODULES_ALT}
                         className={classes.rte}
                         value={setting.settingData?.body || ''}
                         onChange={handleRteChange}
@@ -132,7 +136,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                 </Box>
             </Box>
             {props.fields ? (
-                <Paper className={classes.bodyFields} elevation={1}>
+                <Paper className={props.variableContainerClass || classes.bodyFields} elevation={1}>
                     <BodyFields onClick={handleInsertValue} fields={props.fields || []} />
                 </Paper>
             ) : null}
@@ -150,7 +154,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         padding: '20px 10px',
         position: 'fixed',
         right: 10,
-        top: 150,
+        top: 100,
         minWidth: 180,
 
     }

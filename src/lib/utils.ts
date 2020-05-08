@@ -266,10 +266,19 @@ const wrapWithHTML = (body: string) => `
         }
 
   </style>
-  <style>
+  <style type="text/css">
         ${quillStyles}
   </style>
-  <style>
+  <!--[if mso]>
+<style type="text/css">
+.p {
+margin: 0px 0px 0px 24px !important;
+
+padding: 0px 0px 20px 0px !important;
+}
+</style>
+<![endif]-->
+  <style type="text/css">
     body {
       margin: 0 !important; 
       padding: 0 !important; height: 100% !important; 
@@ -287,15 +296,19 @@ const wrapWithHTML = (body: string) => `
   p {
     margin: 0 !important;
   }
+  .without-margin p {
+    margin: 0 !important;
+  }
   td {
     font-family: Calibri,Arial !important;
   }
   </style>
   </head>
   <body>
-  <div style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
+  <div class='without-margin' style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
   ${body}
-  </div></body>
+  </div>
+  </body>
   </html>
 `.replace(/(\n)/ig, '')
 

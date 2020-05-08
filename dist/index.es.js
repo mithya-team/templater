@@ -19996,11 +19996,41 @@ var generateHTML = function (body, banner, footer) {
     var FOOTER = "<tr><td><div style=\"padding:24px\">" + footer + "</div></td></tr>";
     var createTable = function (content, footer) {
         if (footer === void 0) { footer = ''; }
-        return ("\n      <table style=\"width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + content + "\n        </tbody>\n      </table>\n      <table style=\"width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + footer + "\n        </tbody>\n      </table>").replace(/(\n)/ig, '');
+        return ("\n      <table style=\"width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + mergeInlineStyle(content) + "\n        </tbody>\n      </table>\n      <table style=\"width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + mergeInlineStyle(footer) + "\n        </tbody>\n      </table>").replace(/(\n)/ig, '');
     };
     var _body = (BANNER + BODY).replace(/<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>');
     console.log("body", _body);
     return wrapWithHTML(createTable(_body, FOOTER));
+};
+var mergeInlineStyle = function (str) {
+    console.log("merging");
+    var regex = /<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g;
+    var styleRegex = /style=\"([^"]*)"/;
+    var updatedString = str.replace(regex, function (el) {
+        var match = regex.exec(str);
+        if (!match) {
+            console.log(el);
+            return el;
+        }
+        var attributes = match[1];
+        var text = match[2];
+        var styleMatch = styleRegex.exec(attributes);
+        var styles = '';
+        if (styleMatch) {
+            var elStyle = styleMatch[1];
+            if (elStyle) {
+                styles = (elStyle.endsWith(';') ? elStyle : (elStyle + ';'));
+            }
+        }
+        styles += 'margin:0;';
+        var styleAttribute = "style=\"" + styles + "\"";
+        var updatedAttributes = (styleMatch && styleMatch[1]) ? attributes.replace(styleMatch[0], styleAttribute) : (attributes + ' ' + styleAttribute);
+        styleMatch = null;
+        match = null;
+        return "<p " + updatedAttributes + ">" + text + "</p>";
+    });
+    console.log("UPDATED", updatedString);
+    return updatedString;
 };
 var getFooterHTML = function (content, links) {
     var BODY = content;

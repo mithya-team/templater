@@ -59,12 +59,12 @@ export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
     return `
       <table style="width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif" cellPadding="0px" cellSpacing="0px">
         <tbody>
-          ${content}
+          ${mergeInlineStyle(content)}
         </tbody>
       </table>
       <table style="width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;" cellPadding="0px" cellSpacing="0px">
         <tbody>
-          ${footer}
+          ${mergeInlineStyle(footer)}
         </tbody>
       </table>`.replace(/(\n)/ig, '')
   }
@@ -75,6 +75,34 @@ export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
 }
 
 
+export const mergeInlineStyle = (str: string) => {
+  const regex = /<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g;
+  const styleRegex = /style=\"([^"]*)"/;
+  const updatedString = str.replace(regex, function (el) {
+    let match = regex.exec(str);
+    if (!match) {
+      console.log(el);
+      return el;
+    }
+    const attributes = match[1];
+    const text = match[2];
+    let styleMatch = styleRegex.exec(attributes);
+    let styles = '';
+    if (styleMatch) {
+      const elStyle = styleMatch[1];
+      if (elStyle) {
+        styles = (elStyle.endsWith(';') ? elStyle : (elStyle + ';'));
+      }
+    }
+    styles += 'margin:0;';
+    const styleAttribute = `style="${styles}"`;
+    const updatedAttributes = (styleMatch && styleMatch[1]) ? attributes.replace(styleMatch[0], styleAttribute) : (attributes + ' ' + styleAttribute);
+    styleMatch = null;
+    match = null;
+    return `<p ${updatedAttributes}>${text}</p>`;
+  });
+  return updatedString
+}
 
 export const getFooterHTML = (content: string, links: TemplateSetting['settingData']['links']) => {
   const BODY = content;

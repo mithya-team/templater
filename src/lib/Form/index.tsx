@@ -2,10 +2,11 @@ import React, { useState, createRef, useEffect } from 'react'
 import { createStyles, makeStyles, FormControl, InputLabel, Box, Typography, Theme, IconButton, Icon, Select, MenuItem, TextField } from '@material-ui/core'
 import { Template, TPicture, TemplateTypeField, FormKey } from '../types';
 import { Paper } from '@material-ui/core';
-import { config, QUILL_MODULES, QUILL_FORMATS } from '../Config';
+import { config, QUILL_MODULES, QUILL_FORMATS, getQuillModule } from '../Config';
 import ReactQuill from 'react-quill'
 import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
+import QuillToolbar from '../QuillToolbar';
 
 
 const DEFAULT_FLOW = 'defaultFlow'
@@ -115,6 +116,7 @@ const Form: React.FC<IFormProps> = (props) => {
 
     return (
         <div>
+
             <Paper>
                 <Box p={3} display="flex" alignItems="center">
                     {step === 1 ? (
@@ -187,9 +189,10 @@ const Form: React.FC<IFormProps> = (props) => {
                             }
                             <Box my={2} width="100%">
                                 <Typography gutterBottom variant="caption">EMAIL BODY</Typography>
+                                <QuillToolbar id="toolbar-ql" />
                                 <ReactQuill
                                     formats={QUILL_FORMATS}
-                                    modules={QUILL_MODULES}
+                                    modules={getQuillModule('toolbar-ql')}
                                     ref={quillRef} className={classes.rte} value={template.templateData?.body || ''}
                                     onChange={handleRteChange} />
                             </Box>

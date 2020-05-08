@@ -4,8 +4,9 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ReactQuill from 'react-quill'
 import { SettingFormKey, TemplateSetting, TPicture, TemplateTypeField } from '../types'
 import SingleImageUpload from '../Form/ImageUpload'
-import { QUILL_FORMATS, QUILL_MODULES_ALT } from '../Config'
+import { QUILL_FORMATS, QUILL_MODULES_ALT, getQuillModule } from '../Config'
 import { BodyFields } from '../components'
+import QuillToolbar from '../QuillToolbar';
 
 interface FooterFormProps {
     onChange: (key: SettingFormKey, value: any) => void
@@ -33,8 +34,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
             if (selection) curQuillInputIndex = selection.index;
         })
 
-        // const delta = editor.getContents();
-        editor.format('align', 'center')
+        // editor.format('align', 'center')
 
     }, [quillRef])
 
@@ -96,10 +96,11 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
             <Box p={3}>
                 <Box my={2} width="100%">
                     <Typography gutterBottom variant="caption">FOOTER TEXT</Typography>
+                    <QuillToolbar id="ql-footer-toolbar" />
                     <ReactQuill
                         ref={quillRef}
                         formats={QUILL_FORMATS}
-                        modules={QUILL_MODULES_ALT}
+                        modules={getQuillModule('ql-footer-toolbar')}
                         className={classes.rte}
                         value={setting.settingData?.body || ''}
                         onChange={handleRteChange}

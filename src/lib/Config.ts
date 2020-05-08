@@ -44,12 +44,21 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
     API_URL = config.apiConfig.modelName || 'templates'
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
     console.log("Templater Initialized", config);
-    // var Size = Quill.import('attributors/style/size');
-    // Size.whitelist = ['12px', '16px', '20px'];
 
-    // Quill.register(Size, true);
+
+    var Size = Quill.import('attributors/style/size');
+    var Align = Quill.import('attributors/style/align');
+    Size.whitelist = ['12px', '14px', '18px'];
+    Quill.register(Size, true);
+    Quill.register(Align, true);
 }
 
+export const getQuillModule = (toolbarId: string) => {
+    return {
+        ...QUILL_MODULES,
+        toolbar: `#${toolbarId}`
+    }
+}
 
 export const QUILL_MODULES = {
     history: {
@@ -58,7 +67,7 @@ export const QUILL_MODULES = {
         userOnly: false
     },
     toolbar: [
-        [{ size: [] }],
+        [{ size: ['small', 'normal', 'large'] }],
         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
         [{ 'color': [] }],

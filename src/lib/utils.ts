@@ -88,7 +88,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
   })
 
   const LINKS = `
-      <table align="center">
+      <table style="margin: 0 auto;">
           <tr>
               <td>${_links.join('')}</td>
           </tr>
@@ -96,9 +96,9 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
       `.replace(/(\n)/ig, '')
 
   const HTML = `
-      <table style="margin: 0 auto;">
-          <tr style="text-align: center;"><td>${LINKS}</td></tr>
-          <tr><td style="text-align: center;">${BODY}</td></tr>
+      <table style="width: 100%">
+          <tr><td>${LINKS}</td></tr>
+          <tr><td>${BODY}</td></tr>
       </table>
   `.replace(/(\n)/ig, '');
 
@@ -266,9 +266,7 @@ const wrapWithHTML = (body: string) => `
         }
 
   </style>
-  <style type="text/css">
-        ${quillStyles}
-  </style>
+ 
   <!--[if mso]>
 <style type="text/css">
 .p {

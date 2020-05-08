@@ -10,7 +10,7 @@ export { default as FooterForm } from './lib/FooterForm';
 export * from './lib/FooterForm';
 
 export { generateHTML, getFooterHTML } from './lib/utils';
-export { initializeTemplater, QUILL_FORMATS, QUILL_MODULES } from './lib/Config';
+export { initializeTemplater, QUILL_FORMATS, QUILL_MODULES, getQuillModule } from './lib/Config';
 
 export * from './lib/template.service';
 export * from './lib/types';

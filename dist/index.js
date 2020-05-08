@@ -10,6 +10,7 @@ var core = require('@material-ui/core');
 var reactRouter = require('react-router');
 var reactDom = _interopDefault(require('react-dom'));
 var server = _interopDefault(require('react-dom/server'));
+var loadImage = _interopDefault(require('blueimp-load-image'));
 var reactRouterDom = require('react-router-dom');
 var styles = require('@material-ui/core/styles');
 
@@ -1521,713 +1522,6 @@ var default_1 = axios;
 axios_1.default = default_1;
 
 var axios$1 = axios_1;
-
-var config = {
-    urlPrefix: '',
-    apiConfig: {
-        baseUrl: '',
-        accessToken: '',
-        settingsModelName: ''
-    },
-    singleInstances: true,
-    theme: core.createMuiTheme(),
-    disableTabs: false,
-    onActionCompleted: function () { },
-    listingType: 'list',
-    rootContainerProps: {},
-    dialogProps: {
-        containerProps: {},
-        formContainerProps: {},
-        mainActionButtonProps: {},
-        secondaryActionButtonProps: {},
-        appbarProps: {}
-    }
-};
-var API_URL = 'templates';
-var SETTINGS_API_URL = 'templateSettings';
-/**
- * @function initializeTemplater
- * @param configuration Partial<TemplaterConfig>
- * @description Initialize the templater with provided configurations
- */
-var initializeTemplater = function (configuration) {
-    config = __assign(__assign(__assign({}, config), configuration), { apiConfig: __assign(__assign({}, config.apiConfig), configuration.apiConfig), dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
-    axios$1.defaults.baseURL = config.apiConfig.baseUrl;
-    axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
-    API_URL = config.apiConfig.modelName || 'templates';
-    SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
-    console.log("Templater Initialized", config);
-    // var Size = Quill.import('attributors/style/size');
-    // Size.whitelist = ['12px', '16px', '20px'];
-    // Quill.register(Size, true);
-};
-var QUILL_MODULES = {
-    history: {
-        delay: 100,
-        maxStack: 200,
-        userOnly: false
-    },
-    toolbar: [
-        [{ size: [] }],
-        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'color': [] }],
-        [{ 'align': [] }],
-        ['image'],
-    ],
-};
-var QUILL_MODULES_ALT = {
-    history: {
-        delay: 100,
-        maxStack: 200,
-        userOnly: false
-    },
-    toolbar: [
-        // [{ size: ['small', 'normal', 'large', 'huge'] }],
-        // [{ 'size': ['12px', '16px', '20px'] }],
-        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'color': [] }],
-        // [{ 'align': ['center'] }],
-        ['image'],
-    ],
-};
-var QUILL_FORMATS = [
-    'header',
-    'image',
-    'bold', 'italic', 'underline', 'strike',
-    'indent',
-    'link', 'image', 'color', 'script', 'font', 'align',
-    'direction',
-    'size', 'list',
-    'blockquote', 'code-block'
-];
-
-/**
- * @class TemplateService
- * @description Services related to templates and CRUD operation
- */
-var TemplateService = /** @class */ (function () {
-    function TemplateService() {
-    }
-    /**
-     * Fetch templates
-     * @return Promise<AxiosResponse<Template[]>>>
-     */
-    TemplateService.fetchTemplates = function (params) { return axios$1.request({
-        url: API_URL,
-        params: params
-    }); };
-    /**
-    * Create  a new template
-    * @param template Template
-    * @return Promise<AxiosResponse<Template>>>
-    */
-    TemplateService.createTemplate = function (template) { return axios$1.request({
-        url: API_URL,
-        method: 'POST',
-        data: template
-    }); };
-    /**
-    * Get an existing template
-    * @param id ID of the template to be fetched
-    * @return Promise<AxiosResponse<Template>>>
-    */
-    TemplateService.enableTemplate = function (id) { return axios$1.request({
-        url: API_URL + "/" + id + "/enable",
-        method: 'POST'
-    }); };
-    /**
-    * Get an existing template
-    * @param id ID of the template to be fetched
-    * @return Promise<AxiosResponse<Template>>>
-    */
-    TemplateService.getTemplateById = function (id) { return axios$1.request({
-        url: API_URL + "/" + id,
-    }); };
-    /**
-    * Update an existing template
-    * @param id ID of the template to be updated
-    * @param template The data to be updated
-    * @return Promise<AxiosResponse<Template>>>
-    */
-    TemplateService.updateTemplate = function (id, template) { return axios$1.request({
-        url: API_URL + "/" + id,
-        method: 'PATCH',
-        data: template
-    }); };
-    /**
-    * Fetch template types with its configs
-    * @return Array<Type of templates with its fields>
-    */
-    TemplateService.getTemplateTypes = function () { return axios$1.request({
-        url: API_URL + "/getTemplateConfig",
-    }); };
-    /**
-    * Test a template
-    * @param id ID of the template to be sent
-    * @param type email | sms
-    * @param providerConfig configuration
-    * @example
-    * {
-    *   to: "jagzmz...com",
-    *   cc: ["a....com","b...com"]
-    * }
-    * @return Promise<AxiosResponse<void>>>
-    */
-    // static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
-    //     url: `Communications/${type}/send`,
-    //     method: 'POST',
-    //     data: {
-    //         templateId: id,
-    //         // type,
-    //         providerFields: providerConfig
-    //     }
-    // })
-    /**
-    * Fetch template settings
-    * @return Array<TemplateFooterSetting>
-    */
-    TemplateService.getTemplateSettings = function (params) { return axios$1.request({
-        url: SETTINGS_API_URL,
-        params: params
-    }); };
-    /**
-    * Create  a new setting
-    * @param setting TemplateFooterSetting
-    * @return Promise<AxiosResponse<TemplateFooterSetting>>>
-    */
-    TemplateService.createSetting = function (setting) { return axios$1.request({
-        url: SETTINGS_API_URL,
-        method: 'POST',
-        data: setting
-    }); };
-    /**
-       * Update an existing setting
-       * @param id ID of the setting to be updated
-       * @param setting The setting to be updated
-       * @return Promise<AxiosResponse<TemplateFooterSetting>>>
-       */
-    TemplateService.updateSetting = function (id, setting) { return axios$1.request({
-        url: SETTINGS_API_URL + "/" + id,
-        method: 'PATCH',
-        data: setting
-    }); };
-    return TemplateService;
-}());
-
-var Notifier = /** @class */ (function () {
-    function Notifier() {
-    }
-    Notifier.templateCreate = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating template');
-    };
-    Notifier.templateUpdate = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template updated successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating template');
-    };
-    Notifier.templateSend = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Test message sent' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error sending test message');
-    };
-    Notifier.templateEnabled = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template enabled successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error enabling template');
-    };
-    Notifier.templateSettingCreate = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting successfully created ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating setting');
-    };
-    Notifier.templateSettingUpdate = function (error) {
-        var _a, _b, _c, _d;
-        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating setting');
-    };
-    return Notifier;
-}());
-
-var FILTER = { order: 'created DESC' };
-var useTemplateService = function (defaultFilter) {
-    if (defaultFilter === void 0) { defaultFilter = FILTER; }
-    var _a = React.useState([]), templates = _a[0], setTemplates = _a[1];
-    var _b = React.useState([]), settings = _b[0], setSettings = _b[1];
-    var _c = React.useState({}), flows = _c[0], setFlows = _c[1];
-    var _d = React.useState('done'), status = _d[0], setStatus = _d[1];
-    var _e = React.useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
-    // if (config.eventId && config.agencyId) FILTER = { ...FILTER, where: { eventId: config.eventId, agencyId: config.agencyId } }
-    React.useEffect(function () {
-        if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
-            setIsInitialized(true);
-    }, [config.apiConfig]);
-    React.useEffect(function () {
-        if (isInitialized) {
-            loadTemplates();
-            loadSettings();
-        }
-    }, [isInitialized]);
-    var loadSettings = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, TemplateService.getTemplateSettings({ filter: defaultFilter })];
-                case 1:
-                    res = _a.sent();
-                    if (res.data[0])
-                        setSettings(res.data);
-                    return [3 /*break*/, 3];
-                case 2:
-                    error_1 = _a.sent();
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
-            }
-        });
-    }); };
-    var saveSettings = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (!setting.id)
-                createSetting(setting);
-            else {
-                // const _s = settings.findIndex(s => s.i)
-                updateSetting(setting.id, setting);
-            }
-            return [2 /*return*/];
-        });
-    }); };
-    var createSetting = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setStatus('loading');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.createSetting(setting)];
-                case 2:
-                    res = _a.sent();
-                    setSettings(__spreadArrays([res.data], settings));
-                    Notifier.templateCreate();
-                    setStatus('done');
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_2 = _a.sent();
-                    Notifier.templateCreate(error_2);
-                    setStatus('error');
-                    throw error_2;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_1, error_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setStatus('loading');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.updateSetting(id, setting)];
-                case 2:
-                    res_1 = _a.sent();
-                    setSettings(__spreadArrays(settings.map(function (s) { var _a; return s.id === ((_a = res_1.data) === null || _a === void 0 ? void 0 : _a.id) ? (__assign(__assign({}, s), res_1.data)) : s; })));
-                    Notifier.templateUpdate();
-                    setStatus('done');
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_3 = _a.sent();
-                    Notifier.templateUpdate(error_3);
-                    setStatus('error');
-                    throw error_3;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    console.log("settings", settings);
-    var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, res1, res2, error_4;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    setStatus('loading');
-                    _b.label = 1;
-                case 1:
-                    _b.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: defaultFilter }), TemplateService.getTemplateTypes()])];
-                case 2:
-                    _a = _b.sent(), res1 = _a[0], res2 = _a[1];
-                    setTemplates(res1.data);
-                    setFlows(res2.data);
-                    setStatus('done');
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_4 = _b.sent();
-                    setStatus('error');
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_5;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setStatus('loading');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.createTemplate(template)];
-                case 2:
-                    res = _a.sent();
-                    setTemplates(__spreadArrays([res.data], templates));
-                    setStatus('done');
-                    Notifier.templateCreate();
-                    return [2 /*return*/, res.data];
-                case 3:
-                    error_5 = _a.sent();
-                    setStatus('error');
-                    Notifier.templateCreate(error_5);
-                    throw error_5;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_2, error_6;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setStatus('loading');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.updateTemplate(id, template)];
-                case 2:
-                    res_2 = _a.sent();
-                    setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_2.data)) : t; })));
-                    setStatus('done');
-                    Notifier.templateUpdate();
-                    return [2 /*return*/, res_2.data];
-                case 3:
-                    error_6 = _a.sent();
-                    setStatus('error');
-                    Notifier.templateUpdate(error_6);
-                    throw error_6;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_3, flow_1, updatedTemplates, error_7;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setStatus('loading');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.enableTemplate(id)];
-                case 2:
-                    res_3 = _a.sent();
-                    flow_1 = res_3.data.flow || '';
-                    updatedTemplates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_3.data)) : t.flow === flow_1 ? (__assign(__assign({}, t), { enabled: false })) : t; });
-                    setStatus('done');
-                    setTemplates(updatedTemplates);
-                    Notifier.templateEnabled();
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_7 = _a.sent();
-                    Notifier.templateEnabled(error_7);
-                    setStatus('error');
-                    throw error_7;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var index, res, error_8;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    index = templates.findIndex(function (t) { return t.id === id; });
-                    if (index > -1)
-                        return [2 /*return*/, templates[index]];
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, TemplateService.getTemplateById(id)];
-                case 2:
-                    res = _a.sent();
-                    return [2 /*return*/, res.data];
-                case 3:
-                    error_8 = _a.sent();
-                    throw error_8;
-                case 4: return [2 /*return*/];
-            }
-        });
-    }); };
-    var testTemplate = function (templateId, type, providerConfig) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            try {
-                // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
-                Notifier.templateSend();
-            }
-            catch (error) {
-                Notifier.templateSend(error);
-            }
-            return [2 /*return*/];
-        });
-    }); };
-    return {
-        flows: flows,
-        templates: templates,
-        settings: settings,
-        createSetting: createSetting,
-        updateSetting: updateSetting,
-        saveSettings: saveSettings,
-        enableTemplate: enableTemplate,
-        status: status,
-        createTemplate: createTemplate,
-        updateTemplate: updateTemplate,
-        getTemplateById: getTemplateById,
-        testTemplate: testTemplate
-    };
-};
-
-function usePagination(items, config) {
-    var _a;
-    var _b = React.useState(items), list = _b[0], setList = _b[1];
-    var limit = ((_a = config) === null || _a === void 0 ? void 0 : _a.limit) || 10;
-    var _c = React.useState(1), curPage = _c[0], setCurPage = _c[1];
-    var startIndex = limit * (curPage - 1);
-    var endIndex = startIndex + limit;
-    React.useEffect(function () {
-        setList(items);
-    }, [items]);
-    var isValidPage = function (page) {
-        var total = list.length;
-        var totalPages = Math.ceil(total / limit);
-        return page <= totalPages && page > 0;
-    };
-    var handlePageChange = function (page) {
-        if (isValidPage(page)) {
-            setCurPage(page);
-        }
-    };
-    return {
-        list: list,
-        paginatedList: list.slice(startIndex, endIndex),
-        handlePageChange: handlePageChange,
-        isValidPage: isValidPage,
-        curPage: curPage,
-    };
-}
-
-var Pagination = function (props) {
-    var total = props.total, entriesPerPage = props.entriesPerPage, currentPage = props.currentPage, onPageChange = props.onPageChange;
-    var totalPages = Math.ceil(total / entriesPerPage);
-    var classes = useStyles(props);
-    var pages = [
-        currentPage,
-        currentPage + 1,
-        currentPage + 2
-    ].map(function (p) { return currentPage > 1 ? p - 1 : p; }).filter(function (p) { return p <= totalPages; });
-    return (React__default.createElement("div", { className: classes.root },
-        React__default.createElement(core.Button, { variant: "text", onClick: function () { return onPageChange(currentPage - 1); } }, "prev"),
-        pages.map(function (p) { return (React__default.createElement(core.Button, { color: p === currentPage ? "primary" : "default", key: p + '', variant: p === currentPage ? 'contained' : 'text', onClick: function () { return onPageChange(p); } }, p)); }),
-        React__default.createElement(core.Button, { onClick: function () { return onPageChange(currentPage + 1); }, variant: "text" }, "next")));
-};
-var useStyles = core.makeStyles(function (theme) { return core.createStyles({
-    root: {
-        display: 'flex',
-        width: 300,
-        margin: '20px auto',
-        justifyContent: 'space-around'
-    },
-}); });
-
-var getPath = function (suffix) {
-    return suffix ? config.urlPrefix + '/' + suffix : config.urlPrefix;
-};
-var IMAGE_UPLOAD_URL = 'pictures/upload';
-var uploadPicture = function (file, imagesFolder) {
-    if (!file.base64)
-        return Promise.reject('Could not find base64 encoding of file');
-    imagesFolder = imagesFolder || 'images';
-    if (!(/\/$/.test(imagesFolder)))
-        imagesFolder += '/';
-    return axios$1.request({
-        url: IMAGE_UPLOAD_URL,
-        method: 'POST',
-        data: {
-            base64img: file.base64,
-            filename: file.name,
-            folder: imagesFolder
-        }
-    });
-};
-var copyLink = function (url) {
-    var el = document.createElement('textarea');
-    el.value = url;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-};
-var trimHTML = function (html) {
-    return html.replace(/<p><br><\/p>/ig, '<br/>');
-};
-var unescapeHTML = function (html) {
-    return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
-};
-var generateHTML = function (body, banner, footer) {
-    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 600px; object-fit: cover; border-radius: 4px 4px 0px 0px\" /></td></tr>" : '';
-    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + unescapeHTML(trimHTML(body)) + "</div></td></tr>";
-    var FOOTER = "<tr><td><div style=\"padding:24px\">" + footer + "</div></td></tr>";
-    var createTable = function (content, footer) {
-        if (footer === void 0) { footer = ''; }
-        return ("\n      <table style=\"width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + content + "\n        </tbody>\n      </table>\n      <table style=\"width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + footer + "\n        </tbody>\n      </table>").replace(/(\n)/ig, '');
-    };
-    var _body = (BANNER + BODY).replace(/<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>');
-    console.log("body", _body);
-    return wrapWithHTML(createTable(_body, FOOTER));
-};
-var getFooterHTML = function (content, links) {
-    var BODY = content;
-    var _links = [];
-    links.forEach(function (l) {
-        var _a;
-        _links.push(("\n            <a href=\"" + l.link + "\" target=\"_blank\" style=\"margin: 0px 4px\">\n              <img src=\"" + ((_a = l.icon) === null || _a === void 0 ? void 0 : _a.url) + "\" width=\"30px\" height=\"30px\"  style=\"border-radius: 15px\"/>\n            </a>\n      ").replace(/(\n)/ig, ''));
-    });
-    var LINKS = ("\n      <table align=\"center\">\n          <tr>\n              <td>" + _links.join('') + "</td>\n          </tr>\n      </table>\n      ").replace(/(\n)/ig, '');
-    var HTML = ("\n      <table style=\"margin: 0 auto;\">\n          <tr style=\"text-align: center;\"><td>" + LINKS + "</td></tr>\n          <tr><td style=\"text-align: center;\">" + BODY + "</td></tr>\n      </table>\n  ").replace(/(\n)/ig, '');
-    return HTML;
-};
-var wrapWithHTML = function (body) { return ("\n  <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n  <html \n      xmlns=3D\"http://www.w3.org/1999/xhtml\" \n      xmlns=3D\"http://www.w3.org/1999/xhtml\" \n      style=3D\"height: 100% !important; width: 100% !important; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; padding: 0;\"\n  >\n  <head>\n  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n  <link rel=\"stylesheet\" href=\"//cdn.quilljs.com/1.2.6/quill.snow.css\"/>\n  <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->\n    <!--[if mso]>\n      <style>\n        * {\n          font-family: sans-serif !important;\n        }\n      </style>\n  <![endif] -->\n      <!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->\n      <!--[if !mso]><!-->\n      <!-- insert web font reference, eg: <link href=3D'https://fonts.googleapis.com/css?family=3DRoboto:400,700' rel=3D'stylesheet' type=3D'text/css'> -->\n      <!--<![endif]-->\n\n      <!-- Web Font / @font-face : END -->\n\n      <!-- CSS Reset -->\n      <style type=3D\"text/css\">\n\n        /* What it does: Remove spaces around the email design added by some email clients. */\n        /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */\n        html,\n        body {\n          Margin: 0 !important;\n          padding: 0 !important;\n          height: 100% !important;\n          width: 100% !important;\n        }\n\n        /* What it does: Stops email clients resizing small text. */\n        * {\n          -ms-text-size-adjust: 100%;\n          -webkit-text-size-adjust: 100%;\n        }\n\n        /* What it does: Forces Outlook.com to display emails full width. */\n        .ExternalClass {\n          width: 100%;\n        }\n\n        /* What it does: Centers email on Android 4.4 */\n        div[style*=3D\"margin: 16px 0\"] {\n          margin:0 !important;\n        }\n\n        /* What it does: Stops Outlook from adding extra spacing to tables. */\n        table,\n        td {\n          mso-table-lspace: 0pt !important;\n          mso-table-rspace: 0pt !important;\n        }\n\n        /* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */\n        table {\n          border-spacing: 0 !important;\n          border-collapse: collapse !important;\n          table-layout: fixed !important;\n          Margin: 0 auto !important;\n        }\n        table table table {\n          table-layout: auto;\n        }\n\n        /* What it does: Uses a better rendering method when resizing images in IE. */\n        img {\n          -ms-interpolation-mode:bicubic;\n        }\n\n        h1 {\n          font-size: 24px;\n          color: #2d2d2d;\n        }\n\n        p {\n          color:       #2d2d2d;\n          line-height: 26px;\n          font-size:   16px;\n\n        }\n\n        a {\n          color: #423bd8;\n          text-decoration: none;\n          font-weight: bold;\n        }\n\n        /* What it does: Overrides styles added when Yahoo's auto-senses a link. */\n        .yshortcuts a {\n          border-bottom: none !important;\n        }\n\n        /* What it does: A work-around for iOS meddling in triggered links. */\n        .mobile-link--footer a,\n        a[x-apple-data-detectors] {\n          color:inherit !important;\n          text-decoration: underline !important;\n        }\n\n      </style>\n\n      <!-- Progressive Enhancements -->\n      <style>\n\n        /* What it does: Hover styles for buttons */\n        .button-td,\n        .button-a {\n          transition: all 100ms ease-in;\n        }\n        .button-td:hover,\n        .button-a:hover {\n          background: #4675DC !important;\n          border-color: #4675DC !important;\n        }\n\n        /* Media Queries */\n        @media screen and (max-width: 480px) {\n          /* What it does: Forces elements to resize to the full width of their container. Useful for resizing images beyond their max-width. */\n          .fluid,\n          .fluid-centered {\n            width: 100% !important;\n            max-width: 100% !important;\n            height: auto !important;\n            Margin-left: auto !important;\n            Margin-right: auto !important;\n          }\n          /* And center justify these ones. */\n          .fluid-centered {\n            Margin-left: auto !important;\n            Margin-right: auto !important;\n          }\n\n          /* What it does: Forces table cells into full-width rows. */\n          .stack-column,\n          .stack-column-center {\n            display: block !important;\n            width: 100% !important;\n            max-width: 100% !important;\n            direction: ltr !important;\n          }\n          /* And center justify these ones. */\n          .stack-column-center {\n            text-align: center !important;\n          }\n\n          /* What it does: Generic utility class for centering. Useful for images, buttons, and nested tables. */\n          \n\n        }\n\n  </style>\n  <style type=\"text/css\">\n        " + quillStyles + "\n  </style>\n  <!--[if mso]>\n<style type=\"text/css\">\n.p {\nmargin: 0px 0px 0px 24px !important;\n\npadding: 0px 0px 20px 0px !important;\n}\n</style>\n<![endif]-->\n  <style type=\"text/css\">\n\n    body {\n      margin: 0 !important; \n      padding: 0 !important; height: 100% !important; \n      width: 100% !important;\n  }\n\n  p > img {\n    width: 100%;\n  }\n  .ExternalClass {\n      width: 100%;\n  }\n  img {\n      -ms-interpolation-mode: bicubic;\n  }\n  p {\n    margin: 0px !important;\n    margin-block-start: 0px;\n    margin-block-end: 0px;\n  }\n  .without-margin p {\n    margin: 0px !important;\n    margin-block-start: 0px;\n    margin-block-end: 0px;\n  }\n  td {\n    font-family: Calibri,Arial !important;\n  }\n  </style>\n  </head>\n  <body>\n  <div class='without-margin' style=\"background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;\">\n  " + body + "\n  </div>\n\n  </body>\n  </html>\n").replace(/(\n)/ig, ''); };
-var quillStyles = "\n.ql-container {\n  box-sizing: border-box;\n  font-family: Helvetica, Arial, sans-serif;\n  font-size: 13px;\n  height: 100%;\n  margin: 0px;\n  position: relative;\n}\n.ql-container.ql-disabled .ql-tooltip {\n  visibility: hidden;\n}\n.ql-container:not(.ql-disabled) li[data-list=checked] > .ql-ui,\n.ql-container:not(.ql-disabled) li[data-list=unchecked] > .ql-ui {\n  cursor: pointer;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n \n ol {\n  padding-left: 1.5em;\n}\n li {\n  list-style-type: none;\n  padding-left: 1.5em;\n  position: relative;\n}\n li > .ql-ui:before {\n  display: inline-block;\n  margin-left: -1.5em;\n  margin-right: 0.3em;\n  text-align: right;\n  white-space: nowrap;\n  width: 1.2em;\n}\n li[data-list=checked] > .ql-ui,\n li[data-list=unchecked] > .ql-ui {\n  color: #777;\n}\n li[data-list=bullet] > .ql-ui:before {\n  content: '2022';\n}\n li[data-list=checked] > .ql-ui:before {\n  content: '2611';\n}\n li[data-list=unchecked] > .ql-ui:before {\n  content: '2610';\n}\n li[data-list=ordered] {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n li[data-list=ordered] > .ql-ui:before {\n  content: counter(list-0, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-1 {\n  counter-increment: list-1;\n}\n li[data-list=ordered].ql-indent-1 > .ql-ui:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-2 {\n  counter-increment: list-2;\n}\n li[data-list=ordered].ql-indent-2 > .ql-ui:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-3 {\n  counter-increment: list-3;\n}\n li[data-list=ordered].ql-indent-3 > .ql-ui:before {\n  content: counter(list-3, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-4 {\n  counter-increment: list-4;\n}\n li[data-list=ordered].ql-indent-4 > .ql-ui:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-5 {\n  counter-increment: list-5;\n}\n li[data-list=ordered].ql-indent-5 > .ql-ui:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-6 {\n  counter-increment: list-6;\n}\n li[data-list=ordered].ql-indent-6 > .ql-ui:before {\n  content: counter(list-6, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-7 {\n  counter-increment: list-7;\n}\n li[data-list=ordered].ql-indent-7 > .ql-ui:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n li[data-list=ordered].ql-indent-8 {\n  counter-increment: list-8;\n}\n li[data-list=ordered].ql-indent-8 > .ql-ui:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-8 {\n  counter-reset: list-9;\n}\n li[data-list=ordered].ql-indent-9 {\n  counter-increment: list-9;\n}\n li[data-list=ordered].ql-indent-9 > .ql-ui:before {\n  content: counter(list-9, decimal) '. ';\n}\n .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 3em;\n}\n li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 4.5em;\n}\n .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 3em;\n}\n li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 4.5em;\n}\n .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 7.5em;\n}\n .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 7.5em;\n}\n .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 9em;\n}\n li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 10.5em;\n}\n .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 9em;\n}\n li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 10.5em;\n}\n .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 13.5em;\n}\n .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 13.5em;\n}\n .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 15em;\n}\n li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 16.5em;\n}\n .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 15em;\n}\n li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 16.5em;\n}\n .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 19.5em;\n}\n .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 19.5em;\n}\n .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 21em;\n}\n li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 22.5em;\n}\n .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 21em;\n}\n li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 22.5em;\n}\n .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 24em;\n}\n li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 25.5em;\n}\n .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 24em;\n}\n li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 25.5em;\n}\n .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 27em;\n}\n li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 28.5em;\n}\n .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 27em;\n}\n li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 28.5em;\n}\n li.ql-direction-rtl {\n  padding-right: 1.5em;\n}\n li.ql-direction-rtl > .ql-ui:before {\n  margin-left: 0.3em;\n  margin-right: -1.5em;\n  text-align: left;\n}\n table {\n  table-layout: fixed;\n  width: 100%;\n}\n table td {\n  outline: none;\n}\n .ql-code-block-container {\n  font-family: monospace;\n}\n .ql-video {\n  display: block;\n  max-width: 100%;\n}\n .ql-video.ql-align-center {\n  margin: 0 auto;\n}\n .ql-video.ql-align-right {\n  margin: 0 0 0 auto;\n}\n .ql-bg-black {\n  background-color: #000;\n}\n .ql-bg-red {\n  background-color: #e60000;\n}\n .ql-bg-orange {\n  background-color: #f90;\n}\n .ql-bg-yellow {\n  background-color: #ff0;\n}\n .ql-bg-green {\n  background-color: #008a00;\n}\n .ql-bg-blue {\n  background-color: #06c;\n}\n .ql-bg-purple {\n  background-color: #93f;\n}\n .ql-color-white {\n  color: #fff;\n}\n .ql-color-red {\n  color: #e60000;\n}\n .ql-color-orange {\n  color: #f90;\n}\n .ql-color-yellow {\n  color: #ff0;\n}\n .ql-color-green {\n  color: #008a00;\n}\n .ql-color-blue {\n  color: #06c;\n}\n .ql-color-purple {\n  color: #93f;\n}\n .ql-font-serif {\n  font-family: Georgia, Times New Roman, serif;\n}\n .ql-font-monospace {\n  font-family: Monaco, Courier New, monospace;\n}\n .ql-size-small {\n  font-size: 0.75em;\n}\n .ql-size-large {\n  font-size: 1.5em;\n}\n .ql-size-huge {\n  font-size: 2.5em;\n}\n .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n .ql-align-center {\n  text-align: center;\n}\n .ql-align-justify {\n  text-align: justify;\n}\n .ql-align-right {\n  text-align: right;\n}\n .ql-ui {\n  position: absolute;\n}\n.ql-blank::before {\n  color: rgba(0,0,0,0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  left: 15px;\n  pointer-events: none;\n  position: absolute;\n  right: 15px;\n}\n".replace(/(\n)/ig, '');
-
-var useStyles$1 = core.makeStyles(function () { return core.createStyles({
-    fabContainer: {
-        position: 'fixed',
-        right: 30,
-        bottom: 30
-    }
-}); });
-
-var EmailConfig = function (props) {
-    var _a = React.useState(props.to || ''), to = _a[0], setTo = _a[1];
-    var _b = React.useState(props.cc || []), cc = _b[0], setCc = _b[1];
-    var classes = useStyles$2(props);
-    React.useEffect(function () {
-        props.onToChange(to);
-    }, [to]);
-    React.useEffect(function () {
-        props.onCcChange(cc);
-    }, [cc]);
-    return (React__default.createElement(core.Box, null,
-        React__default.createElement(core.Typography, { gutterBottom: true }, "Configure email"),
-        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-            React__default.createElement(core.Box, { my: 2 },
-                React__default.createElement(core.Typography, null, "To: "),
-                React__default.createElement(core.Box, { width: "100%" },
-                    React__default.createElement(core.Input, { value: to, fullWidth: true, onChange: function (e) { return setTo(e.target.value); } }))),
-            React__default.createElement(core.Box, { my: 2 },
-                React__default.createElement(core.Typography, null, "CC: "),
-                React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-                    cc.map(function (_cc, i) { return (React__default.createElement(core.Box, { my: 1, key: i, display: "flex", width: "100%" },
-                        React__default.createElement(core.Input, { fullWidth: true, value: cc[i] || '', onChange: function (e) {
-                                setCc(__spreadArrays(cc.map(function (_, _i) { return i === _i ? e.target.value : _; })));
-                            } }),
-                        React__default.createElement(core.IconButton, { style: { padding: 0 }, onClick: function () { return setCc(__spreadArrays(cc.filter(function (_, _i) { return i !== _i; }))); } },
-                            React__default.createElement("i", { className: "material-icons" }, "clear")))); }),
-                    React__default.createElement(core.Box, { width: "50px", my: 1, height: "50px" },
-                        React__default.createElement(core.IconButton, { onClick: function () { return setCc(__spreadArrays(cc, [''])); } },
-                            React__default.createElement("i", { className: "material-icons" }, "add"))))))));
-};
-var useStyles$2 = core.makeStyles(function (theme) { return core.createStyles({}); });
-
-var SmsConfig = function (props) {
-    var _a = React.useState(props.phoneNumbers || []), numbers = _a[0], setNumbers = _a[1];
-    var classes = useStyles$3(props);
-    React.useEffect(function () {
-        props.onPhoneNumberChange(numbers);
-    }, [numbers]);
-    return (React__default.createElement(core.Box, null,
-        React__default.createElement(core.Typography, { gutterBottom: true }, "Configure SMS"),
-        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-            React__default.createElement(core.Box, { my: 2 },
-                React__default.createElement(core.Typography, null, "to: "),
-                React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
-                    numbers.map(function (number, i) { return (React__default.createElement(core.Box, { my: 1, key: i, display: "flex", width: "100%" },
-                        React__default.createElement(core.Input, { placeholder: "+918800000000", fullWidth: true, value: numbers[i] || '', onChange: function (e) {
-                                setNumbers(__spreadArrays(numbers.map(function (_, _i) { return i === _i ? e.target.value : _; })));
-                            } }),
-                        React__default.createElement(core.IconButton, { style: { padding: 0 }, onClick: function () { return setNumbers(__spreadArrays(numbers.filter(function (_, _i) { return i !== _i; }))); } },
-                            React__default.createElement("i", { className: "material-icons" }, "clear")))); }),
-                    React__default.createElement(core.Box, { width: "50px", my: 1, height: "50px" },
-                        React__default.createElement(core.IconButton, { onClick: function () { return setNumbers(__spreadArrays(numbers, [''])); } },
-                            React__default.createElement("i", { className: "material-icons" }, "add"))))))));
-};
-var useStyles$3 = core.makeStyles(function (theme) { return core.createStyles({}); });
-
-var TestTemplate = function (props) {
-    var context = React.useContext(Context);
-    if (!context)
-        return React__default.createElement("div", null);
-    var testTemplate = context.testTemplate;
-    var _a = React.useState(false), loading = _a[0], setLoading = _a[1];
-    var template = props.template;
-    var classes = useStyles$4(props);
-    var _b = React.useState(''), to = _b[0], setTo = _b[1];
-    var _c = React.useState([]), phoneNumbers = _c[0], setPhoneNumbers = _c[1];
-    var _d = React.useState([]), cc = _d[0], setCc = _d[1];
-    var validateInput = function () {
-        if (template.channel === 'email' && !to)
-            return false;
-        // if (cc.filter(_c => !!_c).length === 0) return false;
-        return true;
-    };
-    var send = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setLoading(true);
-                    return [4 /*yield*/, testTemplate(template.id, template.channel, { to: to, cc: cc })];
-                case 1:
-                    _a.sent();
-                    setLoading(false);
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    if (!template)
-        return React__default.createElement("div", null);
-    return (React__default.createElement(core.Paper, null,
-        React__default.createElement(core.Box, { p: 3, width: "300px" },
-            React__default.createElement(core.Typography, { variant: "h6" },
-                "Test template - ",
-                template.name),
-            React__default.createElement(core.Typography, { className: classes.tag, variant: "caption" }, template.slug),
-            React__default.createElement(core.Box, { mt: "20px" },
-                React__default.createElement(core.Box, { mt: "40px" },
-                    template.channel === 'email' ? (React__default.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } })) : null,
-                    template.channel === 'sms' ? (React__default.createElement(SmsConfig, { phoneNumbers: phoneNumbers, onPhoneNumberChange: function (_numbers) { return setPhoneNumbers(_numbers); } })) : null),
-                React__default.createElement(core.Box, { mt: 2 },
-                    React__default.createElement(core.Button, { onClick: send, disabled: !validateInput(), variant: "outlined", color: "secondary" }, loading ? React__default.createElement(core.CircularProgress, null) : 'Send'))))));
-};
-var useStyles$4 = core.makeStyles(function (theme) { return core.createStyles({
-    tag: {
-        color: 'white',
-        backgroundColor: theme.palette.primary.main,
-        padding: '2px 4px'
-    }
-}); });
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -16007,9 +15301,9 @@ function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
 var _equalArrays = equalArrays;
 
 /** Built-in value references. */
-var Uint8Array$1 = _root.Uint8Array;
+var Uint8Array = _root.Uint8Array;
 
-var _Uint8Array = Uint8Array$1;
+var _Uint8Array = Uint8Array;
 
 /**
  * Converts `map` to its key-value pairs.
@@ -16924,9 +16218,9 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
 var _equalObjects = equalObjects;
 
 /* Built-in method references that are verified to be native. */
-var DataView$1 = _getNative(_root, 'DataView');
+var DataView = _getNative(_root, 'DataView');
 
-var _DataView = DataView$1;
+var _DataView = DataView;
 
 /* Built-in method references that are verified to be native. */
 var Promise$1 = _getNative(_root, 'Promise');
@@ -20150,1755 +19444,701 @@ lib.Quill = Quill_1;
 lib.Mixin = Mixin;
 lib.Toolbar = Toolbar;
 
-var loadImage = createCommonjsModule(function (module) {
-(function($) {
-
-  /**
-   * Loads an image for a given File object.
-   * Invokes the callback with an img or optional canvas element
-   * (if supported by the browser) as parameter:.
-   *
-   * @param {File|Blob|string} file File or Blob object or image URL
-   * @param {Function} [callback] Image load event callback
-   * @param {object} [options] Options object
-   * @returns {HTMLImageElement|HTMLCanvasElement|FileReader} image object
-   */
-  function loadImage(file, callback, options) {
-    var img = document.createElement('img');
-    var url;
-    img.onerror = function(event) {
-      return loadImage.onerror(img, event, file, callback, options)
-    };
-    img.onload = function(event) {
-      return loadImage.onload(img, event, file, callback, options)
-    };
-    if (typeof file === 'string') {
-      loadImage.fetchBlob(
-        file,
-        function(blob) {
-          if (blob && loadImage.isInstanceOf('Blob', blob)) {
-            // eslint-disable-next-line no-param-reassign
-            file = blob;
-            url = loadImage.createObjectURL(file);
-          } else {
-            url = file;
-            if (options && options.crossOrigin) {
-              img.crossOrigin = options.crossOrigin;
-            }
-          }
-          img.src = url;
-        },
-        options
-      );
-      return img
-    } else if (
-      loadImage.isInstanceOf('Blob', file) ||
-      // Files are also Blob instances, but some browsers
-      // (Firefox 3.6) support the File API but not Blobs:
-      loadImage.isInstanceOf('File', file)
-    ) {
-      url = img._objectURL = loadImage.createObjectURL(file);
-      if (url) {
-        img.src = url;
-        return img
-      }
-      return loadImage.readFile(file, function(e) {
-        var target = e.target;
-        if (target && target.result) {
-          img.src = target.result;
-        } else if (callback) {
-          callback(e);
-        }
-      })
+var config = {
+    urlPrefix: '',
+    apiConfig: {
+        baseUrl: '',
+        accessToken: '',
+        settingsModelName: ''
+    },
+    singleInstances: true,
+    theme: core.createMuiTheme(),
+    disableTabs: false,
+    onActionCompleted: function () { },
+    listingType: 'list',
+    rootContainerProps: {},
+    dialogProps: {
+        containerProps: {},
+        formContainerProps: {},
+        mainActionButtonProps: {},
+        secondaryActionButtonProps: {},
+        appbarProps: {}
     }
-  }
-  // The check for URL.revokeObjectURL fixes an issue with Opera 12,
-  // which provides URL.createObjectURL but doesn't properly implement it:
-  var urlAPI =
-    ($.createObjectURL && $) ||
-    ($.URL && URL.revokeObjectURL && URL) ||
-    ($.webkitURL && webkitURL);
+};
+var API_URL = 'templates';
+var SETTINGS_API_URL = 'templateSettings';
+/**
+ * @function initializeTemplater
+ * @param configuration Partial<TemplaterConfig>
+ * @description Initialize the templater with provided configurations
+ */
+var initializeTemplater = function (configuration) {
+    config = __assign(__assign(__assign({}, config), configuration), { apiConfig: __assign(__assign({}, config.apiConfig), configuration.apiConfig), dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
+    axios$1.defaults.baseURL = config.apiConfig.baseUrl;
+    axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
+    API_URL = config.apiConfig.modelName || 'templates';
+    SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
+    console.log("Templater Initialized", config);
+    var Size = Quill_1.import('attributors/style/size');
+    var Align = Quill_1.import('attributors/style/align');
+    Size.whitelist = ['12px', '14px', '18px'];
+    Quill_1.register(Size, true);
+    Quill_1.register(Align, true);
+};
+var getQuillModule = function (toolbarId) {
+    return __assign(__assign({}, QUILL_MODULES), { toolbar: "#" + toolbarId });
+};
+var QUILL_MODULES = {
+    history: {
+        delay: 100,
+        maxStack: 200,
+        userOnly: false
+    },
+    toolbar: [
+        [{ size: ['small', 'normal', 'large'] }],
+        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'color': [] }],
+        [{ 'align': [] }],
+        ['image'],
+    ],
+};
+var QUILL_FORMATS = [
+    'header',
+    'image',
+    'bold', 'italic', 'underline', 'strike',
+    'indent',
+    'link', 'image', 'color', 'script', 'font', 'align',
+    'direction',
+    'size', 'list',
+    'blockquote', 'code-block'
+];
 
-  /**
-   * Helper function to revoke an object URL
-   *
-   * @param {HTMLImageElement} img Image element
-   * @param {object} [options] Options object
-   */
-  function revokeHelper(img, options) {
-    if (img._objectURL && !(options && options.noRevoke)) {
-      loadImage.revokeObjectURL(img._objectURL);
-      delete img._objectURL;
-    }
-  }
-
-  // If the callback given to this function returns a blob, it is used as image
-  // source instead of the original url and overrides the file argument used in
-  // the onload and onerror event callbacks:
-  loadImage.fetchBlob = function(url, callback) {
-    callback();
-  };
-
-  loadImage.isInstanceOf = function(type, obj) {
-    // Cross-frame instanceof check
-    return Object.prototype.toString.call(obj) === '[object ' + type + ']'
-  };
-
-  loadImage.transform = function(img, options, callback, file, data) {
-    callback(img, data);
-  };
-
-  loadImage.onerror = function(img, event, file, callback, options) {
-    revokeHelper(img, options);
-    if (callback) {
-      callback.call(img, event);
-    }
-  };
-
-  loadImage.onload = function(img, event, file, callback, options) {
-    revokeHelper(img, options);
-    if (callback) {
-      loadImage.transform(img, options, callback, file, {
-        originalWidth: img.naturalWidth || img.width,
-        originalHeight: img.naturalHeight || img.height
-      });
-    }
-  };
-
-  loadImage.createObjectURL = function(file) {
-    return urlAPI ? urlAPI.createObjectURL(file) : false
-  };
-
-  loadImage.revokeObjectURL = function(url) {
-    return urlAPI ? urlAPI.revokeObjectURL(url) : false
-  };
-
-  // Loads a given File object via FileReader interface,
-  // invokes the callback with the event object (load or error).
-  // The result can be read via event.target.result:
-  loadImage.readFile = function(file, callback, method) {
-    if ($.FileReader) {
-      var fileReader = new FileReader();
-      fileReader.onload = fileReader.onerror = callback;
-      // eslint-disable-next-line no-param-reassign
-      method = method || 'readAsDataURL';
-      if (fileReader[method]) {
-        fileReader[method](file);
-        return fileReader
-      }
-    }
-    return false
-  };
-
-  if ( module.exports) {
-    module.exports = loadImage;
-  } else {
-    $.loadImage = loadImage;
-  }
-})((typeof window !== 'undefined' && window) || commonjsGlobal);
-});
-
-var loadImageScale = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  var originalTransform = loadImage.transform;
-
-  loadImage.transform = function(img, options, callback, file, data) {
-    originalTransform.call(
-      loadImage,
-      loadImage.scale(img, options, data),
-      options,
-      callback,
-      file,
-      data
-    );
-  };
-
-  // Transform image coordinates, allows to override e.g.
-  // the canvas orientation based on the orientation option,
-  // gets canvas, options passed as arguments:
-  loadImage.transformCoordinates = function() {};
-
-  // Returns transformed options, allows to override e.g.
-  // maxWidth, maxHeight and crop options based on the aspectRatio.
-  // gets img, options passed as arguments:
-  loadImage.getTransformedOptions = function(img, options) {
-    var aspectRatio = options.aspectRatio;
-    var newOptions;
-    var i;
-    var width;
-    var height;
-    if (!aspectRatio) {
-      return options
-    }
-    newOptions = {};
-    for (i in options) {
-      if (Object.prototype.hasOwnProperty.call(options, i)) {
-        newOptions[i] = options[i];
-      }
-    }
-    newOptions.crop = true;
-    width = img.naturalWidth || img.width;
-    height = img.naturalHeight || img.height;
-    if (width / height > aspectRatio) {
-      newOptions.maxWidth = height * aspectRatio;
-      newOptions.maxHeight = height;
-    } else {
-      newOptions.maxWidth = width;
-      newOptions.maxHeight = width / aspectRatio;
-    }
-    return newOptions
-  };
-
-  // Canvas render method, allows to implement a different rendering algorithm:
-  loadImage.renderImageToCanvas = function(
-    canvas,
-    img,
-    sourceX,
-    sourceY,
-    sourceWidth,
-    sourceHeight,
-    destX,
-    destY,
-    destWidth,
-    destHeight
-  ) {
-    canvas
-      .getContext('2d')
-      .drawImage(
-        img,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        destX,
-        destY,
-        destWidth,
-        destHeight
-      );
-    return canvas
-  };
-
-  // Determines if the target image should be a canvas element:
-  loadImage.hasCanvasOption = function(options) {
-    return options.canvas || options.crop || !!options.aspectRatio
-  };
-
-  // Scales and/or crops the given image (img or canvas HTML element)
-  // using the given options.
-  // Returns a canvas object if the browser supports canvas
-  // and the hasCanvasOption method returns true or a canvas
-  // object is passed as image, else the scaled image:
-  loadImage.scale = function(img, options, data) {
-    // eslint-disable-next-line no-param-reassign
-    options = options || {};
-    var canvas = document.createElement('canvas');
-    var useCanvas =
-      img.getContext ||
-      (loadImage.hasCanvasOption(options) && canvas.getContext);
-    var width = img.naturalWidth || img.width;
-    var height = img.naturalHeight || img.height;
-    var destWidth = width;
-    var destHeight = height;
-    var maxWidth;
-    var maxHeight;
-    var minWidth;
-    var minHeight;
-    var sourceWidth;
-    var sourceHeight;
-    var sourceX;
-    var sourceY;
-    var pixelRatio;
-    var downsamplingRatio;
-    var tmp;
-    /**
-     * Scales up image dimensions
-     */
-    function scaleUp() {
-      var scale = Math.max(
-        (minWidth || destWidth) / destWidth,
-        (minHeight || destHeight) / destHeight
-      );
-      if (scale > 1) {
-        destWidth *= scale;
-        destHeight *= scale;
-      }
+/**
+ * @class TemplateService
+ * @description Services related to templates and CRUD operation
+ */
+var TemplateService = /** @class */ (function () {
+    function TemplateService() {
     }
     /**
-     * Scales down image dimensions
+     * Fetch templates
+     * @return Promise<AxiosResponse<Template[]>>>
      */
-    function scaleDown() {
-      var scale = Math.min(
-        (maxWidth || destWidth) / destWidth,
-        (maxHeight || destHeight) / destHeight
-      );
-      if (scale < 1) {
-        destWidth *= scale;
-        destHeight *= scale;
-      }
-    }
-    if (useCanvas) {
-      // eslint-disable-next-line no-param-reassign
-      options = loadImage.getTransformedOptions(img, options, data);
-      sourceX = options.left || 0;
-      sourceY = options.top || 0;
-      if (options.sourceWidth) {
-        sourceWidth = options.sourceWidth;
-        if (options.right !== undefined && options.left === undefined) {
-          sourceX = width - sourceWidth - options.right;
-        }
-      } else {
-        sourceWidth = width - sourceX - (options.right || 0);
-      }
-      if (options.sourceHeight) {
-        sourceHeight = options.sourceHeight;
-        if (options.bottom !== undefined && options.top === undefined) {
-          sourceY = height - sourceHeight - options.bottom;
-        }
-      } else {
-        sourceHeight = height - sourceY - (options.bottom || 0);
-      }
-      destWidth = sourceWidth;
-      destHeight = sourceHeight;
-    }
-    maxWidth = options.maxWidth;
-    maxHeight = options.maxHeight;
-    minWidth = options.minWidth;
-    minHeight = options.minHeight;
-    if (useCanvas && maxWidth && maxHeight && options.crop) {
-      destWidth = maxWidth;
-      destHeight = maxHeight;
-      tmp = sourceWidth / sourceHeight - maxWidth / maxHeight;
-      if (tmp < 0) {
-        sourceHeight = (maxHeight * sourceWidth) / maxWidth;
-        if (options.top === undefined && options.bottom === undefined) {
-          sourceY = (height - sourceHeight) / 2;
-        }
-      } else if (tmp > 0) {
-        sourceWidth = (maxWidth * sourceHeight) / maxHeight;
-        if (options.left === undefined && options.right === undefined) {
-          sourceX = (width - sourceWidth) / 2;
-        }
-      }
-    } else {
-      if (options.contain || options.cover) {
-        minWidth = maxWidth = maxWidth || minWidth;
-        minHeight = maxHeight = maxHeight || minHeight;
-      }
-      if (options.cover) {
-        scaleDown();
-        scaleUp();
-      } else {
-        scaleUp();
-        scaleDown();
-      }
-    }
-    if (useCanvas) {
-      pixelRatio = options.pixelRatio;
-      if (pixelRatio > 1) {
-        canvas.style.width = destWidth + 'px';
-        canvas.style.height = destHeight + 'px';
-        destWidth *= pixelRatio;
-        destHeight *= pixelRatio;
-        canvas.getContext('2d').scale(pixelRatio, pixelRatio);
-      }
-      downsamplingRatio = options.downsamplingRatio;
-      if (
-        downsamplingRatio > 0 &&
-        downsamplingRatio < 1 &&
-        destWidth < sourceWidth &&
-        destHeight < sourceHeight
-      ) {
-        while (sourceWidth * downsamplingRatio > destWidth) {
-          canvas.width = sourceWidth * downsamplingRatio;
-          canvas.height = sourceHeight * downsamplingRatio;
-          loadImage.renderImageToCanvas(
-            canvas,
-            img,
-            sourceX,
-            sourceY,
-            sourceWidth,
-            sourceHeight,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
-          sourceX = 0;
-          sourceY = 0;
-          sourceWidth = canvas.width;
-          sourceHeight = canvas.height;
-          // eslint-disable-next-line no-param-reassign
-          img = document.createElement('canvas');
-          img.width = sourceWidth;
-          img.height = sourceHeight;
-          loadImage.renderImageToCanvas(
-            img,
-            canvas,
-            0,
-            0,
-            sourceWidth,
-            sourceHeight,
-            0,
-            0,
-            sourceWidth,
-            sourceHeight
-          );
-        }
-      }
-      canvas.width = destWidth;
-      canvas.height = destHeight;
-      loadImage.transformCoordinates(canvas, options);
-      return loadImage.renderImageToCanvas(
-        canvas,
-        img,
-        sourceX,
-        sourceY,
-        sourceWidth,
-        sourceHeight,
-        0,
-        0,
-        destWidth,
-        destHeight
-      )
-    }
-    img.width = destWidth;
-    img.height = destHeight;
-    return img
-  };
-});
-});
-
-var loadImageMeta = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  var hasblobSlice =
-    typeof Blob !== 'undefined' &&
-    (Blob.prototype.slice ||
-      Blob.prototype.webkitSlice ||
-      Blob.prototype.mozSlice);
-
-  loadImage.blobSlice =
-    hasblobSlice &&
-    function() {
-      var slice = this.slice || this.webkitSlice || this.mozSlice;
-      return slice.apply(this, arguments)
-    };
-
-  loadImage.metaDataParsers = {
-    jpeg: {
-      0xffe1: [], // APP1 marker
-      0xffed: [] // APP13 marker
-    }
-  };
-
-  // Parses image meta data and calls the callback with an object argument
-  // with the following properties:
-  // * imageHead: The complete image head as ArrayBuffer (Uint8Array for IE10)
-  // The options argument accepts an object and supports the following
-  // properties:
-  // * maxMetaDataSize: Defines the maximum number of bytes to parse.
-  // * disableImageHead: Disables creating the imageHead property.
-  loadImage.parseMetaData = function(file, callback, options, data) {
-    // eslint-disable-next-line no-param-reassign
-    options = options || {};
-    // eslint-disable-next-line no-param-reassign
-    data = data || {};
-    var that = this;
-    // 256 KiB should contain all EXIF/ICC/IPTC segments:
-    var maxMetaDataSize = options.maxMetaDataSize || 262144;
-    var noMetaData = !(
-      typeof DataView !== 'undefined' &&
-      file &&
-      file.size >= 12 &&
-      file.type === 'image/jpeg' &&
-      loadImage.blobSlice
-    );
-    if (
-      noMetaData ||
-      !loadImage.readFile(
-        loadImage.blobSlice.call(file, 0, maxMetaDataSize),
-        function(e) {
-          if (e.target.error) {
-            // FileReader error
-            // eslint-disable-next-line no-console
-            console.log(e.target.error);
-            callback(data);
-            return
-          }
-          // Note on endianness:
-          // Since the marker and length bytes in JPEG files are always
-          // stored in big endian order, we can leave the endian parameter
-          // of the DataView methods undefined, defaulting to big endian.
-          var buffer = e.target.result;
-          var dataView = new DataView(buffer);
-          var offset = 2;
-          var maxOffset = dataView.byteLength - 4;
-          var headLength = offset;
-          var markerBytes;
-          var markerLength;
-          var parsers;
-          var i;
-          // Check for the JPEG marker (0xffd8):
-          if (dataView.getUint16(0) === 0xffd8) {
-            while (offset < maxOffset) {
-              markerBytes = dataView.getUint16(offset);
-              // Search for APPn (0xffeN) and COM (0xfffe) markers,
-              // which contain application-specific meta-data like
-              // Exif, ICC and IPTC data and text comments:
-              if (
-                (markerBytes >= 0xffe0 && markerBytes <= 0xffef) ||
-                markerBytes === 0xfffe
-              ) {
-                // The marker bytes (2) are always followed by
-                // the length bytes (2), indicating the length of the
-                // marker segment, which includes the length bytes,
-                // but not the marker bytes, so we add 2:
-                markerLength = dataView.getUint16(offset + 2) + 2;
-                if (offset + markerLength > dataView.byteLength) {
-                  // eslint-disable-next-line no-console
-                  console.log('Invalid meta data: Invalid segment size.');
-                  break
-                }
-                parsers = loadImage.metaDataParsers.jpeg[markerBytes];
-                if (parsers) {
-                  for (i = 0; i < parsers.length; i += 1) {
-                    parsers[i].call(
-                      that,
-                      dataView,
-                      offset,
-                      markerLength,
-                      data,
-                      options
-                    );
-                  }
-                }
-                offset += markerLength;
-                headLength = offset;
-              } else {
-                // Not an APPn or COM marker, probably safe to
-                // assume that this is the end of the meta data
-                break
-              }
-            }
-            // Meta length must be longer than JPEG marker (2)
-            // plus APPn marker (2), followed by length bytes (2):
-            if (!options.disableImageHead && headLength > 6) {
-              if (buffer.slice) {
-                data.imageHead = buffer.slice(0, headLength);
-              } else {
-                // Workaround for IE10, which does not yet
-                // support ArrayBuffer.slice:
-                data.imageHead = new Uint8Array(buffer).subarray(0, headLength);
-              }
-            }
-          } else {
-            // eslint-disable-next-line no-console
-            console.log('Invalid JPEG file: Missing JPEG marker.');
-          }
-          callback(data);
-        },
-        'readAsArrayBuffer'
-      )
-    ) {
-      callback(data);
-    }
-  };
-
-  // Determines if meta data should be loaded automatically:
-  loadImage.hasMetaOption = function(options) {
-    return options && options.meta
-  };
-
-  var originalTransform = loadImage.transform;
-  loadImage.transform = function(img, options, callback, file, data) {
-    if (loadImage.hasMetaOption(options)) {
-      loadImage.parseMetaData(
-        file,
-        function(data) {
-          originalTransform.call(loadImage, img, options, callback, file, data);
-        },
-        options,
-        data
-      );
-    } else {
-      originalTransform.apply(loadImage, arguments);
-    }
-  };
-});
-});
-
-var loadImageFetch = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage, loadImageMeta);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  if (typeof fetch !== 'undefined' && typeof Request !== 'undefined') {
-    loadImage.fetchBlob = function(url, callback, options) {
-      if (loadImage.hasMetaOption(options)) {
-        fetch(new Request(url, options))
-          .then(function(response) {
-            return response.blob()
-          })
-          .then(callback)
-          .catch(function(err) {
-            console.log(err); // eslint-disable-line no-console
-            callback();
-          });
-      } else {
-        callback();
-      }
-    };
-  } else if (
-    // Check for XHR2 support:
-    typeof XMLHttpRequest !== 'undefined' &&
-    typeof ProgressEvent !== 'undefined'
-  ) {
-    loadImage.fetchBlob = function(url, callback, options) {
-      if (loadImage.hasMetaOption(options)) {
-        // eslint-disable-next-line no-param-reassign
-        options = options || {};
-        var req = new XMLHttpRequest();
-        req.open(options.method || 'GET', url);
-        if (options.headers) {
-          Object.keys(options.headers).forEach(function(key) {
-            req.setRequestHeader(key, options.headers[key]);
-          });
-        }
-        req.withCredentials = options.credentials === 'include';
-        req.responseType = 'blob';
-        req.onload = function() {
-          callback(req.response);
-        };
-        req.onerror = req.onabort = req.ontimeout = function(e) {
-          console.log(e); // eslint-disable-line no-console
-          callback();
-        };
-        req.send(options.body);
-      } else {
-        callback();
-      }
-    };
-  }
-});
-});
-
-var loadImageExif = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage, loadImageMeta);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  loadImage.ExifMap = function() {
-    return this
-  };
-
-  loadImage.ExifMap.prototype.map = {
-    Orientation: 0x0112
-  };
-
-  loadImage.ExifMap.prototype.get = function(id) {
-    return this[id] || this[this.map[id]]
-  };
-
-  loadImage.getExifThumbnail = function(dataView, offset, length) {
-    if (!length || offset + length > dataView.byteLength) {
-      console.log('Invalid Exif data: Invalid thumbnail data.');
-      return
-    }
-    return loadImage.createObjectURL(
-      new Blob([dataView.buffer.slice(offset, offset + length)])
-    )
-  };
-
-  loadImage.exifTagTypes = {
-    // byte, 8-bit unsigned int:
-    1: {
-      getValue: function(dataView, dataOffset) {
-        return dataView.getUint8(dataOffset)
-      },
-      size: 1
-    },
-    // ascii, 8-bit byte:
-    2: {
-      getValue: function(dataView, dataOffset) {
-        return String.fromCharCode(dataView.getUint8(dataOffset))
-      },
-      size: 1,
-      ascii: true
-    },
-    // short, 16 bit int:
-    3: {
-      getValue: function(dataView, dataOffset, littleEndian) {
-        return dataView.getUint16(dataOffset, littleEndian)
-      },
-      size: 2
-    },
-    // long, 32 bit int:
-    4: {
-      getValue: function(dataView, dataOffset, littleEndian) {
-        return dataView.getUint32(dataOffset, littleEndian)
-      },
-      size: 4
-    },
-    // rational = two long values, first is numerator, second is denominator:
-    5: {
-      getValue: function(dataView, dataOffset, littleEndian) {
-        return (
-          dataView.getUint32(dataOffset, littleEndian) /
-          dataView.getUint32(dataOffset + 4, littleEndian)
-        )
-      },
-      size: 8
-    },
-    // slong, 32 bit signed int:
-    9: {
-      getValue: function(dataView, dataOffset, littleEndian) {
-        return dataView.getInt32(dataOffset, littleEndian)
-      },
-      size: 4
-    },
-    // srational, two slongs, first is numerator, second is denominator:
-    10: {
-      getValue: function(dataView, dataOffset, littleEndian) {
-        return (
-          dataView.getInt32(dataOffset, littleEndian) /
-          dataView.getInt32(dataOffset + 4, littleEndian)
-        )
-      },
-      size: 8
-    }
-  };
-  // undefined, 8-bit byte, value depending on field:
-  loadImage.exifTagTypes[7] = loadImage.exifTagTypes[1];
-
-  loadImage.getExifValue = function(
-    dataView,
-    tiffOffset,
-    offset,
-    type,
-    length,
-    littleEndian
-  ) {
-    var tagType = loadImage.exifTagTypes[type];
-    var tagSize;
-    var dataOffset;
-    var values;
-    var i;
-    var str;
-    var c;
-    if (!tagType) {
-      console.log('Invalid Exif data: Invalid tag type.');
-      return
-    }
-    tagSize = tagType.size * length;
-    // Determine if the value is contained in the dataOffset bytes,
-    // or if the value at the dataOffset is a pointer to the actual data:
-    dataOffset =
-      tagSize > 4
-        ? tiffOffset + dataView.getUint32(offset + 8, littleEndian)
-        : offset + 8;
-    if (dataOffset + tagSize > dataView.byteLength) {
-      console.log('Invalid Exif data: Invalid data offset.');
-      return
-    }
-    if (length === 1) {
-      return tagType.getValue(dataView, dataOffset, littleEndian)
-    }
-    values = [];
-    for (i = 0; i < length; i += 1) {
-      values[i] = tagType.getValue(
-        dataView,
-        dataOffset + i * tagType.size,
-        littleEndian
-      );
-    }
-    if (tagType.ascii) {
-      str = '';
-      // Concatenate the chars:
-      for (i = 0; i < values.length; i += 1) {
-        c = values[i];
-        // Ignore the terminating NULL byte(s):
-        if (c === '\u0000') {
-          break
-        }
-        str += c;
-      }
-      return str
-    }
-    return values
-  };
-
-  loadImage.parseExifTag = function(
-    dataView,
-    tiffOffset,
-    offset,
-    littleEndian,
-    data
-  ) {
-    var tag = dataView.getUint16(offset, littleEndian);
-    data.exif[tag] = loadImage.getExifValue(
-      dataView,
-      tiffOffset,
-      offset,
-      dataView.getUint16(offset + 2, littleEndian), // tag type
-      dataView.getUint32(offset + 4, littleEndian), // tag length
-      littleEndian
-    );
-  };
-
-  loadImage.parseExifTags = function(
-    dataView,
-    tiffOffset,
-    dirOffset,
-    littleEndian,
-    data
-  ) {
-    var tagsNumber, dirEndOffset, i;
-    if (dirOffset + 6 > dataView.byteLength) {
-      console.log('Invalid Exif data: Invalid directory offset.');
-      return
-    }
-    tagsNumber = dataView.getUint16(dirOffset, littleEndian);
-    dirEndOffset = dirOffset + 2 + 12 * tagsNumber;
-    if (dirEndOffset + 4 > dataView.byteLength) {
-      console.log('Invalid Exif data: Invalid directory size.');
-      return
-    }
-    for (i = 0; i < tagsNumber; i += 1) {
-      this.parseExifTag(
-        dataView,
-        tiffOffset,
-        dirOffset + 2 + 12 * i, // tag offset
-        littleEndian,
-        data
-      );
-    }
-    // Return the offset to the next directory:
-    return dataView.getUint32(dirEndOffset, littleEndian)
-  };
-
-  loadImage.parseExifData = function(dataView, offset, length, data, options) {
-    if (options.disableExif) {
-      return
-    }
-    var tiffOffset = offset + 10;
-    var littleEndian;
-    var dirOffset;
-    var thumbnailData;
-    // Check for the ASCII code for "Exif" (0x45786966):
-    if (dataView.getUint32(offset + 4) !== 0x45786966) {
-      // No Exif data, might be XMP data instead
-      return
-    }
-    if (tiffOffset + 8 > dataView.byteLength) {
-      console.log('Invalid Exif data: Invalid segment size.');
-      return
-    }
-    // Check for the two null bytes:
-    if (dataView.getUint16(offset + 8) !== 0x0000) {
-      console.log('Invalid Exif data: Missing byte alignment offset.');
-      return
-    }
-    // Check the byte alignment:
-    switch (dataView.getUint16(tiffOffset)) {
-      case 0x4949:
-        littleEndian = true;
-        break
-      case 0x4d4d:
-        littleEndian = false;
-        break
-      default:
-        console.log('Invalid Exif data: Invalid byte alignment marker.');
-        return
-    }
-    // Check for the TIFF tag marker (0x002A):
-    if (dataView.getUint16(tiffOffset + 2, littleEndian) !== 0x002a) {
-      console.log('Invalid Exif data: Missing TIFF marker.');
-      return
-    }
-    // Retrieve the directory offset bytes, usually 0x00000008 or 8 decimal:
-    dirOffset = dataView.getUint32(tiffOffset + 4, littleEndian);
-    // Create the exif object to store the tags:
-    data.exif = new loadImage.ExifMap();
-    // Parse the tags of the main image directory and retrieve the
-    // offset to the next directory, usually the thumbnail directory:
-    dirOffset = loadImage.parseExifTags(
-      dataView,
-      tiffOffset,
-      tiffOffset + dirOffset,
-      littleEndian,
-      data
-    );
-    if (dirOffset && !options.disableExifThumbnail) {
-      thumbnailData = { exif: {} };
-      dirOffset = loadImage.parseExifTags(
-        dataView,
-        tiffOffset,
-        tiffOffset + dirOffset,
-        littleEndian,
-        thumbnailData
-      );
-      // Check for JPEG Thumbnail offset:
-      if (thumbnailData.exif[0x0201]) {
-        data.exif.Thumbnail = loadImage.getExifThumbnail(
-          dataView,
-          tiffOffset + thumbnailData.exif[0x0201],
-          thumbnailData.exif[0x0202] // Thumbnail data length
-        );
-      }
-    }
-    // Check for Exif Sub IFD Pointer:
-    if (data.exif[0x8769] && !options.disableExifSub) {
-      loadImage.parseExifTags(
-        dataView,
-        tiffOffset,
-        tiffOffset + data.exif[0x8769], // directory offset
-        littleEndian,
-        data
-      );
-    }
-    // Check for GPS Info IFD Pointer:
-    if (data.exif[0x8825] && !options.disableExifGps) {
-      loadImage.parseExifTags(
-        dataView,
-        tiffOffset,
-        tiffOffset + data.exif[0x8825], // directory offset
-        littleEndian,
-        data
-      );
-    }
-  };
-
-  // Registers the Exif parser for the APP1 JPEG meta data segment:
-  loadImage.metaDataParsers.jpeg[0xffe1].push(loadImage.parseExifData);
-
-  // Adds the following properties to the parseMetaData callback data:
-  // * exif: The exif tags, parsed by the parseExifData method
-
-  // Adds the following options to the parseMetaData method:
-  // * disableExif: Disables Exif parsing.
-  // * disableExifThumbnail: Disables parsing of the Exif Thumbnail.
-  // * disableExifSub: Disables parsing of the Exif Sub IFD.
-  // * disableExifGps: Disables parsing of the Exif GPS Info IFD.
-});
-});
-
-var loadImageExifMap = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage, loadImageExif);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  loadImage.ExifMap.prototype.tags = {
-    // =================
-    // TIFF tags (IFD0):
-    // =================
-    0x0100: 'ImageWidth',
-    0x0101: 'ImageHeight',
-    0x8769: 'ExifIFDPointer',
-    0x8825: 'GPSInfoIFDPointer',
-    0xa005: 'InteroperabilityIFDPointer',
-    0x0102: 'BitsPerSample',
-    0x0103: 'Compression',
-    0x0106: 'PhotometricInterpretation',
-    0x0112: 'Orientation',
-    0x0115: 'SamplesPerPixel',
-    0x011c: 'PlanarConfiguration',
-    0x0212: 'YCbCrSubSampling',
-    0x0213: 'YCbCrPositioning',
-    0x011a: 'XResolution',
-    0x011b: 'YResolution',
-    0x0128: 'ResolutionUnit',
-    0x0111: 'StripOffsets',
-    0x0116: 'RowsPerStrip',
-    0x0117: 'StripByteCounts',
-    0x0201: 'JPEGInterchangeFormat',
-    0x0202: 'JPEGInterchangeFormatLength',
-    0x012d: 'TransferFunction',
-    0x013e: 'WhitePoint',
-    0x013f: 'PrimaryChromaticities',
-    0x0211: 'YCbCrCoefficients',
-    0x0214: 'ReferenceBlackWhite',
-    0x0132: 'DateTime',
-    0x010e: 'ImageDescription',
-    0x010f: 'Make',
-    0x0110: 'Model',
-    0x0131: 'Software',
-    0x013b: 'Artist',
-    0x8298: 'Copyright',
-    // ==================
-    // Exif Sub IFD tags:
-    // ==================
-    0x9000: 'ExifVersion', // EXIF version
-    0xa000: 'FlashpixVersion', // Flashpix format version
-    0xa001: 'ColorSpace', // Color space information tag
-    0xa002: 'PixelXDimension', // Valid width of meaningful image
-    0xa003: 'PixelYDimension', // Valid height of meaningful image
-    0xa500: 'Gamma',
-    0x9101: 'ComponentsConfiguration', // Information about channels
-    0x9102: 'CompressedBitsPerPixel', // Compressed bits per pixel
-    0x927c: 'MakerNote', // Any desired information written by the manufacturer
-    0x9286: 'UserComment', // Comments by user
-    0xa004: 'RelatedSoundFile', // Name of related sound file
-    0x9003: 'DateTimeOriginal', // Date and time when the original image was generated
-    0x9004: 'DateTimeDigitized', // Date and time when the image was stored digitally
-    0x9290: 'SubSecTime', // Fractions of seconds for DateTime
-    0x9291: 'SubSecTimeOriginal', // Fractions of seconds for DateTimeOriginal
-    0x9292: 'SubSecTimeDigitized', // Fractions of seconds for DateTimeDigitized
-    0x829a: 'ExposureTime', // Exposure time (in seconds)
-    0x829d: 'FNumber',
-    0x8822: 'ExposureProgram', // Exposure program
-    0x8824: 'SpectralSensitivity', // Spectral sensitivity
-    0x8827: 'PhotographicSensitivity', // EXIF 2.3, ISOSpeedRatings in EXIF 2.2
-    0x8828: 'OECF', // Optoelectric conversion factor
-    0x8830: 'SensitivityType',
-    0x8831: 'StandardOutputSensitivity',
-    0x8832: 'RecommendedExposureIndex',
-    0x8833: 'ISOSpeed',
-    0x8834: 'ISOSpeedLatitudeyyy',
-    0x8835: 'ISOSpeedLatitudezzz',
-    0x9201: 'ShutterSpeedValue', // Shutter speed
-    0x9202: 'ApertureValue', // Lens aperture
-    0x9203: 'BrightnessValue', // Value of brightness
-    0x9204: 'ExposureBias', // Exposure bias
-    0x9205: 'MaxApertureValue', // Smallest F number of lens
-    0x9206: 'SubjectDistance', // Distance to subject in meters
-    0x9207: 'MeteringMode', // Metering mode
-    0x9208: 'LightSource', // Kind of light source
-    0x9209: 'Flash', // Flash status
-    0x9214: 'SubjectArea', // Location and area of main subject
-    0x920a: 'FocalLength', // Focal length of the lens in mm
-    0xa20b: 'FlashEnergy', // Strobe energy in BCPS
-    0xa20c: 'SpatialFrequencyResponse',
-    0xa20e: 'FocalPlaneXResolution', // Number of pixels in width direction per FPRUnit
-    0xa20f: 'FocalPlaneYResolution', // Number of pixels in height direction per FPRUnit
-    0xa210: 'FocalPlaneResolutionUnit', // Unit for measuring the focal plane resolution
-    0xa214: 'SubjectLocation', // Location of subject in image
-    0xa215: 'ExposureIndex', // Exposure index selected on camera
-    0xa217: 'SensingMethod', // Image sensor type
-    0xa300: 'FileSource', // Image source (3 == DSC)
-    0xa301: 'SceneType', // Scene type (1 == directly photographed)
-    0xa302: 'CFAPattern', // Color filter array geometric pattern
-    0xa401: 'CustomRendered', // Special processing
-    0xa402: 'ExposureMode', // Exposure mode
-    0xa403: 'WhiteBalance', // 1 = auto white balance, 2 = manual
-    0xa404: 'DigitalZoomRatio', // Digital zoom ratio
-    0xa405: 'FocalLengthIn35mmFilm',
-    0xa406: 'SceneCaptureType', // Type of scene
-    0xa407: 'GainControl', // Degree of overall image gain adjustment
-    0xa408: 'Contrast', // Direction of contrast processing applied by camera
-    0xa409: 'Saturation', // Direction of saturation processing applied by camera
-    0xa40a: 'Sharpness', // Direction of sharpness processing applied by camera
-    0xa40b: 'DeviceSettingDescription',
-    0xa40c: 'SubjectDistanceRange', // Distance to subject
-    0xa420: 'ImageUniqueID', // Identifier assigned uniquely to each image
-    0xa430: 'CameraOwnerName',
-    0xa431: 'BodySerialNumber',
-    0xa432: 'LensSpecification',
-    0xa433: 'LensMake',
-    0xa434: 'LensModel',
-    0xa435: 'LensSerialNumber',
-    // ==============
-    // GPS Info tags:
-    // ==============
-    0x0000: 'GPSVersionID',
-    0x0001: 'GPSLatitudeRef',
-    0x0002: 'GPSLatitude',
-    0x0003: 'GPSLongitudeRef',
-    0x0004: 'GPSLongitude',
-    0x0005: 'GPSAltitudeRef',
-    0x0006: 'GPSAltitude',
-    0x0007: 'GPSTimeStamp',
-    0x0008: 'GPSSatellites',
-    0x0009: 'GPSStatus',
-    0x000a: 'GPSMeasureMode',
-    0x000b: 'GPSDOP',
-    0x000c: 'GPSSpeedRef',
-    0x000d: 'GPSSpeed',
-    0x000e: 'GPSTrackRef',
-    0x000f: 'GPSTrack',
-    0x0010: 'GPSImgDirectionRef',
-    0x0011: 'GPSImgDirection',
-    0x0012: 'GPSMapDatum',
-    0x0013: 'GPSDestLatitudeRef',
-    0x0014: 'GPSDestLatitude',
-    0x0015: 'GPSDestLongitudeRef',
-    0x0016: 'GPSDestLongitude',
-    0x0017: 'GPSDestBearingRef',
-    0x0018: 'GPSDestBearing',
-    0x0019: 'GPSDestDistanceRef',
-    0x001a: 'GPSDestDistance',
-    0x001b: 'GPSProcessingMethod',
-    0x001c: 'GPSAreaInformation',
-    0x001d: 'GPSDateStamp',
-    0x001e: 'GPSDifferential',
-    0x001f: 'GPSHPositioningError'
-  };
-
-  loadImage.ExifMap.prototype.stringValues = {
-    ExposureProgram: {
-      0: 'Undefined',
-      1: 'Manual',
-      2: 'Normal program',
-      3: 'Aperture priority',
-      4: 'Shutter priority',
-      5: 'Creative program',
-      6: 'Action program',
-      7: 'Portrait mode',
-      8: 'Landscape mode'
-    },
-    MeteringMode: {
-      0: 'Unknown',
-      1: 'Average',
-      2: 'CenterWeightedAverage',
-      3: 'Spot',
-      4: 'MultiSpot',
-      5: 'Pattern',
-      6: 'Partial',
-      255: 'Other'
-    },
-    LightSource: {
-      0: 'Unknown',
-      1: 'Daylight',
-      2: 'Fluorescent',
-      3: 'Tungsten (incandescent light)',
-      4: 'Flash',
-      9: 'Fine weather',
-      10: 'Cloudy weather',
-      11: 'Shade',
-      12: 'Daylight fluorescent (D 5700 - 7100K)',
-      13: 'Day white fluorescent (N 4600 - 5400K)',
-      14: 'Cool white fluorescent (W 3900 - 4500K)',
-      15: 'White fluorescent (WW 3200 - 3700K)',
-      17: 'Standard light A',
-      18: 'Standard light B',
-      19: 'Standard light C',
-      20: 'D55',
-      21: 'D65',
-      22: 'D75',
-      23: 'D50',
-      24: 'ISO studio tungsten',
-      255: 'Other'
-    },
-    Flash: {
-      0x0000: 'Flash did not fire',
-      0x0001: 'Flash fired',
-      0x0005: 'Strobe return light not detected',
-      0x0007: 'Strobe return light detected',
-      0x0009: 'Flash fired, compulsory flash mode',
-      0x000d: 'Flash fired, compulsory flash mode, return light not detected',
-      0x000f: 'Flash fired, compulsory flash mode, return light detected',
-      0x0010: 'Flash did not fire, compulsory flash mode',
-      0x0018: 'Flash did not fire, auto mode',
-      0x0019: 'Flash fired, auto mode',
-      0x001d: 'Flash fired, auto mode, return light not detected',
-      0x001f: 'Flash fired, auto mode, return light detected',
-      0x0020: 'No flash function',
-      0x0041: 'Flash fired, red-eye reduction mode',
-      0x0045: 'Flash fired, red-eye reduction mode, return light not detected',
-      0x0047: 'Flash fired, red-eye reduction mode, return light detected',
-      0x0049: 'Flash fired, compulsory flash mode, red-eye reduction mode',
-      0x004d: 'Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected',
-      0x004f: 'Flash fired, compulsory flash mode, red-eye reduction mode, return light detected',
-      0x0059: 'Flash fired, auto mode, red-eye reduction mode',
-      0x005d: 'Flash fired, auto mode, return light not detected, red-eye reduction mode',
-      0x005f: 'Flash fired, auto mode, return light detected, red-eye reduction mode'
-    },
-    SensingMethod: {
-      1: 'Undefined',
-      2: 'One-chip color area sensor',
-      3: 'Two-chip color area sensor',
-      4: 'Three-chip color area sensor',
-      5: 'Color sequential area sensor',
-      7: 'Trilinear sensor',
-      8: 'Color sequential linear sensor'
-    },
-    SceneCaptureType: {
-      0: 'Standard',
-      1: 'Landscape',
-      2: 'Portrait',
-      3: 'Night scene'
-    },
-    SceneType: {
-      1: 'Directly photographed'
-    },
-    CustomRendered: {
-      0: 'Normal process',
-      1: 'Custom process'
-    },
-    WhiteBalance: {
-      0: 'Auto white balance',
-      1: 'Manual white balance'
-    },
-    GainControl: {
-      0: 'None',
-      1: 'Low gain up',
-      2: 'High gain up',
-      3: 'Low gain down',
-      4: 'High gain down'
-    },
-    Contrast: {
-      0: 'Normal',
-      1: 'Soft',
-      2: 'Hard'
-    },
-    Saturation: {
-      0: 'Normal',
-      1: 'Low saturation',
-      2: 'High saturation'
-    },
-    Sharpness: {
-      0: 'Normal',
-      1: 'Soft',
-      2: 'Hard'
-    },
-    SubjectDistanceRange: {
-      0: 'Unknown',
-      1: 'Macro',
-      2: 'Close view',
-      3: 'Distant view'
-    },
-    FileSource: {
-      3: 'DSC'
-    },
-    ComponentsConfiguration: {
-      0: '',
-      1: 'Y',
-      2: 'Cb',
-      3: 'Cr',
-      4: 'R',
-      5: 'G',
-      6: 'B'
-    },
-    Orientation: {
-      1: 'top-left',
-      2: 'top-right',
-      3: 'bottom-right',
-      4: 'bottom-left',
-      5: 'left-top',
-      6: 'right-top',
-      7: 'right-bottom',
-      8: 'left-bottom'
-    }
-  };
-
-  loadImage.ExifMap.prototype.getText = function(id) {
-    var value = this.get(id);
-    switch (id) {
-      case 'LightSource':
-      case 'Flash':
-      case 'MeteringMode':
-      case 'ExposureProgram':
-      case 'SensingMethod':
-      case 'SceneCaptureType':
-      case 'SceneType':
-      case 'CustomRendered':
-      case 'WhiteBalance':
-      case 'GainControl':
-      case 'Contrast':
-      case 'Saturation':
-      case 'Sharpness':
-      case 'SubjectDistanceRange':
-      case 'FileSource':
-      case 'Orientation':
-        return this.stringValues[id][value]
-      case 'ExifVersion':
-      case 'FlashpixVersion':
-        if (!value) return
-        return String.fromCharCode(value[0], value[1], value[2], value[3])
-      case 'ComponentsConfiguration':
-        if (!value) return
-        return (
-          this.stringValues[id][value[0]] +
-          this.stringValues[id][value[1]] +
-          this.stringValues[id][value[2]] +
-          this.stringValues[id][value[3]]
-        )
-      case 'GPSVersionID':
-        if (!value) return
-        return value[0] + '.' + value[1] + '.' + value[2] + '.' + value[3]
-    }
-    return String(value)
-  }
-  ;(function(exifMapPrototype) {
-    var tags = exifMapPrototype.tags;
-    var map = exifMapPrototype.map;
-    var prop;
-    // Map the tag names to tags:
-    for (prop in tags) {
-      if (Object.prototype.hasOwnProperty.call(tags, prop)) {
-        map[tags[prop]] = prop;
-      }
-    }
-  })(loadImage.ExifMap.prototype);
-
-  loadImage.ExifMap.prototype.getAll = function() {
-    var map = {};
-    var prop;
-    var id;
-    for (prop in this) {
-      if (Object.prototype.hasOwnProperty.call(this, prop)) {
-        id = this.tags[prop];
-        if (id) {
-          map[id] = this.getText(id);
-        }
-      }
-    }
-    return map
-  };
-});
-});
-
-var loadImageIptc = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage, loadImageMeta);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  loadImage.IptcMap = function() {
-    return this
-  };
-
-  loadImage.IptcMap.prototype.map = {
-    ObjectName: 0x5
-  };
-
-  loadImage.IptcMap.prototype.get = function(id) {
-    return this[id] || this[this.map[id]]
-  };
-
-  loadImage.parseIptcTags = function(
-    dataView,
-    startOffset,
-    sectionLength,
-    data
-  ) {
+    TemplateService.fetchTemplates = function (params) { return axios$1.request({
+        url: API_URL,
+        params: params
+    }); };
     /**
-     * Retrieves string for the given Buffer and range
-     *
-     * @param {Buffer} buffer IPTC buffer
-     * @param {number} start Range start
-     * @param {number} length Range length
-     * @returns {string} String value
-     */
-    function getStringFromDB(buffer, start, length) {
-      var outstr = '';
-      for (var n = start; n < start + length; n++) {
-        outstr += String.fromCharCode(buffer.getUint8(n));
-      }
-      return outstr
-    }
-    var fieldValue, dataSize, segmentType;
-    var segmentStartPos = startOffset;
-    while (segmentStartPos < startOffset + sectionLength) {
-      // we currently handle the 2: class of iptc tag
-      if (
-        dataView.getUint8(segmentStartPos) === 0x1c &&
-        dataView.getUint8(segmentStartPos + 1) === 0x02
-      ) {
-        segmentType = dataView.getUint8(segmentStartPos + 2);
-        // only store data for known tags
-        if (segmentType in data.iptc.tags) {
-          dataSize = dataView.getInt16(segmentStartPos + 3);
-          fieldValue = getStringFromDB(dataView, segmentStartPos + 5, dataSize);
-          // Check if we already stored a value with this name
-          if (Object.prototype.hasOwnProperty.call(data.iptc, segmentType)) {
-            // Value already stored with this name, create multivalue field
-            if (data.iptc[segmentType] instanceof Array) {
-              data.iptc[segmentType].push(fieldValue);
-            } else {
-              data.iptc[segmentType] = [data.iptc[segmentType], fieldValue];
-            }
-          } else {
-            data.iptc[segmentType] = fieldValue;
-          }
-        }
-      }
-      segmentStartPos++;
-    }
-  };
+    * Create  a new template
+    * @param template Template
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.createTemplate = function (template) { return axios$1.request({
+        url: API_URL,
+        method: 'POST',
+        data: template
+    }); };
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.enableTemplate = function (id) { return axios$1.request({
+        url: API_URL + "/" + id + "/enable",
+        method: 'POST'
+    }); };
+    /**
+    * Get an existing template
+    * @param id ID of the template to be fetched
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.getTemplateById = function (id) { return axios$1.request({
+        url: API_URL + "/" + id,
+    }); };
+    /**
+    * Update an existing template
+    * @param id ID of the template to be updated
+    * @param template The data to be updated
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.updateTemplate = function (id, template) { return axios$1.request({
+        url: API_URL + "/" + id,
+        method: 'PATCH',
+        data: template
+    }); };
+    /**
+    * Fetch template types with its configs
+    * @return Array<Type of templates with its fields>
+    */
+    TemplateService.getTemplateTypes = function () { return axios$1.request({
+        url: API_URL + "/getTemplateConfig",
+    }); };
+    /**
+    * Test a template
+    * @param id ID of the template to be sent
+    * @param type email | sms
+    * @param providerConfig configuration
+    * @example
+    * {
+    *   to: "jagzmz...com",
+    *   cc: ["a....com","b...com"]
+    * }
+    * @return Promise<AxiosResponse<void>>>
+    */
+    // static testTemplate = (id: string, type: TemplateContentType, providerConfig: TemplateProviderConfig) => Axios.request({
+    //     url: `Communications/${type}/send`,
+    //     method: 'POST',
+    //     data: {
+    //         templateId: id,
+    //         // type,
+    //         providerFields: providerConfig
+    //     }
+    // })
+    /**
+    * Fetch template settings
+    * @return Array<TemplateFooterSetting>
+    */
+    TemplateService.getTemplateSettings = function (params) { return axios$1.request({
+        url: SETTINGS_API_URL,
+        params: params
+    }); };
+    /**
+    * Create  a new setting
+    * @param setting TemplateFooterSetting
+    * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+    */
+    TemplateService.createSetting = function (setting) { return axios$1.request({
+        url: SETTINGS_API_URL,
+        method: 'POST',
+        data: setting
+    }); };
+    /**
+       * Update an existing setting
+       * @param id ID of the setting to be updated
+       * @param setting The setting to be updated
+       * @return Promise<AxiosResponse<TemplateFooterSetting>>>
+       */
+    TemplateService.updateSetting = function (id, setting) { return axios$1.request({
+        url: SETTINGS_API_URL + "/" + id,
+        method: 'PATCH',
+        data: setting
+    }); };
+    return TemplateService;
+}());
 
-  loadImage.parseIptcData = function(dataView, offset, length, data, options) {
-    if (options.disableIptc) {
-      return
+var Notifier = /** @class */ (function () {
+    function Notifier() {
     }
-    var markerLength = offset + length;
-    // Found '8BIM<EOT><EOT>' ?
-    var isFieldSegmentStart = function(dataView, offset) {
-      return (
-        dataView.getUint32(offset) === 0x3842494d &&
-        dataView.getUint16(offset + 4) === 0x0404
-      )
+    Notifier.templateCreate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating template');
     };
-    // Hunt forward, looking for the correct IPTC block signature:
-    // Reference: https://metacpan.org/pod/distribution/Image-MetaData-JPEG/lib/Image/MetaData/JPEG/Structures.pod#Structure-of-a-Photoshop-style-APP13-segment
-    // From https://github.com/exif-js/exif-js/blob/master/exif.js ~ line 474 on
-    while (offset + 8 < markerLength) {
-      if (isFieldSegmentStart(dataView, offset)) {
-        var nameHeaderLength = dataView.getUint8(offset + 7);
-        if (nameHeaderLength % 2 !== 0) nameHeaderLength += 1;
-        // Check for pre photoshop 6 format
-        if (nameHeaderLength === 0) {
-          // Always 4
-          nameHeaderLength = 4;
+    Notifier.templateUpdate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template updated successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating template');
+    };
+    Notifier.templateSend = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Test message sent' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error sending test message');
+    };
+    Notifier.templateEnabled = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template enabled successfully' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error enabling template');
+    };
+    Notifier.templateSettingCreate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting successfully created ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating setting');
+    };
+    Notifier.templateSettingUpdate = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating setting');
+    };
+    return Notifier;
+}());
+
+var FILTER = { order: 'created DESC' };
+var useTemplateService = function (defaultFilter) {
+    if (defaultFilter === void 0) { defaultFilter = FILTER; }
+    var _a = React.useState([]), templates = _a[0], setTemplates = _a[1];
+    var _b = React.useState([]), settings = _b[0], setSettings = _b[1];
+    var _c = React.useState({}), flows = _c[0], setFlows = _c[1];
+    var _d = React.useState('done'), status = _d[0], setStatus = _d[1];
+    var _e = React.useState(false), isInitialized = _e[0], setIsInitialized = _e[1];
+    // if (config.eventId && config.agencyId) FILTER = { ...FILTER, where: { eventId: config.eventId, agencyId: config.agencyId } }
+    React.useEffect(function () {
+        if (config.apiConfig.baseUrl && config.apiConfig.accessToken)
+            setIsInitialized(true);
+    }, [config.apiConfig]);
+    React.useEffect(function () {
+        if (isInitialized) {
+            loadTemplates();
+            loadSettings();
         }
-        var startOffset = offset + 8 + nameHeaderLength;
-        if (startOffset > markerLength) {
-          // eslint-disable-next-line no-console
-          console.log('Invalid IPTC data: Invalid segment offset.');
-          break
+    }, [isInitialized]);
+    var loadSettings = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, TemplateService.getTemplateSettings({ filter: defaultFilter })];
+                case 1:
+                    res = _a.sent();
+                    if (res.data[0])
+                        setSettings(res.data);
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var saveSettings = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (!setting.id)
+                createSetting(setting);
+            else {
+                // const _s = settings.findIndex(s => s.i)
+                updateSetting(setting.id, setting);
+            }
+            return [2 /*return*/];
+        });
+    }); };
+    var createSetting = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.createSetting(setting)];
+                case 2:
+                    res = _a.sent();
+                    setSettings(__spreadArrays([res.data], settings));
+                    Notifier.templateCreate();
+                    setStatus('done');
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_2 = _a.sent();
+                    Notifier.templateCreate(error_2);
+                    setStatus('error');
+                    throw error_2;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
+        var res_1, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.updateSetting(id, setting)];
+                case 2:
+                    res_1 = _a.sent();
+                    setSettings(__spreadArrays(settings.map(function (s) { var _a; return s.id === ((_a = res_1.data) === null || _a === void 0 ? void 0 : _a.id) ? (__assign(__assign({}, s), res_1.data)) : s; })));
+                    Notifier.templateUpdate();
+                    setStatus('done');
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_3 = _a.sent();
+                    Notifier.templateUpdate(error_3);
+                    setStatus('error');
+                    throw error_3;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    console.log("settings", settings);
+    var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, res1, res2, error_4;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    setStatus('loading');
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, Promise.all([TemplateService.fetchTemplates({ filter: defaultFilter }), TemplateService.getTemplateTypes()])];
+                case 2:
+                    _a = _b.sent(), res1 = _a[0], res2 = _a[1];
+                    setTemplates(res1.data);
+                    setFlows(res2.data);
+                    setStatus('done');
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_4 = _b.sent();
+                    setStatus('error');
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.createTemplate(template)];
+                case 2:
+                    res = _a.sent();
+                    setTemplates(__spreadArrays([res.data], templates));
+                    setStatus('done');
+                    Notifier.templateCreate();
+                    return [2 /*return*/, res.data];
+                case 3:
+                    error_5 = _a.sent();
+                    setStatus('error');
+                    Notifier.templateCreate(error_5);
+                    throw error_5;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
+        var res_2, error_6;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.updateTemplate(id, template)];
+                case 2:
+                    res_2 = _a.sent();
+                    setTemplates(__spreadArrays(templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_2.data)) : t; })));
+                    setStatus('done');
+                    Notifier.templateUpdate();
+                    return [2 /*return*/, res_2.data];
+                case 3:
+                    error_6 = _a.sent();
+                    setStatus('error');
+                    Notifier.templateUpdate(error_6);
+                    throw error_6;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var res_3, flow_1, updatedTemplates, error_7;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.enableTemplate(id)];
+                case 2:
+                    res_3 = _a.sent();
+                    flow_1 = res_3.data.flow || '';
+                    updatedTemplates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), res_3.data)) : t.flow === flow_1 ? (__assign(__assign({}, t), { enabled: false })) : t; });
+                    setStatus('done');
+                    setTemplates(updatedTemplates);
+                    Notifier.templateEnabled();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_7 = _a.sent();
+                    Notifier.templateEnabled(error_7);
+                    setStatus('error');
+                    throw error_7;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+        var index, res, error_8;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    index = templates.findIndex(function (t) { return t.id === id; });
+                    if (index > -1)
+                        return [2 /*return*/, templates[index]];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.getTemplateById(id)];
+                case 2:
+                    res = _a.sent();
+                    return [2 /*return*/, res.data];
+                case 3:
+                    error_8 = _a.sent();
+                    throw error_8;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var testTemplate = function (templateId, type, providerConfig) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            try {
+                // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
+                Notifier.templateSend();
+            }
+            catch (error) {
+                Notifier.templateSend(error);
+            }
+            return [2 /*return*/];
+        });
+    }); };
+    return {
+        flows: flows,
+        templates: templates,
+        settings: settings,
+        createSetting: createSetting,
+        updateSetting: updateSetting,
+        saveSettings: saveSettings,
+        enableTemplate: enableTemplate,
+        status: status,
+        createTemplate: createTemplate,
+        updateTemplate: updateTemplate,
+        getTemplateById: getTemplateById,
+        testTemplate: testTemplate
+    };
+};
+
+function usePagination(items, config) {
+    var _a;
+    var _b = React.useState(items), list = _b[0], setList = _b[1];
+    var limit = ((_a = config) === null || _a === void 0 ? void 0 : _a.limit) || 10;
+    var _c = React.useState(1), curPage = _c[0], setCurPage = _c[1];
+    var startIndex = limit * (curPage - 1);
+    var endIndex = startIndex + limit;
+    React.useEffect(function () {
+        setList(items);
+    }, [items]);
+    var isValidPage = function (page) {
+        var total = list.length;
+        var totalPages = Math.ceil(total / limit);
+        return page <= totalPages && page > 0;
+    };
+    var handlePageChange = function (page) {
+        if (isValidPage(page)) {
+            setCurPage(page);
         }
-        var sectionLength = dataView.getUint16(offset + 6 + nameHeaderLength);
-        if (offset + sectionLength > markerLength) {
-          // eslint-disable-next-line no-console
-          console.log('Invalid IPTC data: Invalid segment size.');
-          break
+    };
+    return {
+        list: list,
+        paginatedList: list.slice(startIndex, endIndex),
+        handlePageChange: handlePageChange,
+        isValidPage: isValidPage,
+        curPage: curPage,
+    };
+}
+
+var Pagination = function (props) {
+    var total = props.total, entriesPerPage = props.entriesPerPage, currentPage = props.currentPage, onPageChange = props.onPageChange;
+    var totalPages = Math.ceil(total / entriesPerPage);
+    var classes = useStyles(props);
+    var pages = [
+        currentPage,
+        currentPage + 1,
+        currentPage + 2
+    ].map(function (p) { return currentPage > 1 ? p - 1 : p; }).filter(function (p) { return p <= totalPages; });
+    return (React__default.createElement("div", { className: classes.root },
+        React__default.createElement(core.Button, { variant: "text", onClick: function () { return onPageChange(currentPage - 1); } }, "prev"),
+        pages.map(function (p) { return (React__default.createElement(core.Button, { color: p === currentPage ? "primary" : "default", key: p + '', variant: p === currentPage ? 'contained' : 'text', onClick: function () { return onPageChange(p); } }, p)); }),
+        React__default.createElement(core.Button, { onClick: function () { return onPageChange(currentPage + 1); }, variant: "text" }, "next")));
+};
+var useStyles = core.makeStyles(function (theme) { return core.createStyles({
+    root: {
+        display: 'flex',
+        width: 300,
+        margin: '20px auto',
+        justifyContent: 'space-around'
+    },
+}); });
+
+var getPath = function (suffix) {
+    return suffix ? config.urlPrefix + '/' + suffix : config.urlPrefix;
+};
+var IMAGE_UPLOAD_URL = 'pictures/upload';
+var uploadPicture = function (file, imagesFolder) {
+    if (!file.base64)
+        return Promise.reject('Could not find base64 encoding of file');
+    imagesFolder = imagesFolder || 'images';
+    if (!(/\/$/.test(imagesFolder)))
+        imagesFolder += '/';
+    return axios$1.request({
+        url: IMAGE_UPLOAD_URL,
+        method: 'POST',
+        data: {
+            base64img: file.base64,
+            filename: file.name,
+            folder: imagesFolder
         }
-        // Create the iptc object to store the tags:
-        data.iptc = new loadImage.IptcMap();
-        // Parse the tags
-        return loadImage.parseIptcTags(
-          dataView,
-          startOffset,
-          sectionLength,
-          data
-        )
-      }
-      // eslint-disable-next-line no-param-reassign
-      offset++;
+    });
+};
+var copyLink = function (url) {
+    var el = document.createElement('textarea');
+    el.value = url;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+};
+var trimHTML = function (html) {
+    return html.replace(/<p><br><\/p>/ig, '<br/>');
+};
+var unescapeHTML = function (html) {
+    return html.replace(/&lt;/ig, '<').replace(/&gt;/ig, '>');
+};
+var generateHTML = function (body, banner, footer) {
+    var BANNER = banner ? "<tr><td><img src=\"" + banner.url + "\" style=\"width: 600px; object-fit: cover; border-radius: 4px 4px 0px 0px\" /></td></tr>" : '';
+    var BODY = "<tr><td><div style=\"padding: 20px 24px;\">" + unescapeHTML(trimHTML(body)) + "</div></td></tr>";
+    var FOOTER = "<tr><td><div style=\"padding:24px\">" + footer + "</div></td></tr>";
+    var createTable = function (content, footer) {
+        if (footer === void 0) { footer = ''; }
+        return ("\n      <table style=\"width: 600px;line-height: 1.4; font-size: 14px; margin: 0 auto;  box-shadow: 0px 3px 6px rgba(0,0,0,0.2); border-radius: 4px; background-color: white; font-family: sans-serif\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + content + "\n        </tbody>\n      </table>\n      <table style=\"width: 600px; line-height: 1.4; margin: 0 auto; font-size: 12px;\" cellPadding=\"0px\" cellSpacing=\"0px\">\n        <tbody>\n          " + footer + "\n        </tbody>\n      </table>").replace(/(\n)/ig, '');
+    };
+    var _body = (BANNER + BODY).replace(/<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>');
+    console.log("body", _body);
+    return wrapWithHTML(createTable(_body, FOOTER));
+};
+var getFooterHTML = function (content, links) {
+    var BODY = content;
+    var _links = [];
+    links.forEach(function (l) {
+        var _a;
+        _links.push(("\n            <a href=\"" + l.link + "\" target=\"_blank\" style=\"margin: 0px 4px\">\n              <img src=\"" + ((_a = l.icon) === null || _a === void 0 ? void 0 : _a.url) + "\" width=\"30px\" height=\"30px\"  style=\"border-radius: 15px\"/>\n            </a>\n      ").replace(/(\n)/ig, ''));
+    });
+    var LINKS = ("\n      <table style=\"margin: 0 auto;\">\n          <tr>\n              <td>" + _links.join('') + "</td>\n          </tr>\n      </table>\n      ").replace(/(\n)/ig, '');
+    var HTML = ("\n      <table style=\"width: 100%\">\n          <tr><td>" + LINKS + "</td></tr>\n          <tr><td>" + BODY + "</td></tr>\n      </table>\n  ").replace(/(\n)/ig, '');
+    return HTML;
+};
+var wrapWithHTML = function (body) { return ("\n  <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n  <html \n      xmlns=3D\"http://www.w3.org/1999/xhtml\" \n      xmlns=3D\"http://www.w3.org/1999/xhtml\" \n      style=3D\"height: 100% !important; width: 100% !important; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; padding: 0;\"\n  >\n  <head>\n  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n  <link rel=\"stylesheet\" href=\"//cdn.quilljs.com/1.2.6/quill.snow.css\"/>\n  <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->\n    <!--[if mso]>\n      <style>\n        * {\n          font-family: sans-serif !important;\n        }\n      </style>\n  <![endif] -->\n      <!-- All other clients get the webfont reference; some will render the font and others will silently fail to the fallbacks. More on that here: http://stylecampaign.com/blog/2015/02/webfont-support-in-email/ -->\n      <!--[if !mso]><!-->\n      <!-- insert web font reference, eg: <link href=3D'https://fonts.googleapis.com/css?family=3DRoboto:400,700' rel=3D'stylesheet' type=3D'text/css'> -->\n      <!--<![endif]-->\n\n      <!-- Web Font / @font-face : END -->\n\n      <!-- CSS Reset -->\n      <style type=3D\"text/css\">\n\n        /* What it does: Remove spaces around the email design added by some email clients. */\n        /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */\n        html,\n        body {\n          Margin: 0 !important;\n          padding: 0 !important;\n          height: 100% !important;\n          width: 100% !important;\n        }\n\n        /* What it does: Stops email clients resizing small text. */\n        * {\n          -ms-text-size-adjust: 100%;\n          -webkit-text-size-adjust: 100%;\n        }\n\n        /* What it does: Forces Outlook.com to display emails full width. */\n        .ExternalClass {\n          width: 100%;\n        }\n\n        /* What it does: Centers email on Android 4.4 */\n        div[style*=3D\"margin: 16px 0\"] {\n          margin:0 !important;\n        }\n\n        /* What it does: Stops Outlook from adding extra spacing to tables. */\n        table,\n        td {\n          mso-table-lspace: 0pt !important;\n          mso-table-rspace: 0pt !important;\n        }\n\n        /* What it does: Fixes webkit padding issue. Fix for Yahoo mail table alignment bug. Applies table-layout to the first 2 tables then removes for anything nested deeper. */\n        table {\n          border-spacing: 0 !important;\n          border-collapse: collapse !important;\n          table-layout: fixed !important;\n          Margin: 0 auto !important;\n        }\n        table table table {\n          table-layout: auto;\n        }\n\n        /* What it does: Uses a better rendering method when resizing images in IE. */\n        img {\n          -ms-interpolation-mode:bicubic;\n        }\n\n        h1 {\n          font-size: 24px;\n          color: #2d2d2d;\n        }\n\n        p {\n          color:       #2d2d2d;\n          line-height: 26px;\n          font-size:   16px;\n\n        }\n\n        a {\n          color: #423bd8;\n          text-decoration: none;\n          font-weight: bold;\n        }\n\n        /* What it does: Overrides styles added when Yahoo's auto-senses a link. */\n        .yshortcuts a {\n          border-bottom: none !important;\n        }\n\n        /* What it does: A work-around for iOS meddling in triggered links. */\n        .mobile-link--footer a,\n        a[x-apple-data-detectors] {\n          color:inherit !important;\n          text-decoration: underline !important;\n        }\n\n      </style>\n\n      <!-- Progressive Enhancements -->\n      <style>\n\n        /* What it does: Hover styles for buttons */\n        .button-td,\n        .button-a {\n          transition: all 100ms ease-in;\n        }\n        .button-td:hover,\n        .button-a:hover {\n          background: #4675DC !important;\n          border-color: #4675DC !important;\n        }\n\n        /* Media Queries */\n        @media screen and (max-width: 480px) {\n          /* What it does: Forces elements to resize to the full width of their container. Useful for resizing images beyond their max-width. */\n          .fluid,\n          .fluid-centered {\n            width: 100% !important;\n            max-width: 100% !important;\n            height: auto !important;\n            Margin-left: auto !important;\n            Margin-right: auto !important;\n          }\n          /* And center justify these ones. */\n          .fluid-centered {\n            Margin-left: auto !important;\n            Margin-right: auto !important;\n          }\n\n          /* What it does: Forces table cells into full-width rows. */\n          .stack-column,\n          .stack-column-center {\n            display: block !important;\n            width: 100% !important;\n            max-width: 100% !important;\n            direction: ltr !important;\n          }\n          /* And center justify these ones. */\n          .stack-column-center {\n            text-align: center !important;\n          }\n\n          /* What it does: Generic utility class for centering. Useful for images, buttons, and nested tables. */\n          \n\n        }\n\n  </style>\n \n  <!--[if mso]>\n<style type=\"text/css\">\n.p {\nmargin: 0px 0px 0px 24px !important;\n\npadding: 0px 0px 20px 0px !important;\n}\n</style>\n<![endif]-->\n  <style type=\"text/css\">\n\n    body {\n      margin: 0 !important; \n      padding: 0 !important; height: 100% !important; \n      width: 100% !important;\n  }\n\n  p > img {\n    width: 100%;\n  }\n  .ExternalClass {\n      width: 100%;\n  }\n  img {\n      -ms-interpolation-mode: bicubic;\n  }\n  p {\n    margin: 0px !important;\n    margin-block-start: 0px;\n    margin-block-end: 0px;\n  }\n  .without-margin p {\n    margin: 0px !important;\n    margin-block-start: 0px;\n    margin-block-end: 0px;\n  }\n  td {\n    font-family: Calibri,Arial !important;\n  }\n  </style>\n  </head>\n  <body>\n  <div class='without-margin' style=\"background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;\">\n  " + body + "\n  </div>\n\n  </body>\n  </html>\n").replace(/(\n)/ig, ''); };
+var quillStyles = "\n.ql-container {\n  box-sizing: border-box;\n  font-family: Helvetica, Arial, sans-serif;\n  font-size: 13px;\n  height: 100%;\n  margin: 0px;\n  position: relative;\n}\n.ql-container.ql-disabled .ql-tooltip {\n  visibility: hidden;\n}\n.ql-container:not(.ql-disabled) li[data-list=checked] > .ql-ui,\n.ql-container:not(.ql-disabled) li[data-list=unchecked] > .ql-ui {\n  cursor: pointer;\n}\n.ql-clipboard {\n  left: -100000px;\n  height: 1px;\n  overflow-y: hidden;\n  position: absolute;\n  top: 50%;\n}\n.ql-clipboard p {\n  margin: 0;\n  padding: 0;\n}\n \n ol {\n  padding-left: 1.5em;\n}\n li {\n  list-style-type: none;\n  padding-left: 1.5em;\n  position: relative;\n}\n li > .ql-ui:before {\n  display: inline-block;\n  margin-left: -1.5em;\n  margin-right: 0.3em;\n  text-align: right;\n  white-space: nowrap;\n  width: 1.2em;\n}\n li[data-list=checked] > .ql-ui,\n li[data-list=unchecked] > .ql-ui {\n  color: #777;\n}\n li[data-list=bullet] > .ql-ui:before {\n  content: '2022';\n}\n li[data-list=checked] > .ql-ui:before {\n  content: '2611';\n}\n li[data-list=unchecked] > .ql-ui:before {\n  content: '2610';\n}\n li[data-list=ordered] {\n  counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n  counter-increment: list-0;\n}\n li[data-list=ordered] > .ql-ui:before {\n  content: counter(list-0, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-1 {\n  counter-increment: list-1;\n}\n li[data-list=ordered].ql-indent-1 > .ql-ui:before {\n  content: counter(list-1, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-1 {\n  counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-2 {\n  counter-increment: list-2;\n}\n li[data-list=ordered].ql-indent-2 > .ql-ui:before {\n  content: counter(list-2, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-2 {\n  counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-3 {\n  counter-increment: list-3;\n}\n li[data-list=ordered].ql-indent-3 > .ql-ui:before {\n  content: counter(list-3, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-3 {\n  counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-4 {\n  counter-increment: list-4;\n}\n li[data-list=ordered].ql-indent-4 > .ql-ui:before {\n  content: counter(list-4, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-4 {\n  counter-reset: list-5 list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-5 {\n  counter-increment: list-5;\n}\n li[data-list=ordered].ql-indent-5 > .ql-ui:before {\n  content: counter(list-5, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-5 {\n  counter-reset: list-6 list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-6 {\n  counter-increment: list-6;\n}\n li[data-list=ordered].ql-indent-6 > .ql-ui:before {\n  content: counter(list-6, decimal) '. ';\n}\n li[data-list=ordered].ql-indent-6 {\n  counter-reset: list-7 list-8 list-9;\n}\n li[data-list=ordered].ql-indent-7 {\n  counter-increment: list-7;\n}\n li[data-list=ordered].ql-indent-7 > .ql-ui:before {\n  content: counter(list-7, lower-alpha) '. ';\n}\n li[data-list=ordered].ql-indent-7 {\n  counter-reset: list-8 list-9;\n}\n li[data-list=ordered].ql-indent-8 {\n  counter-increment: list-8;\n}\n li[data-list=ordered].ql-indent-8 > .ql-ui:before {\n  content: counter(list-8, lower-roman) '. ';\n}\n li[data-list=ordered].ql-indent-8 {\n  counter-reset: list-9;\n}\n li[data-list=ordered].ql-indent-9 {\n  counter-increment: list-9;\n}\n li[data-list=ordered].ql-indent-9 > .ql-ui:before {\n  content: counter(list-9, decimal) '. ';\n}\n .ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 3em;\n}\n li.ql-indent-1:not(.ql-direction-rtl) {\n  padding-left: 4.5em;\n}\n .ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 3em;\n}\n li.ql-indent-1.ql-direction-rtl.ql-align-right {\n  padding-right: 4.5em;\n}\n .ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 6em;\n}\n li.ql-indent-2:not(.ql-direction-rtl) {\n  padding-left: 7.5em;\n}\n .ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 6em;\n}\n li.ql-indent-2.ql-direction-rtl.ql-align-right {\n  padding-right: 7.5em;\n}\n .ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 9em;\n}\n li.ql-indent-3:not(.ql-direction-rtl) {\n  padding-left: 10.5em;\n}\n .ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 9em;\n}\n li.ql-indent-3.ql-direction-rtl.ql-align-right {\n  padding-right: 10.5em;\n}\n .ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 12em;\n}\n li.ql-indent-4:not(.ql-direction-rtl) {\n  padding-left: 13.5em;\n}\n .ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 12em;\n}\n li.ql-indent-4.ql-direction-rtl.ql-align-right {\n  padding-right: 13.5em;\n}\n .ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 15em;\n}\n li.ql-indent-5:not(.ql-direction-rtl) {\n  padding-left: 16.5em;\n}\n .ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 15em;\n}\n li.ql-indent-5.ql-direction-rtl.ql-align-right {\n  padding-right: 16.5em;\n}\n .ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 18em;\n}\n li.ql-indent-6:not(.ql-direction-rtl) {\n  padding-left: 19.5em;\n}\n .ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 18em;\n}\n li.ql-indent-6.ql-direction-rtl.ql-align-right {\n  padding-right: 19.5em;\n}\n .ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 21em;\n}\n li.ql-indent-7:not(.ql-direction-rtl) {\n  padding-left: 22.5em;\n}\n .ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 21em;\n}\n li.ql-indent-7.ql-direction-rtl.ql-align-right {\n  padding-right: 22.5em;\n}\n .ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 24em;\n}\n li.ql-indent-8:not(.ql-direction-rtl) {\n  padding-left: 25.5em;\n}\n .ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 24em;\n}\n li.ql-indent-8.ql-direction-rtl.ql-align-right {\n  padding-right: 25.5em;\n}\n .ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 27em;\n}\n li.ql-indent-9:not(.ql-direction-rtl) {\n  padding-left: 28.5em;\n}\n .ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 27em;\n}\n li.ql-indent-9.ql-direction-rtl.ql-align-right {\n  padding-right: 28.5em;\n}\n li.ql-direction-rtl {\n  padding-right: 1.5em;\n}\n li.ql-direction-rtl > .ql-ui:before {\n  margin-left: 0.3em;\n  margin-right: -1.5em;\n  text-align: left;\n}\n table {\n  table-layout: fixed;\n  width: 100%;\n}\n table td {\n  outline: none;\n}\n .ql-code-block-container {\n  font-family: monospace;\n}\n .ql-video {\n  display: block;\n  max-width: 100%;\n}\n .ql-video.ql-align-center {\n  margin: 0 auto;\n}\n .ql-video.ql-align-right {\n  margin: 0 0 0 auto;\n}\n .ql-bg-black {\n  background-color: #000;\n}\n .ql-bg-red {\n  background-color: #e60000;\n}\n .ql-bg-orange {\n  background-color: #f90;\n}\n .ql-bg-yellow {\n  background-color: #ff0;\n}\n .ql-bg-green {\n  background-color: #008a00;\n}\n .ql-bg-blue {\n  background-color: #06c;\n}\n .ql-bg-purple {\n  background-color: #93f;\n}\n .ql-color-white {\n  color: #fff;\n}\n .ql-color-red {\n  color: #e60000;\n}\n .ql-color-orange {\n  color: #f90;\n}\n .ql-color-yellow {\n  color: #ff0;\n}\n .ql-color-green {\n  color: #008a00;\n}\n .ql-color-blue {\n  color: #06c;\n}\n .ql-color-purple {\n  color: #93f;\n}\n .ql-font-serif {\n  font-family: Georgia, Times New Roman, serif;\n}\n .ql-font-monospace {\n  font-family: Monaco, Courier New, monospace;\n}\n .ql-size-small {\n  font-size: 0.75em;\n}\n .ql-size-large {\n  font-size: 1.5em;\n}\n .ql-size-huge {\n  font-size: 2.5em;\n}\n .ql-direction-rtl {\n  direction: rtl;\n  text-align: inherit;\n}\n .ql-align-center {\n  text-align: center;\n}\n .ql-align-justify {\n  text-align: justify;\n}\n .ql-align-right {\n  text-align: right;\n}\n .ql-ui {\n  position: absolute;\n}\n.ql-blank::before {\n  color: rgba(0,0,0,0.6);\n  content: attr(data-placeholder);\n  font-style: italic;\n  left: 15px;\n  pointer-events: none;\n  position: absolute;\n  right: 15px;\n}\n".replace(/(\n)/ig, '');
+
+var useStyles$1 = core.makeStyles(function () { return core.createStyles({
+    fabContainer: {
+        position: 'fixed',
+        right: 30,
+        bottom: 30
     }
-    // eslint-disable-next-line no-console
-    console.log('No IPTC data at this offset - could be XMP');
-  };
+}); });
 
-  // Registers this IPTC parser for the APP13 JPEG meta data segment:
-  loadImage.metaDataParsers.jpeg[0xffed].push(loadImage.parseIptcData);
+var EmailConfig = function (props) {
+    var _a = React.useState(props.to || ''), to = _a[0], setTo = _a[1];
+    var _b = React.useState(props.cc || []), cc = _b[0], setCc = _b[1];
+    var classes = useStyles$2(props);
+    React.useEffect(function () {
+        props.onToChange(to);
+    }, [to]);
+    React.useEffect(function () {
+        props.onCcChange(cc);
+    }, [cc]);
+    return (React__default.createElement(core.Box, null,
+        React__default.createElement(core.Typography, { gutterBottom: true }, "Configure email"),
+        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+            React__default.createElement(core.Box, { my: 2 },
+                React__default.createElement(core.Typography, null, "To: "),
+                React__default.createElement(core.Box, { width: "100%" },
+                    React__default.createElement(core.Input, { value: to, fullWidth: true, onChange: function (e) { return setTo(e.target.value); } }))),
+            React__default.createElement(core.Box, { my: 2 },
+                React__default.createElement(core.Typography, null, "CC: "),
+                React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+                    cc.map(function (_cc, i) { return (React__default.createElement(core.Box, { my: 1, key: i, display: "flex", width: "100%" },
+                        React__default.createElement(core.Input, { fullWidth: true, value: cc[i] || '', onChange: function (e) {
+                                setCc(__spreadArrays(cc.map(function (_, _i) { return i === _i ? e.target.value : _; })));
+                            } }),
+                        React__default.createElement(core.IconButton, { style: { padding: 0 }, onClick: function () { return setCc(__spreadArrays(cc.filter(function (_, _i) { return i !== _i; }))); } },
+                            React__default.createElement("i", { className: "material-icons" }, "clear")))); }),
+                    React__default.createElement(core.Box, { width: "50px", my: 1, height: "50px" },
+                        React__default.createElement(core.IconButton, { onClick: function () { return setCc(__spreadArrays(cc, [''])); } },
+                            React__default.createElement("i", { className: "material-icons" }, "add"))))))));
+};
+var useStyles$2 = core.makeStyles(function (theme) { return core.createStyles({}); });
 
-  // Adds the following properties to the parseMetaData callback data:
-  // * iptc: The iptc tags, parsed by the parseIptcData method
+var SmsConfig = function (props) {
+    var _a = React.useState(props.phoneNumbers || []), numbers = _a[0], setNumbers = _a[1];
+    var classes = useStyles$3(props);
+    React.useEffect(function () {
+        props.onPhoneNumberChange(numbers);
+    }, [numbers]);
+    return (React__default.createElement(core.Box, null,
+        React__default.createElement(core.Typography, { gutterBottom: true }, "Configure SMS"),
+        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+            React__default.createElement(core.Box, { my: 2 },
+                React__default.createElement(core.Typography, null, "to: "),
+                React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+                    numbers.map(function (number, i) { return (React__default.createElement(core.Box, { my: 1, key: i, display: "flex", width: "100%" },
+                        React__default.createElement(core.Input, { placeholder: "+918800000000", fullWidth: true, value: numbers[i] || '', onChange: function (e) {
+                                setNumbers(__spreadArrays(numbers.map(function (_, _i) { return i === _i ? e.target.value : _; })));
+                            } }),
+                        React__default.createElement(core.IconButton, { style: { padding: 0 }, onClick: function () { return setNumbers(__spreadArrays(numbers.filter(function (_, _i) { return i !== _i; }))); } },
+                            React__default.createElement("i", { className: "material-icons" }, "clear")))); }),
+                    React__default.createElement(core.Box, { width: "50px", my: 1, height: "50px" },
+                        React__default.createElement(core.IconButton, { onClick: function () { return setNumbers(__spreadArrays(numbers, [''])); } },
+                            React__default.createElement("i", { className: "material-icons" }, "add"))))))));
+};
+var useStyles$3 = core.makeStyles(function (theme) { return core.createStyles({}); });
 
-  // Adds the following options to the parseMetaData method:
-  // * disableIptc: Disables IPTC parsing.
-});
-});
-
-var loadImageIptcMap = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(loadImage, loadImageIptc);
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  loadImage.IptcMap.prototype.tags = {
-    // ==========
-    // IPTC tags:
-    // ==========
-    0x03: 'ObjectType',
-    0x04: 'ObjectAttribute',
-    0x05: 'ObjectName',
-    0x07: 'EditStatus',
-    0x08: 'EditorialUpdate',
-    0x0a: 'Urgency',
-    0x0c: 'SubjectRef',
-    0x0f: 'Category',
-    0x14: 'SupplCategory',
-    0x16: 'FixtureID',
-    0x19: 'Keywords',
-    0x1a: 'ContentLocCode',
-    0x1b: 'ContentLocName',
-    0x1e: 'ReleaseDate',
-    0x23: 'ReleaseTime',
-    0x25: 'ExpirationDate',
-    0x26: 'ExpirationTime',
-    0x28: 'SpecialInstructions',
-    0x2a: 'ActionAdvised',
-    0x2d: 'RefService',
-    0x2f: 'RefDate',
-    0x32: 'RefNumber',
-    0x37: 'DateCreated',
-    0x3c: 'TimeCreated',
-    0x3e: 'DigitalCreationDate',
-    0x3f: 'DigitalCreationTime',
-    0x41: 'OriginatingProgram',
-    0x46: 'ProgramVersion',
-    0x4b: 'ObjectCycle',
-    0x50: 'Byline',
-    0x55: 'BylineTitle',
-    0x5a: 'City',
-    0x5c: 'Sublocation',
-    0x5f: 'State',
-    0x64: 'CountryCode',
-    0x65: 'CountryName',
-    0x67: 'OrigTransRef',
-    0x69: 'Headline',
-    0x6e: 'Credit',
-    0x73: 'Source',
-    0x74: 'CopyrightNotice',
-    0x76: 'Contact',
-    0x78: 'Caption',
-    0x7a: 'WriterEditor',
-    0x82: 'ImageType',
-    0x83: 'ImageOrientation',
-    0x87: 'LanguageID'
-
-    // We don't record these tags:
-    //
-    // 0x00: 'RecordVersion',
-    // 0x7d: 'RasterizedCaption',
-    // 0x96: 'AudioType',
-    // 0x97: 'AudioSamplingRate',
-    // 0x98: 'AudioSamplingRes',
-    // 0x99: 'AudioDuration',
-    // 0x9a: 'AudioOutcue',
-    // 0xc8: 'PreviewFileFormat',
-    // 0xc9: 'PreviewFileFormatVer',
-    // 0xca: 'PreviewData'
-  };
-
-  loadImage.IptcMap.prototype.getText = function(id) {
-    var value = this.get(id);
-    return String(value)
-  }
-  ;(function(iptcMapPrototype) {
-    var tags = iptcMapPrototype.tags;
-    var map = iptcMapPrototype.map || {};
-    var prop;
-    // Map the tag names to tags:
-    for (prop in tags) {
-      if (Object.prototype.hasOwnProperty.call(tags, prop)) {
-        map[tags[prop]] = prop;
-      }
+var TestTemplate = function (props) {
+    var context = React.useContext(Context);
+    if (!context)
+        return React__default.createElement("div", null);
+    var testTemplate = context.testTemplate;
+    var _a = React.useState(false), loading = _a[0], setLoading = _a[1];
+    var template = props.template;
+    var classes = useStyles$4(props);
+    var _b = React.useState(''), to = _b[0], setTo = _b[1];
+    var _c = React.useState([]), phoneNumbers = _c[0], setPhoneNumbers = _c[1];
+    var _d = React.useState([]), cc = _d[0], setCc = _d[1];
+    var validateInput = function () {
+        if (template.channel === 'email' && !to)
+            return false;
+        // if (cc.filter(_c => !!_c).length === 0) return false;
+        return true;
+    };
+    var send = function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setLoading(true);
+                    return [4 /*yield*/, testTemplate(template.id, template.channel, { to: to, cc: cc })];
+                case 1:
+                    _a.sent();
+                    setLoading(false);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    if (!template)
+        return React__default.createElement("div", null);
+    return (React__default.createElement(core.Paper, null,
+        React__default.createElement(core.Box, { p: 3, width: "300px" },
+            React__default.createElement(core.Typography, { variant: "h6" },
+                "Test template - ",
+                template.name),
+            React__default.createElement(core.Typography, { className: classes.tag, variant: "caption" }, template.slug),
+            React__default.createElement(core.Box, { mt: "20px" },
+                React__default.createElement(core.Box, { mt: "40px" },
+                    template.channel === 'email' ? (React__default.createElement(EmailConfig, { to: to, cc: cc, onCcChange: function (_cc) { return setCc(_cc); }, onToChange: function (_to) { return setTo(_to); } })) : null,
+                    template.channel === 'sms' ? (React__default.createElement(SmsConfig, { phoneNumbers: phoneNumbers, onPhoneNumberChange: function (_numbers) { return setPhoneNumbers(_numbers); } })) : null),
+                React__default.createElement(core.Box, { mt: 2 },
+                    React__default.createElement(core.Button, { onClick: send, disabled: !validateInput(), variant: "outlined", color: "secondary" }, loading ? React__default.createElement(core.CircularProgress, null) : 'Send'))))));
+};
+var useStyles$4 = core.makeStyles(function (theme) { return core.createStyles({
+    tag: {
+        color: 'white',
+        backgroundColor: theme.palette.primary.main,
+        padding: '2px 4px'
     }
-  })(loadImage.IptcMap.prototype);
-
-  loadImage.IptcMap.prototype.getAll = function() {
-    var map = {};
-    var prop;
-    var id;
-    for (prop in this) {
-      if (Object.prototype.hasOwnProperty.call(this, prop)) {
-        id = this.tags[prop];
-        if (id) {
-          map[id] = this.getText(id);
-        }
-      }
-    }
-    return map
-  };
-});
-});
-
-var loadImageOrientation = createCommonjsModule(function (module) {
-(function(factory) {
-  if ( module.exports) {
-    factory(
-      loadImage,
-      loadImageScale,
-      loadImageMeta
-    );
-  } else {
-    // Browser globals:
-    factory(window.loadImage);
-  }
-})(function(loadImage) {
-
-  var originalHasCanvasOption = loadImage.hasCanvasOption;
-  var originalHasMetaOption = loadImage.hasMetaOption;
-  var originalTransformCoordinates = loadImage.transformCoordinates;
-  var originalGetTransformedOptions = loadImage.getTransformedOptions;
-
-  // Determines if the target image should be a canvas element:
-  loadImage.hasCanvasOption = function(options) {
-    return (
-      !!options.orientation || originalHasCanvasOption.call(loadImage, options)
-    )
-  };
-
-  // Determines if meta data should be loaded automatically:
-  loadImage.hasMetaOption = function(options) {
-    return (
-      (options && options.orientation === true) ||
-      originalHasMetaOption.call(loadImage, options)
-    )
-  };
-
-  // Transform image orientation based on
-  // the given EXIF orientation option:
-  loadImage.transformCoordinates = function(canvas, options) {
-    originalTransformCoordinates.call(loadImage, canvas, options);
-    var ctx = canvas.getContext('2d');
-    var width = canvas.width;
-    var height = canvas.height;
-    var styleWidth = canvas.style.width;
-    var styleHeight = canvas.style.height;
-    var orientation = options.orientation;
-    if (!orientation || orientation > 8) {
-      return
-    }
-    if (orientation > 4) {
-      canvas.width = height;
-      canvas.height = width;
-      canvas.style.width = styleHeight;
-      canvas.style.height = styleWidth;
-    }
-    switch (orientation) {
-      case 2:
-        // horizontal flip
-        ctx.translate(width, 0);
-        ctx.scale(-1, 1);
-        break
-      case 3:
-        // 180° rotate left
-        ctx.translate(width, height);
-        ctx.rotate(Math.PI);
-        break
-      case 4:
-        // vertical flip
-        ctx.translate(0, height);
-        ctx.scale(1, -1);
-        break
-      case 5:
-        // vertical flip + 90 rotate right
-        ctx.rotate(0.5 * Math.PI);
-        ctx.scale(1, -1);
-        break
-      case 6:
-        // 90° rotate right
-        ctx.rotate(0.5 * Math.PI);
-        ctx.translate(0, -height);
-        break
-      case 7:
-        // horizontal flip + 90 rotate right
-        ctx.rotate(0.5 * Math.PI);
-        ctx.translate(width, -height);
-        ctx.scale(-1, 1);
-        break
-      case 8:
-        // 90° rotate left
-        ctx.rotate(-0.5 * Math.PI);
-        ctx.translate(-width, 0);
-        break
-    }
-  };
-
-  // Transforms coordinate and dimension options
-  // based on the given orientation option:
-  loadImage.getTransformedOptions = function(img, opts, data) {
-    var options = originalGetTransformedOptions.call(loadImage, img, opts);
-    var orientation = options.orientation;
-    var newOptions;
-    var i;
-    if (orientation === true && data && data.exif) {
-      orientation = data.exif.get('Orientation');
-    }
-    if (!orientation || orientation > 8 || orientation === 1) {
-      return options
-    }
-    newOptions = {};
-    for (i in options) {
-      if (Object.prototype.hasOwnProperty.call(options, i)) {
-        newOptions[i] = options[i];
-      }
-    }
-    newOptions.orientation = orientation;
-    switch (orientation) {
-      case 2:
-        // horizontal flip
-        newOptions.left = options.right;
-        newOptions.right = options.left;
-        break
-      case 3:
-        // 180° rotate left
-        newOptions.left = options.right;
-        newOptions.top = options.bottom;
-        newOptions.right = options.left;
-        newOptions.bottom = options.top;
-        break
-      case 4:
-        // vertical flip
-        newOptions.top = options.bottom;
-        newOptions.bottom = options.top;
-        break
-      case 5:
-        // vertical flip + 90 rotate right
-        newOptions.left = options.top;
-        newOptions.top = options.left;
-        newOptions.right = options.bottom;
-        newOptions.bottom = options.right;
-        break
-      case 6:
-        // 90° rotate right
-        newOptions.left = options.top;
-        newOptions.top = options.right;
-        newOptions.right = options.bottom;
-        newOptions.bottom = options.left;
-        break
-      case 7:
-        // horizontal flip + 90 rotate right
-        newOptions.left = options.bottom;
-        newOptions.top = options.right;
-        newOptions.right = options.top;
-        newOptions.bottom = options.left;
-        break
-      case 8:
-        // 90° rotate left
-        newOptions.left = options.bottom;
-        newOptions.top = options.left;
-        newOptions.right = options.top;
-        newOptions.bottom = options.right;
-        break
-    }
-    if (newOptions.orientation > 4) {
-      newOptions.maxWidth = options.maxHeight;
-      newOptions.maxHeight = options.maxWidth;
-      newOptions.minWidth = options.minHeight;
-      newOptions.minHeight = options.minWidth;
-      newOptions.sourceWidth = options.sourceHeight;
-      newOptions.sourceHeight = options.sourceWidth;
-    }
-    return newOptions
-  };
-});
-});
-
-/* global module, require */
-
-var js = loadImage;
+}); });
 
 var FILE_UPLOAD_BUTTON_STYLES = {
     fileInput: {
@@ -21967,7 +20207,7 @@ function SingleImageUpload(props) {
             props.onImageSelected(file);
             filePromises = files.map(function (file, index) {
                 return new Promise(function (resolve, reject) {
-                    js(file.base64, function (img, data) {
+                    loadImage(file.base64, function (img, data) {
                         console.log('Data', data);
                         var base64 = img.getAttribute('src');
                         resolve(file);
@@ -22054,6 +20294,37 @@ var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
         }
     }
 }); });
+
+var QuillToolbar$1 = function (props) {
+    var _a = props.toolbarOptions, toolbarOptions = _a === void 0 ? ['align', 'color', 'image', 'size'] : _a;
+    return (React__default.createElement("div", { id: props.id },
+        toolbarOptions.includes('size') && Size,
+        React__default.createElement("span", { className: "ql-formats" },
+            Formatting,
+            toolbarOptions.includes('color') && Color),
+        toolbarOptions.includes('image') && Image,
+        toolbarOptions.includes('align') && Align,
+        Indents));
+};
+var Image = (React__default.createElement("button", { className: "ql-image" }));
+var Color = (React__default.createElement("select", { className: "ql-color" }));
+var Size = (React__default.createElement("select", { className: "ql-size" },
+    React__default.createElement("option", { value: "12px" }, "Small"),
+    React__default.createElement("option", { selected: true, value: "14px" }, "Medium"),
+    React__default.createElement("option", { value: "18px" }, "Large")));
+var Indents = (React__default.createElement("span", { className: "ql-formats" },
+    React__default.createElement("button", { className: "ql-list", value: "ordered" }),
+    React__default.createElement("button", { className: "ql-list", value: "bullet" }),
+    React__default.createElement("button", { className: "ql-indent", value: "-1" }),
+    React__default.createElement("button", { className: "ql-indent", value: "+1" })));
+var Formatting = (React__default.createElement(React__default.Fragment, null,
+    React__default.createElement("button", { className: "ql-bold" }),
+    React__default.createElement("button", { className: "ql-italic" }),
+    React__default.createElement("button", { className: "ql-underline" }),
+    React__default.createElement("button", { className: "ql-link" })));
+var Align = (React__default.createElement("span", { className: "ql-formats" },
+    React__default.createElement("button", { className: "ql-direction", value: "rtl" }),
+    React__default.createElement("select", { className: "ql-align" })));
 
 var DEFAULT_FLOW = 'defaultFlow';
 var curQuillInputIndex = 0;
@@ -22160,7 +20431,8 @@ var Form = function (props) {
                             React__default.createElement(core.TextField, { error: !!errors[config.name], label: config.label, required: config.required, multiline: config.multiline || false, name: config.name, value: config.value, onChange: config.handleChange })))); }),
                     React__default.createElement(core.Box, { my: 2, width: "100%" },
                         React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
-                        React__default.createElement(lib, { formats: QUILL_FORMATS, modules: QUILL_MODULES, ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
+                        React__default.createElement(QuillToolbar$1, { id: "toolbar-ql" }),
+                        React__default.createElement(lib, { formats: QUILL_FORMATS, modules: getQuillModule('toolbar-ql'), ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
         template.channel === 'sms' ? (React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React__default.createElement(core.Typography, null, "SMS"),
             React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
@@ -22338,8 +20610,7 @@ var FooterForm = function (props) {
             if (selection)
                 curQuillInputIndex$1 = selection.index;
         });
-        // const delta = editor.getContents();
-        editor.format('align', 'center');
+        // editor.format('align', 'center')
     }, [quillRef]);
     React.useEffect(function () {
         var _a, _b;
@@ -22394,7 +20665,8 @@ var FooterForm = function (props) {
         React__default.createElement(core.Box, { p: 3 },
             React__default.createElement(core.Box, { my: 2, width: "100%" },
                 React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
-                React__default.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: QUILL_MODULES_ALT, className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
+                React__default.createElement(QuillToolbar$1, { id: "ql-footer-toolbar" }),
+                React__default.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: getQuillModule('ql-footer-toolbar'), className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
             React__default.createElement(core.Box, { my: 2 },
                 React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"), (_e = (_d = setting.settingData) === null || _d === void 0 ? void 0 : _d.links) === null || _e === void 0 ? void 0 :
                 _e.map(function (l, i) {
@@ -22440,6 +20712,7 @@ exports.TemplatePreview = TemplatePreview;
 exports.TemplateService = TemplateService;
 exports.generateHTML = generateHTML;
 exports.getFooterHTML = getFooterHTML;
+exports.getQuillModule = getQuillModule;
 exports.initializeTemplater = initializeTemplater;
 exports.usePagination = usePagination;
 exports.useTemplateService = useTemplateService;

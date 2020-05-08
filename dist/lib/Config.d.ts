@@ -8,6 +8,14 @@ export declare let SETTINGS_API_URL: string;
  * @description Initialize the templater with provided configurations
  */
 export declare const initializeTemplater: (configuration: Partial<TemplaterConfig>) => void;
+export declare const getQuillModule: (toolbarId: string) => {
+    toolbar: string;
+    history: {
+        delay: number;
+        maxStack: number;
+        userOnly: boolean;
+    };
+};
 export declare const QUILL_MODULES: {
     history: {
         delay: number;
@@ -15,7 +23,7 @@ export declare const QUILL_MODULES: {
         userOnly: boolean;
     };
     toolbar: (string[] | {
-        size: never[];
+        size: string[];
     }[] | {
         'indent': string;
     }[] | {

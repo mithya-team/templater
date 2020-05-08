@@ -279,11 +279,13 @@ padding: 0px 0px 20px 0px !important;
 </style>
 <![endif]-->
   <style type="text/css">
+
     body {
       margin: 0 !important; 
       padding: 0 !important; height: 100% !important; 
       width: 100% !important;
   }
+  
   p > img {
     width: 100%;
   }

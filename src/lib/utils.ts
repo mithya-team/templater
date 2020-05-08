@@ -285,7 +285,7 @@ padding: 0px 0px 20px 0px !important;
       padding: 0 !important; height: 100% !important; 
       width: 100% !important;
   }
-  
+
   p > img {
     width: 100%;
   }
@@ -309,7 +309,9 @@ padding: 0px 0px 20px 0px !important;
   <body>
   <div class='without-margin' style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
   ${body}
+  
   </div>
+
   </body>
   </html>
 `.replace(/(\n)/ig, '')

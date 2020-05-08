@@ -69,7 +69,9 @@ export const generateHTML = (body: string, banner?: TPicture, footer?: any) => {
       </table>`.replace(/(\n)/ig, '')
   }
 
-  return wrapWithHTML(createTable(BANNER + BODY, FOOTER))
+  const _body = (BANNER + BODY).replace(/<\s*p([^>]*)>(.*?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>')
+  console.log("body", _body)
+  return wrapWithHTML(createTable(_body, FOOTER))
 }
 
 
@@ -79,7 +81,7 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
   const _links: string[] = []
   links.forEach(l => {
     _links.push(`
-            <a href="${l.link}" target="_blank">
+            <a href="${l.link}" target="_blank" style="margin: 0px 4px">
               <img src="${l.icon?.url}" width="30px" height="30px"  style="border-radius: 15px"/>
             </a>
       `.replace(/(\n)/ig, ''))
@@ -310,7 +312,7 @@ padding: 0px 0px 20px 0px !important;
   </head>
   <body>
   <div class='without-margin' style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
-  ${body.replace(/<\s*p([^>])>(.?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>')}
+  ${body}
   </div>
 
   </body>

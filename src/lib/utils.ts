@@ -79,18 +79,16 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
   const _links: string[] = []
   links.forEach(l => {
     _links.push(`
-          <td>
-              <a href="${l.link}" target="_blank">
+            <a href="${l.link}" target="_blank">
               <img src="${l.icon?.url}" width="30px" height="30px"  style="border-radius: 15px"/>
-              </a>
-          </td>
+            </a>
       `.replace(/(\n)/ig, ''))
   })
 
   const LINKS = `
       <table align="center">
           <tr>
-              ${_links.join('')}
+              <td>${_links.join('')}</td>
           </tr>
       </table>
       `.replace(/(\n)/ig, '')
@@ -296,10 +294,14 @@ padding: 0px 0px 20px 0px !important;
       -ms-interpolation-mode: bicubic;
   }
   p {
-    margin: 0 !important;
+    margin: 0px !important;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
   }
   .without-margin p {
-    margin: 0 !important;
+    margin: 0px !important;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
   }
   td {
     font-family: Calibri,Arial !important;
@@ -308,7 +310,7 @@ padding: 0px 0px 20px 0px !important;
   </head>
   <body>
   <div class='without-margin' style="background-color: #F5F5F5; width: 100%; font-family: Calibri,Arial; padding: 60px 0px;">
-  ${body}
+  ${body.replace(/<\s*p([^>])>(.?)<\s*\/\s*p>/g, '<p $1 style="margin:0;">$2</p>')}
   </div>
 
   </body>

@@ -41,7 +41,8 @@ export const copyLink = (url: string) => {
 }
 
 export const trimHTML = (html: string) => {
-  return html.replace(/<p><br><\/p>/ig, '<br/>');
+  // return html.replace(/<p><br><\/p>/ig, '<br/>');
+  return html.replace(/<p><br><\/p>/ig, '<br/>').replace(/<p>/g, '').replace(/<\/p>/g, '<br/>');
 }
 
 export const unescapeHTML = (html: string) => {
@@ -134,6 +135,10 @@ export const getFooterHTML = (content: string, links: TemplateSetting['settingDa
   return HTML
 }
 
+
+// <link rel="stylesheet" href="//cdn.quilljs.com/1.2.6/quill.snow.css"/>
+
+
 const wrapWithHTML = (body: string) => `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
   <html 
@@ -144,7 +149,7 @@ const wrapWithHTML = (body: string) => `
   <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="//cdn.quilljs.com/1.2.6/quill.snow.css"/>
+  
   <!-- Desktop Outlook chokes on web font references and defaults to Times New Roman, so we force a safe fallback font. -->
     <!--[if mso]>
       <style>

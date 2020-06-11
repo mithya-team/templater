@@ -15,12 +15,18 @@ export declare const getQuillModule: (toolbarId: string) => {
         maxStack: number;
         userOnly: boolean;
     };
+    clipboard: {
+        matchVisual: boolean;
+    };
 };
 export declare const QUILL_MODULES: {
     history: {
         delay: number;
         maxStack: number;
         userOnly: boolean;
+    };
+    clipboard: {
+        matchVisual: boolean;
     };
     toolbar: (string[] | {
         size: string[];
@@ -37,6 +43,9 @@ export declare const QUILL_MODULES_ALT: {
         delay: number;
         maxStack: number;
         userOnly: boolean;
+    };
+    clipboard: {
+        matchVisual: boolean;
     };
     toolbar: (string[] | {
         'indent': string;

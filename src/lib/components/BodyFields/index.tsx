@@ -21,7 +21,7 @@ const BodyFields: React.FC<IProps> = (props) => {
     }
 
     return (
-        <div>
+        <div className={classes.root}>
             <Typography>INSERT VARIABLE</Typography>
             {fields.map((f, i) => (
                 <Box display="flex" alignItems="center" justifyContent="space-between" key={i} className={classes.fieldItem} >
@@ -37,6 +37,10 @@ const BodyFields: React.FC<IProps> = (props) => {
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
+    root: {
+        maxHeight: '70vh',
+        overflow: 'scroll',
+    },
     fieldItem: {
         cursor: 'pointer',
         '& button > span': {

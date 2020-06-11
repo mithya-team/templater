@@ -39,8 +39,8 @@ const Form: React.FC<IFormProps> = (props) => {
         else if (config.singleInstances && !template.flow) {
             props.onChange('flow', DEFAULT_FLOW);
         }
-
     }, [template])
+
 
     useEffect(() => {
         if (!quillRef.current) return;

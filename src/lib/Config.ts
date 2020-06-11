@@ -66,6 +66,9 @@ export const QUILL_MODULES = {
         maxStack: 200,
         userOnly: false
     },
+    clipboard: {
+        matchVisual: false,
+    },
     toolbar: [
         [{ size: ['small', 'normal', 'large'] }],
         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
@@ -85,6 +88,9 @@ export const QUILL_MODULES_ALT = {
         delay: 100,
         maxStack: 200,
         userOnly: false
+    },
+    clipboard: {
+        matchVisual: false,
     },
     toolbar: [
         // [{ size: ['small', 'normal', 'large', 'huge'] }],

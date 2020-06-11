@@ -27,9 +27,17 @@ const QuillToolbar: React.FC<QuillToolbarProps> = (props) => {
 const Image = (
     <button className="ql-image"></button>
 )
+
+// const Color = (
+//     <select className="ql-color">
+//     </select>
+// )
+
 const Color = (
-    <select className="ql-color"></select>
+    <input id="color" type="color" className="ql-color" />
 )
+
+
 const Size = (
     <select className="ql-size">
         <option value="12px">Small</option>

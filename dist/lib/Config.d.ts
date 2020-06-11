@@ -33,9 +33,9 @@ export declare const QUILL_MODULES: {
     }[] | {
         'indent': string;
     }[] | {
-        'color': never[];
-    }[] | {
         'align': never[];
+    }[] | {
+        'color': string[];
     }[])[];
 };
 export declare const QUILL_MODULES_ALT: {

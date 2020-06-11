@@ -19496,6 +19496,10 @@ var QUILL_MODULES = {
         [{ 'color': [] }],
         [{ 'align': [] }],
         ['image'],
+        [{ 'color': ["#000000", "#e60000", "#ff9900", "#ffff00", "#008a00", "#0066cc", "#9933ff", "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff", "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff", "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2", "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466", 'custom-color'] }]
+        // [{ 'script': 'sub' }, { 'script': 'super' }],
+        // [{ 'direction': 'rtl' }],
+        // ['clean'],
     ],
 };
 var QUILL_FORMATS = [
@@ -22086,7 +22090,11 @@ var QuillToolbar$1 = function (props) {
         Indents));
 };
 var Image = (React.createElement("button", { className: "ql-image" }));
-var Color = (React.createElement("select", { className: "ql-color" }));
+// const Color = (
+//     <select className="ql-color">
+//     </select>
+// )
+var Color = (React.createElement("input", { id: "color", type: "color", className: "ql-color" }));
 var Size = (React.createElement("select", { className: "ql-size" },
     React.createElement("option", { value: "12px" }, "Small"),
     React.createElement("option", { selected: true, value: "14px" }, "Medium"),
@@ -22134,12 +22142,17 @@ var Form = function (props) {
             if (selection)
                 curQuillInputIndex = selection.index;
         });
+        var customButton = document.querySelector('#color');
+        if (customButton)
+            customButton.addEventListener('change', function (e) {
+                var _a;
+                editor.format('color', (_a = e.target) === null || _a === void 0 ? void 0 : _a.value);
+            });
     }, [quillRef]);
     var onImageUploadComplete = function (current, response) {
         onChange('banner', response);
         setLoading(false);
     };
-    // const handleRteChange = (content: string) => onChange('body', content.replace(/<p><br><\/p>/ig, '<br>').replace(/<p>/g, '').replace(/<\/p>/g, '<br>'))
     var handleRteChange = function (content) { return onChange('body', content); };
     var _handleSenderChange = function (name) { return function (e) {
         var _a;
@@ -22390,6 +22403,12 @@ var FooterForm = function (props) {
             if (selection)
                 curQuillInputIndex$1 = selection.index;
         });
+        var customButton = document.querySelector('#color');
+        if (customButton)
+            customButton.addEventListener('change', function (e) {
+                var _a;
+                editor.format('color', (_a = e.target) === null || _a === void 0 ? void 0 : _a.value);
+            });
         // editor.format('align', 'center')
     }, [quillRef]);
     useEffect(function () {
@@ -22403,7 +22422,6 @@ var FooterForm = function (props) {
         setLoading(true);
     };
     var handleRteChange = function (content) { return onChange('body', content); };
-    // const handleRteChange = (content: string) => onChange('body', content.replace(/<p><br><\/p>/ig, '<br>').replace(/<p>/g, '').replace(/<\/p>/g, '<br>'))
     var newMediaData = function () {
         var _a, _b;
         var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);

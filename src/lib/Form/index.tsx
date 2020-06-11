@@ -50,6 +50,12 @@ const Form: React.FC<IFormProps> = (props) => {
             if (selection) curQuillInputIndex = selection.index;
         })
 
+        var customButton = document.querySelector<HTMLInputElement>('#color')
+        if (customButton)
+            customButton.addEventListener('change', (e: any) => {
+                editor.format('color', e.target?.value);
+            })
+
     }, [quillRef])
 
 

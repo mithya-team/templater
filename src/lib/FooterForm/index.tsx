@@ -34,6 +34,11 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
             if (selection) curQuillInputIndex = selection.index;
         })
 
+        var customButton = document.querySelector<HTMLInputElement>('#color')
+        if (customButton)
+            customButton.addEventListener('change', (e: any) => {
+                editor.format('color', e.target?.value);
+            })
         // editor.format('align', 'center')
 
     }, [quillRef])

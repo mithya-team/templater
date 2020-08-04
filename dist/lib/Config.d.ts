@@ -1,4 +1,5 @@
 import { TemplaterConfig } from "./types";
+import { Quill } from "react-quill";
 export declare let config: TemplaterConfig;
 export declare let API_URL: string;
 export declare let SETTINGS_API_URL: string;
@@ -7,7 +8,8 @@ export declare let SETTINGS_API_URL: string;
  * @param configuration Partial<TemplaterConfig>
  * @description Initialize the templater with provided configurations
  */
-export declare const initializeTemplater: (configuration: Partial<TemplaterConfig>) => void;
+export declare const initializeTemplater: (configuration: Partial<TemplaterConfig>, quill?: typeof Quill) => void;
+export declare const initQuill: (quill: typeof Quill) => void;
 export declare const getQuillModule: (toolbarId: string) => {
     toolbar: string;
     history: {

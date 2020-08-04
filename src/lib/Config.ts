@@ -37,7 +37,7 @@ export let SETTINGS_API_URL = 'templateSettings'
  * @param configuration Partial<TemplaterConfig>
  * @description Initialize the templater with provided configurations
  */
-export const initializeTemplater = (configuration: Partial<TemplaterConfig>, quill = Quill) => {
+export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => {
     config = { ...config, ...configuration, apiConfig: { ...config.apiConfig, ...configuration.apiConfig }, dialogProps: { ...config.dialogProps, ...configuration.dialogProps } };
     Axios.defaults.baseURL = config.apiConfig.baseUrl;
     Axios.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
@@ -45,14 +45,14 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>, qui
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
     console.log("Templater Initialized", config);
 
-    initQuill(quill);
+    initQuill(Quill);
     // var Size = Quill.import('attributors/style/size');
     // var Align = Quill.import('attributors/style/align');
     // Size.whitelist = ['12px', '14px', '18px'];
     // Quill.register(Size, true);
     // Quill.register(Align, true);
 }
-export const initQuill = (quill: typeof Quill) => {
+const initQuill = (quill: typeof Quill) => {
     var Size = quill.import('attributors/style/size');
     var Align = quill.import('attributors/style/align');
     Size.whitelist = ['12px', '14px', '18px'];

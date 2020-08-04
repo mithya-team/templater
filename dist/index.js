@@ -19471,15 +19471,14 @@ var SETTINGS_API_URL = 'templateSettings';
  * @param configuration Partial<TemplaterConfig>
  * @description Initialize the templater with provided configurations
  */
-var initializeTemplater = function (configuration, quill) {
-    if (quill === void 0) { quill = Quill_1; }
+var initializeTemplater = function (configuration) {
     config = __assign(__assign(__assign({}, config), configuration), { apiConfig: __assign(__assign({}, config.apiConfig), configuration.apiConfig), dialogProps: __assign(__assign({}, config.dialogProps), configuration.dialogProps) });
     axios$1.defaults.baseURL = config.apiConfig.baseUrl;
     axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
     API_URL = config.apiConfig.modelName || 'templates';
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
     console.log("Templater Initialized", config);
-    initQuill(quill);
+    initQuill(Quill_1);
     // var Size = Quill.import('attributors/style/size');
     // var Align = Quill.import('attributors/style/align');
     // Size.whitelist = ['12px', '14px', '18px'];
@@ -22563,6 +22562,7 @@ exports.Preview = Preview;
 exports.QUILL_FORMATS = QUILL_FORMATS;
 exports.QUILL_MODULES = QUILL_MODULES;
 exports.QuillToolbar = QuillToolbar$1;
+exports.ReactQuill = lib;
 exports.Settings = Settings;
 exports.TemplateCard = TemplateCard;
 exports.TemplatePreview = TemplatePreview;

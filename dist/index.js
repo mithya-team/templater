@@ -22553,6 +22553,7 @@ exports.Pagination = Pagination;
 exports.Preview = Preview;
 exports.QUILL_FORMATS = QUILL_FORMATS;
 exports.QUILL_MODULES = QUILL_MODULES;
+exports.QuillToolbar = QuillToolbar$1;
 exports.Settings = Settings;
 exports.TemplateCard = TemplateCard;
 exports.TemplatePreview = TemplatePreview;

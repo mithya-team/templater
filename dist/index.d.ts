@@ -8,3 +8,4 @@ export { initializeTemplater, QUILL_FORMATS, QUILL_MODULES, getQuillModule } fro
 export * from './lib/template.service';
 export * from './lib/types';
 export * from './lib/hooks';
+export { default as QuillToolbar } from './lib/QuillToolbar';

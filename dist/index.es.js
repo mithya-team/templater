@@ -22539,5 +22539,5 @@ var useStyles$d = makeStyles$1(function (theme) { return createStyles$1({
     }
 }); });
 
-export { BodyFields, FooterForm, Form, Pagination, Preview, QUILL_FORMATS, QUILL_MODULES, Settings, TemplateCard, TemplatePreview, TemplateService, generateHTML, getFooterHTML, getQuillModule, initializeTemplater, usePagination, useTemplateService };
+export { BodyFields, FooterForm, Form, Pagination, Preview, QUILL_FORMATS, QUILL_MODULES, QuillToolbar$1 as QuillToolbar, Settings, TemplateCard, TemplatePreview, TemplateService, generateHTML, getFooterHTML, getQuillModule, initializeTemplater, usePagination, useTemplateService };
 //# sourceMappingURL=index.es.js.map

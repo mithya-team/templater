@@ -20,7 +20,6 @@ const TemplateCard: React.FC<ITemplateCardProps> = (props) => {
     const CUSTOM = '<sup>*</sup>custom'
     const AUTO = '<sup>*</sup>auto triggered'
 
-
     return (
         <Paper className={classes.root}>
             <Box p={2} borderRadius="4px">

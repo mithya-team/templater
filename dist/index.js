@@ -19563,6 +19563,16 @@ var TemplateService = /** @class */ (function () {
         url: API_URL + "/" + id,
     }); };
     /**
+    * Get an existing template
+    * @param id ID of the template to be deleted
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.deleteTemplateById = function (id) { return axios$1.request({
+        url: API_URL + "/trash",
+        params: { ids: id },
+        method: 'DELETE'
+    }); };
+    /**
     * Update an existing template
     * @param id ID of the template to be updated
     * @param template The data to be updated
@@ -19636,6 +19646,10 @@ var TemplateService = /** @class */ (function () {
 var Notifier = /** @class */ (function () {
     function Notifier() {
     }
+    Notifier.templateDelete = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully deleted' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error deleting template');
+    };
     Notifier.templateCreate = function (error) {
         var _a, _b, _c, _d;
         config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error creating template');
@@ -19762,7 +19776,6 @@ var useTemplateService = function (defaultFilter) {
             }
         });
     }); };
-    console.log("settings", settings);
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
         var _a, res1, res2, error_4;
         return __generator(this, function (_b) {
@@ -19886,6 +19899,33 @@ var useTemplateService = function (defaultFilter) {
             }
         });
     }); };
+    var deleteTemplateById = function (templateId) { return __awaiter(void 0, void 0, void 0, function () {
+        var error_9;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log("deleting template");
+                    setStatus('loading');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.deleteTemplateById(templateId)];
+                case 2:
+                    _a.sent();
+                    console.log("deleting complete", templateId);
+                    setTemplates(function (templates) { return templates.filter(function (t) { return t.id !== templateId; }); });
+                    setStatus('done');
+                    Notifier.templateDelete();
+                    return [2 /*return*/];
+                case 3:
+                    error_9 = _a.sent();
+                    Notifier.templateDelete(error_9);
+                    setStatus('error');
+                    throw error_9;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
     var testTemplate = function (templateId, type, providerConfig) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
@@ -19910,7 +19950,8 @@ var useTemplateService = function (defaultFilter) {
         createTemplate: createTemplate,
         updateTemplate: updateTemplate,
         getTemplateById: getTemplateById,
-        testTemplate: testTemplate
+        testTemplate: testTemplate,
+        deleteTemplateById: deleteTemplateById
     };
 };
 
@@ -22360,14 +22401,14 @@ var TemplatePreview = function (props) {
 };
 
 var TemplateCard = function (props) {
-    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React__default.createElement("div", null)) : _a;
+    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React__default.createElement("div", null)) : _a, badgeHTML = props.badgeHTML;
     var classes = useStyles$b();
     var CUSTOM = '<sup>*</sup>custom';
     var AUTO = '<sup>*</sup>auto triggered';
     return (React__default.createElement(core.Paper, { className: classes.root },
         React__default.createElement(core.Box, { p: 2, borderRadius: "4px" },
             React__default.createElement("div", { className: classes.tags },
-                React__default.createElement(core.Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: data.flow === 'defaultFlow' ? CUSTOM : AUTO } })),
+                React__default.createElement(core.Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : (data.flow === 'defaultFlow' ? CUSTOM : AUTO) } })),
             React__default.createElement(reactRouterDom.Link, { to: redirectUrl || '#' },
                 React__default.createElement(core.Box, { pl: 1, display: "flex", justifyContent: "space-between" },
                     React__default.createElement(core.Typography, null, data.name))),

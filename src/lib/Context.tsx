@@ -19,13 +19,14 @@ type ProviderValue = {
     openTemplateEditor: (template?: Template) => void
     closeDialog: () => void
     getTemplateById: (id: string) => Promise<Template>
+    deleteTemplateById: (id: string) => Promise<void>
     testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>
 }
 
 const LIMIT = 8;
 
 export const ContextProvider: React.FC = (props) => {
-    const { templates, status, createTemplate, updateTemplate, getTemplateById, flows, testTemplate } = useTemplateService();
+    const { templates, status, createTemplate, updateTemplate, getTemplateById, flows, testTemplate, deleteTemplateById } = useTemplateService();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState<Template | undefined>()
     const { paginatedList, curPage, handlePageChange } = usePagination<Template>(templates, { limit: LIMIT })
@@ -69,6 +70,7 @@ export const ContextProvider: React.FC = (props) => {
         getTemplateById,
         paginatedList,
         curPage,
+        deleteTemplateById,
         handlePageChange,
         templateTypes: flows,
         testTemplate

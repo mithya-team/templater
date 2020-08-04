@@ -1,4 +1,5 @@
 export declare class Notifier {
+    static templateDelete: (error?: any) => void;
     static templateCreate: (error?: any) => void;
     static templateUpdate: (error?: any) => void;
     static templateSend: (error?: any) => void;

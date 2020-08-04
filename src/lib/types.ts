@@ -60,7 +60,7 @@ export type TemplateField = {
     isRequired: boolean
 }
 
-export type Template = {
+export interface Template {
     name: string
     eventId?: string
     agencyId?: string
@@ -71,8 +71,11 @@ export type Template = {
     templateData: TemplateData
     id: string
     slug: string
+    attachmentIds: string[]
+    isGlobal: boolean
     created: string
     updated: string
+    _attachments: any[]
     // fields: Array<TemplateField>
     // email: TemplateEmail
     // sms: TemplateSms

@@ -7,23 +7,25 @@ import { Context } from '../../Context';
 
 interface ITemplateCardProps {
     data: Template
+    badgeHTML?: string
     redirectUrl?: string
     actions?: JSX.Element
 }
 
 const TemplateCard: React.FC<ITemplateCardProps> = (props) => {
-    const { data, redirectUrl, actions = (<div />) } = props;
+    const { data, redirectUrl, actions = (<div />), badgeHTML } = props;
     const classes = useStyles()
 
 
     const CUSTOM = '<sup>*</sup>custom'
     const AUTO = '<sup>*</sup>auto triggered'
 
+
     return (
         <Paper className={classes.root}>
             <Box p={2} borderRadius="4px">
                 <div className={classes.tags}>
-                    <Typography variant="caption" dangerouslySetInnerHTML={{ __html: data.flow === 'defaultFlow' ? CUSTOM : AUTO }}></Typography>
+                    <Typography variant="caption" dangerouslySetInnerHTML={{ __html: badgeHTML ? badgeHTML : (data.flow === 'defaultFlow' ? CUSTOM : AUTO) }}></Typography>
                 </div>
                 <Link to={redirectUrl || '#'}>
                     <Box pl={1} display="flex" justifyContent="space-between">

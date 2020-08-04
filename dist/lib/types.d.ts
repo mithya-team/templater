@@ -54,7 +54,7 @@ export declare type TemplateField = {
     default: string;
     isRequired: boolean;
 };
-export declare type Template = {
+export interface Template {
     name: string;
     eventId?: string;
     agencyId?: string;
@@ -65,9 +65,12 @@ export declare type Template = {
     templateData: TemplateData;
     id: string;
     slug: string;
+    attachmentIds: string[];
+    isGlobal: boolean;
     created: string;
     updated: string;
-};
+    _attachments: any[];
+}
 declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
 declare type TemplateData = Partial<TTemplateData>;
 declare type TTemplateData = {

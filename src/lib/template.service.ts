@@ -55,6 +55,18 @@ export class TemplateService {
         url: `${API_URL}/${id}`,
     })
 
+
+    /**
+    * Get an existing template
+    * @param id ID of the template to be deleted
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static deleteTemplateById = (id: string) => Axios.request({
+        url: `${API_URL}/trash`,
+        params: { ids: id },
+        method: 'DELETE'
+    })
+
     /**
     * Update an existing template
     * @param id ID of the template to be updated

@@ -29,6 +29,12 @@ export declare class TemplateService {
     */
     static getTemplateById: (id: string) => Promise<import("axios").AxiosResponse<any>>;
     /**
+    * Get an existing template
+    * @param id ID of the template to be deleted
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static deleteTemplateById: (id: string) => Promise<import("axios").AxiosResponse<any>>;
+    /**
     * Update an existing template
     * @param id ID of the template to be updated
     * @param template The data to be updated

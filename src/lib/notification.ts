@@ -1,6 +1,9 @@
 import { config } from "./Config";
 
 export class Notifier {
+    static templateDelete = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully deleted' : error?.response?.data?.error?.message || 'Error deleting template');
+    }
     static templateCreate = (error?: any) => {
         config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Template successfully created' : error?.response?.data?.error?.message || 'Error creating template');
     }

@@ -76,7 +76,6 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         }
     }
 
-    console.log("settings", settings);
 
     const loadTemplates = async () => {
         setStatus('loading');
@@ -150,6 +149,23 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
     }
 
 
+    const deleteTemplateById = async (templateId: string) => {
+        console.log("deleting template")
+        setStatus('loading');
+        try {
+            await TemplateService.deleteTemplateById(templateId);
+            console.log("deleting complete", templateId);
+            setTemplates(templates => templates.filter(t => t.id !== templateId));
+            setStatus('done');
+            Notifier.templateDelete();
+            return;
+        } catch (error) {
+            Notifier.templateDelete(error);
+            setStatus('error');
+            throw error;
+        }
+    }
+
     const testTemplate = async (templateId: string, type: any, providerConfig: TemplateProviderConfig) => {
         try {
             // const res = await TemplateService.testTemplate(templateId, type, providerConfig);
@@ -173,6 +189,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         createTemplate,
         updateTemplate,
         getTemplateById,
-        testTemplate
+        testTemplate,
+        deleteTemplateById
     }
 }

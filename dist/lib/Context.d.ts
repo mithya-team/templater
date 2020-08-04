@@ -15,6 +15,7 @@ declare type ProviderValue = {
     openTemplateEditor: (template?: Template) => void;
     closeDialog: () => void;
     getTemplateById: (id: string) => Promise<Template>;
+    deleteTemplateById: (id: string) => Promise<void>;
     testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>;
 };
 export declare const ContextProvider: React.FC;

@@ -15,4 +15,5 @@ export declare const useTemplateService: (defaultFilter?: Record<string, any>) =
     updateTemplate: (id: string, template: Partial<Template>) => Promise<any>;
     getTemplateById: (id: string) => Promise<Template>;
     testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>;
+    deleteTemplateById: (templateId: string) => Promise<void>;
 };

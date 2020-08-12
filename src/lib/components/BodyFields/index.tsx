@@ -22,7 +22,9 @@ const BodyFields: React.FC<IProps> = (props) => {
 
     return (
         <div className={classes.root}>
-            <Typography variant="caption"><b>INSERT VARIABLE</b></Typography>
+            <Box ml={1}>
+                <Typography variant="caption"><b>INSERT VARIABLE</b></Typography>
+            </Box>
             {fields.map((f, i) => (
                 <Box display="flex" alignItems="center" justifyContent="space-between" key={i} className={classes.fieldItem} >
                     <Button onClick={handleClick(f.value)} variant="text" color="primary">
@@ -40,7 +42,7 @@ const BodyFields: React.FC<IProps> = (props) => {
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
-        maxHeight: '80vh',
+        maxHeight: '100vh',
         overflow: 'scroll',
     },
     fieldItem: {

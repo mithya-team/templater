@@ -7,6 +7,8 @@ import ReactQuill from 'react-quill'
 import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
 import QuillToolbar from '../QuillToolbar';
+import clsx from 'clsx';
+
 
 
 const DEFAULT_FLOW = 'defaultFlow'
@@ -14,6 +16,7 @@ export interface IFormProps {
     fields?: TemplateTypeField[]
     template: Partial<Template>
     // flows: string[]
+    classes?: { bodyFieldsContainer: any, }
     errors?: Record<string, any>
     flows: Array<{ name: string, value: string }>
     onLinkCopy?: (link: string) => void
@@ -225,7 +228,7 @@ const Form: React.FC<IFormProps> = (props) => {
                 </Paper>
             ) : null}
             {props.fields ? (
-                <Paper className={classes.bodyFields} elevation={1}>
+                <Paper className={clsx(classes.bodyFields, props.classes?.bodyFieldsContainer)} elevation={1}>
                     <BodyFields onClick={handleInsertValue} fields={props.fields || []} />
                 </Paper>
             ) : null}
@@ -262,8 +265,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     bodyFields: {
         padding: '20px 10px',
         position: 'fixed',
-        right: 10,
-        top: 100,
+        // right: 10,
+        // top: 100,
         minWidth: 180,
 
     }

@@ -22135,7 +22135,9 @@ var BodyFields = function (props) {
         copyLink("<%= " + str + " %>");
     }; };
     return (React.createElement("div", { className: classes.root },
-        React.createElement(Typography, null, "INSERT VARIABLE"),
+        React.createElement(Box, { ml: 1 },
+            React.createElement(Typography, { variant: "caption" },
+                React.createElement("b", null, "INSERT VARIABLE"))),
         fields.map(function (f, i) { return (React.createElement(Box, { display: "flex", alignItems: "center", justifyContent: "space-between", key: i, className: classes.fieldItem },
             React.createElement(Button, { onClick: handleClick(f.value), variant: "text", color: "primary" },
                 "<",
@@ -22147,7 +22149,7 @@ var BodyFields = function (props) {
 };
 var useStyles$6 = makeStyles(function (theme) { return createStyles({
     root: {
-        maxHeight: '80vh',
+        maxHeight: '100vh',
         overflow: 'scroll',
     },
     fieldItem: {
@@ -22165,9 +22167,10 @@ var useStyles$6 = makeStyles(function (theme) { return createStyles({
 }); });
 
 var QuillToolbar$1 = function (props) {
-    var _a = props.toolbarOptions, toolbarOptions = _a === void 0 ? ['align', 'color', 'image', 'size'] : _a;
+    var _a = props.variant, variant = _a === void 0 ? 'headings' : _a, _b = props.toolbarOptions, toolbarOptions = _b === void 0 ? ['align', 'color', 'image', 'size'] : _b;
     return (React.createElement("div", { id: props.id },
-        Heading,
+        toolbarOptions.includes('size') &&
+            variant === 'headings' ? Heading : Size,
         React.createElement("span", { className: "ql-formats" },
             Formatting,
             toolbarOptions.includes('color') && Color),
@@ -22205,14 +22208,55 @@ var Align = (React.createElement("span", { className: "ql-formats" },
     React.createElement("button", { className: "ql-direction", value: "rtl" }),
     React.createElement("select", { className: "ql-align" })));
 
+function toVal(mix) {
+	var k, y, str='';
+
+	if (typeof mix === 'string' || typeof mix === 'number') {
+		str += mix;
+	} else if (typeof mix === 'object') {
+		if (Array.isArray(mix)) {
+			for (k=0; k < mix.length; k++) {
+				if (mix[k]) {
+					if (y = toVal(mix[k])) {
+						str && (str += ' ');
+						str += y;
+					}
+				}
+			}
+		} else {
+			for (k in mix) {
+				if (mix[k]) {
+					str && (str += ' ');
+					str += k;
+				}
+			}
+		}
+	}
+
+	return str;
+}
+
+function clsx () {
+	var i=0, tmp, x, str='';
+	while (i < arguments.length) {
+		if (tmp = arguments[i++]) {
+			if (x = toVal(tmp)) {
+				str && (str += ' ');
+				str += x;
+			}
+		}
+	}
+	return str;
+}
+
 var DEFAULT_FLOW = 'defaultFlow';
 var curQuillInputIndex = 0;
 var Form = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
-    var template = props.template, onChange = props.onChange, fields = props.fields, _q = props.flows, flows = _q === void 0 ? [] : _q, _r = props.errors, errors = _r === void 0 ? {} : _r;
-    var _s = useState(false), loading = _s[0], setLoading = _s[1];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    var template = props.template, onChange = props.onChange, fields = props.fields, _r = props.flows, flows = _r === void 0 ? [] : _r, _s = props.errors, errors = _s === void 0 ? {} : _s;
+    var _t = useState(false), loading = _t[0], setLoading = _t[1];
     var dialogProps = config.dialogProps;
-    var _t = useState(1), step = _t[0], setStep = _t[1];
+    var _u = useState(1), step = _u[0], setStep = _u[1];
     var classes = useStyles$7(props);
     var quillRef = createRef();
     var onImagesSelected = function (file) {
@@ -22323,7 +22367,7 @@ var Form = function (props) {
             React.createElement(Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React.createElement(Box, { my: 2, key: config.name, width: "100%" },
                 React.createElement(FormControl, { fullWidth: true },
                     React.createElement(TextField, { label: config.label, name: config.name, value: config.value, onChange: config.handleChange })))); })))) : null,
-        props.fields ? (React.createElement(Paper, { className: classes.bodyFields, elevation: 1 },
+        props.fields ? (React.createElement(Paper, { className: clsx(classes.bodyFields, (_q = props.classes) === null || _q === void 0 ? void 0 : _q.bodyFieldsContainer), elevation: 1 },
             React.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
 var useStyles$7 = makeStyles(function (theme) { return createStyles({
@@ -22355,8 +22399,8 @@ var useStyles$7 = makeStyles(function (theme) { return createStyles({
     bodyFields: {
         padding: '20px 10px',
         position: 'fixed',
-        right: 10,
-        top: 100,
+        // right: 10,
+        // top: 100,
         minWidth: 180,
     }
 }); });
@@ -22556,7 +22600,7 @@ var FooterForm = function (props) {
         React.createElement(Box, { p: 3 },
             React.createElement(Box, { my: 2, width: "100%" },
                 React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
-                React.createElement(QuillToolbar$1, { id: "ql-footer-toolbar" }),
+                React.createElement(QuillToolbar$1, { variant: "size", id: "ql-footer-toolbar" }),
                 React.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: getQuillModule('ql-footer-toolbar'), className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
             React.createElement(Box, { my: 2 },
                 React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"), (_e = (_d = setting.settingData) === null || _d === void 0 ? void 0 : _d.links) === null || _e === void 0 ? void 0 :

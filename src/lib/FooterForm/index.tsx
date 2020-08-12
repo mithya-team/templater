@@ -101,7 +101,7 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
             <Box p={3}>
                 <Box my={2} width="100%">
                     <Typography gutterBottom variant="caption">FOOTER TEXT</Typography>
-                    <QuillToolbar id="ql-footer-toolbar" />
+                    <QuillToolbar variant="size" id="ql-footer-toolbar" />
                     <ReactQuill
                         ref={quillRef}
                         formats={QUILL_FORMATS}

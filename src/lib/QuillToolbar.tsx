@@ -3,17 +3,19 @@ import React from 'react'
 type ToolbarOption = 'size' | 'color' | 'image' | 'align'
 interface QuillToolbarProps {
     id: string
+    variant?: 'headings' | 'size'
     toolbarOptions?: ToolbarOption[]
 }
 
 const QuillToolbar: React.FC<QuillToolbarProps> = (props) => {
-    const { toolbarOptions = ['align', 'color', 'image', 'size'] } = props;
+    const { variant = 'headings', toolbarOptions = ['align', 'color', 'image', 'size'] } = props;
 
 
     return (
         <div id={props.id}>
-            {/* {toolbarOptions.includes('size') && Size} */}
-            {Heading}
+            {toolbarOptions.includes('size') &&
+                variant === 'headings' ? Heading : Size
+            }
             <span className="ql-formats">
                 {Formatting}
                 {toolbarOptions.includes('color') && Color}

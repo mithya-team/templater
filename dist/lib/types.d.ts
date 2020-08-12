@@ -85,7 +85,7 @@ declare type TTemplateData = {
     subject: string;
     html: string;
 };
-declare type TemplateSettingType = 'footer';
+declare type TemplateSettingType = 'footer' | 'agency';
 declare type TemplateSettingData = {
     html?: string;
     links: TemplateFooterSettingLink[];

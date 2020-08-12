@@ -4,7 +4,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ReactQuill from 'react-quill'
 import { SettingFormKey, TemplateSetting, TPicture, TemplateTypeField } from '../types'
 import SingleImageUpload from '../Form/ImageUpload'
-import { QUILL_FORMATS, QUILL_MODULES_ALT, getQuillModule } from '../Config'
+import { QUILL_FORMATS, getQuillModule } from '../Config'
 import { BodyFields } from '../components'
 import QuillToolbar from '../QuillToolbar';
 

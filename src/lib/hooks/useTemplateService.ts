@@ -41,10 +41,14 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         }
     }
     const saveSettings = async (setting: Partial<TemplateSetting>) => {
-        if (!setting.id) createSetting(setting)
-        else {
-            // const _s = settings.findIndex(s => s.i)
-            updateSetting(setting.id, setting)
+        try {
+            if (!setting.id) await createSetting(setting)
+            else {
+                // const _s = settings.findIndex(s => s.i)
+                await updateSetting(setting.id, setting)
+            }
+        } catch (error) {
+            throw error;
         }
     }
 

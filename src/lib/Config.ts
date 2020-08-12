@@ -43,19 +43,12 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
     Axios.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
     API_URL = config.apiConfig.modelName || 'templates'
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings'
-    console.log("Templater Initialized", config);
-
     initQuill(Quill);
-    // var Size = Quill.import('attributors/style/size');
-    // var Align = Quill.import('attributors/style/align');
-    // Size.whitelist = ['12px', '14px', '18px'];
-    // Quill.register(Size, true);
-    // Quill.register(Align, true);
 }
 const initQuill = (quill: typeof Quill) => {
     var Size = quill.import('attributors/style/size');
     var Align = quill.import('attributors/style/align');
-    Size.whitelist = ['12px', '14px', '18px'];
+    Size.whitelist = ['12px', '14px', '16px', '18px', '20px'];
     quill.register(Size, true);
     quill.register(Align, true);
 }
@@ -91,29 +84,29 @@ export const QUILL_MODULES = {
 
 }
 
-export const QUILL_MODULES_ALT = {
-    history: {
-        delay: 100,
-        maxStack: 200,
-        userOnly: false
-    },
-    clipboard: {
-        matchVisual: false,
-    },
-    toolbar: [
-        // [{ size: ['small', 'normal', 'large', 'huge'] }],
-        // [{ 'size': ['12px', '16px', '20px'] }],
-        ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
-        [{ 'indent': '-1' }, { 'indent': '+1' }],
-        [{ 'color': [] }],
-        // [{ 'align': ['center'] }],
-        ['image'],
-        // [{ 'script': 'sub' }, { 'script': 'super' }],
-        // [{ 'direction': 'rtl' }],
-        // ['clean'],
-    ],
+// export const QUILL_MODULES_ALT = {
+//     history: {
+//         delay: 100,
+//         maxStack: 200,
+//         userOnly: false
+//     },
+//     clipboard: {
+//         matchVisual: false,
+//     },
+//     toolbar: [
+//         // [{ size: ['small', 'normal', 'large', 'huge'] }],
+//         // [{ 'size': ['12px', '16px', '20px'] }],
+//         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
+//         [{ 'indent': '-1' }, { 'indent': '+1' }],
+//         [{ 'color': [] }],
+//         // [{ 'align': ['center'] }],
+//         ['image'],
+//         // [{ 'script': 'sub' }, { 'script': 'super' }],
+//         // [{ 'direction': 'rtl' }],
+//         // ['clean'],
+//     ],
 
-}
+// }
 
 
 export const QUILL_FORMATS = [

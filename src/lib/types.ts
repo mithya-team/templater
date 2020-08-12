@@ -98,7 +98,7 @@ type TTemplateData = {
     html: string
 }
 
-type TemplateSettingType = 'footer'
+type TemplateSettingType = 'footer' | 'agency'
 type TemplateSettingData = {
     html?: string
     links: TemplateFooterSettingLink[]

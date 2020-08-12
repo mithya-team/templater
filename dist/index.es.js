@@ -19470,18 +19470,12 @@ var initializeTemplater = function (configuration) {
     axios$1.defaults.headers.common['Authorization'] = config.apiConfig.accessToken;
     API_URL = config.apiConfig.modelName || 'templates';
     SETTINGS_API_URL = config.apiConfig.settingsModelName || 'templateSettings';
-    console.log("Templater Initialized", config);
     initQuill(Quill_1);
-    // var Size = Quill.import('attributors/style/size');
-    // var Align = Quill.import('attributors/style/align');
-    // Size.whitelist = ['12px', '14px', '18px'];
-    // Quill.register(Size, true);
-    // Quill.register(Align, true);
 };
 var initQuill = function (quill) {
     var Size = quill.import('attributors/style/size');
     var Align = quill.import('attributors/style/align');
-    Size.whitelist = ['12px', '14px', '18px'];
+    Size.whitelist = ['12px', '14px', '16px', '18px', '20px'];
     quill.register(Size, true);
     quill.register(Align, true);
 };
@@ -19510,6 +19504,28 @@ var QUILL_MODULES = {
         // ['clean'],
     ],
 };
+// export const QUILL_MODULES_ALT = {
+//     history: {
+//         delay: 100,
+//         maxStack: 200,
+//         userOnly: false
+//     },
+//     clipboard: {
+//         matchVisual: false,
+//     },
+//     toolbar: [
+//         // [{ size: ['small', 'normal', 'large', 'huge'] }],
+//         // [{ 'size': ['12px', '16px', '20px'] }],
+//         ['bold', 'italic', 'underline', 'strike', 'link', 'blockquote'],
+//         [{ 'indent': '-1' }, { 'indent': '+1' }],
+//         [{ 'color': [] }],
+//         // [{ 'align': ['center'] }],
+//         ['image'],
+//         // [{ 'script': 'sub' }, { 'script': 'super' }],
+//         // [{ 'direction': 'rtl' }],
+//         // ['clean'],
+//     ],
+// }
 var QUILL_FORMATS = [
     'header',
     'image',
@@ -19717,18 +19733,33 @@ var useTemplateService = function (defaultFilter) {
         });
     }); };
     var saveSettings = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
+        var error_2;
         return __generator(this, function (_a) {
-            if (!setting.id)
-                createSetting(setting);
-            else {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    if (!!setting.id) return [3 /*break*/, 2];
+                    return [4 /*yield*/, createSetting(setting)];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: 
                 // const _s = settings.findIndex(s => s.i)
-                updateSetting(setting.id, setting);
+                return [4 /*yield*/, updateSetting(setting.id, setting)];
+                case 3:
+                    // const _s = settings.findIndex(s => s.i)
+                    _a.sent();
+                    _a.label = 4;
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    error_2 = _a.sent();
+                    throw error_2;
+                case 6: return [2 /*return*/];
             }
-            return [2 /*return*/];
         });
     }); };
     var createSetting = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_2;
+        var res, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19744,16 +19775,16 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_2 = _a.sent();
-                    Notifier.templateCreate(error_2);
+                    error_3 = _a.sent();
+                    Notifier.templateCreate(error_3);
                     setStatus('error');
-                    throw error_2;
+                    throw error_3;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_1, error_3;
+        var res_1, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19769,16 +19800,16 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_3 = _a.sent();
-                    Notifier.templateUpdate(error_3);
+                    error_4 = _a.sent();
+                    Notifier.templateUpdate(error_4);
                     setStatus('error');
-                    throw error_3;
+                    throw error_4;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, res1, res2, error_4;
+        var _a, res1, res2, error_5;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -19794,7 +19825,7 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_4 = _b.sent();
+                    error_5 = _b.sent();
                     setStatus('error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -19802,7 +19833,7 @@ var useTemplateService = function (defaultFilter) {
         });
     }); };
     var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_5;
+        var res, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19818,16 +19849,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateCreate();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_5 = _a.sent();
+                    error_6 = _a.sent();
                     setStatus('error');
-                    Notifier.templateCreate(error_5);
-                    throw error_5;
+                    Notifier.templateCreate(error_6);
+                    throw error_6;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_2, error_6;
+        var res_2, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19843,16 +19874,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateUpdate();
                     return [2 /*return*/, res_2.data];
                 case 3:
-                    error_6 = _a.sent();
+                    error_7 = _a.sent();
                     setStatus('error');
-                    Notifier.templateUpdate(error_6);
-                    throw error_6;
+                    Notifier.templateUpdate(error_7);
+                    throw error_7;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_3, flow_1, updatedTemplates, error_7;
+        var res_3, flow_1, updatedTemplates, error_8;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19870,16 +19901,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateEnabled();
                     return [3 /*break*/, 4];
                 case 3:
-                    error_7 = _a.sent();
-                    Notifier.templateEnabled(error_7);
+                    error_8 = _a.sent();
+                    Notifier.templateEnabled(error_8);
                     setStatus('error');
-                    throw error_7;
+                    throw error_8;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var index, res, error_8;
+        var index, res, error_9;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19894,14 +19925,14 @@ var useTemplateService = function (defaultFilter) {
                     res = _a.sent();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_8 = _a.sent();
-                    throw error_8;
+                    error_9 = _a.sent();
+                    throw error_9;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var deleteTemplateById = function (templateId) { return __awaiter(void 0, void 0, void 0, function () {
-        var error_9;
+        var error_10;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19919,10 +19950,10 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateDelete();
                     return [2 /*return*/];
                 case 3:
-                    error_9 = _a.sent();
-                    Notifier.templateDelete(error_9);
+                    error_10 = _a.sent();
+                    Notifier.templateDelete(error_10);
                     setStatus('error');
-                    throw error_9;
+                    throw error_10;
                 case 4: return [2 /*return*/];
             }
         });
@@ -22111,18 +22142,24 @@ var BodyFields = function (props) {
                 f.value,
                 ">"),
             React.createElement(Box, { width: "20px" }),
-            React.createElement(IconButton, { onClick: handleCopyLink(f.value) },
+            React.createElement(IconButton, { className: classes.iconButton, onClick: handleCopyLink(f.value) },
                 React.createElement("i", { className: "material-icons" }, "file_copy")))); })));
 };
 var useStyles$6 = makeStyles(function (theme) { return createStyles({
     root: {
-        maxHeight: '70vh',
+        maxHeight: '80vh',
         overflow: 'scroll',
     },
     fieldItem: {
         cursor: 'pointer',
         '& button > span': {
-            fontSize: 14
+            fontSize: 12
+        },
+    },
+    iconButton: {
+        padding: 10,
+        '& i': {
+            fontSize: '20px'
         }
     }
 }); });
@@ -22130,7 +22167,7 @@ var useStyles$6 = makeStyles(function (theme) { return createStyles({
 var QuillToolbar$1 = function (props) {
     var _a = props.toolbarOptions, toolbarOptions = _a === void 0 ? ['align', 'color', 'image', 'size'] : _a;
     return (React.createElement("div", { id: props.id },
-        toolbarOptions.includes('size') && Size,
+        Heading,
         React.createElement("span", { className: "ql-formats" },
             Formatting,
             toolbarOptions.includes('color') && Color),
@@ -22144,6 +22181,12 @@ var Image = (React.createElement("button", { className: "ql-image" }));
 //     </select>
 // )
 var Color = (React.createElement("input", { id: "color", type: "color", className: "ql-color" }));
+var Heading = (React.createElement("span", { className: "ql-formats" },
+    React.createElement("select", { className: "ql-header" },
+        React.createElement("option", { value: "1" }, "Heading 1"),
+        React.createElement("option", { value: "2" }, "Heading 2"),
+        React.createElement("option", { value: "3" }, "Heading 3"),
+        React.createElement("option", { selected: true, value: "" }, "Normal"))));
 var Size = (React.createElement("select", { className: "ql-size" },
     React.createElement("option", { value: "12px" }, "Small"),
     React.createElement("option", { selected: true, value: "14px" }, "Medium"),

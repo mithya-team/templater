@@ -12,7 +12,8 @@ const QuillToolbar: React.FC<QuillToolbarProps> = (props) => {
 
     return (
         <div id={props.id}>
-            {toolbarOptions.includes('size') && Size}
+            {/* {toolbarOptions.includes('size') && Size} */}
+            {Heading}
             <span className="ql-formats">
                 {Formatting}
                 {toolbarOptions.includes('color') && Color}
@@ -37,6 +38,20 @@ const Color = (
     <input id="color" type="color" className="ql-color" />
 )
 
+
+const Heading = (
+    <span className="ql-formats">
+        <select className="ql-header">
+            <option value="1">Heading 1</option>
+            <option value="2">Heading 2</option>
+            <option value="3">Heading 3</option>
+            {/* <option value="4">Heading 4</option>
+            <option value="5">Heading 5</option>
+            <option value="6">Heading 6</option> */}
+            <option selected value="">Normal</option>
+        </select>
+    </span>
+)
 
 const Size = (
     <select className="ql-size">

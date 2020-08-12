@@ -38,19 +38,4 @@ export declare const QUILL_MODULES: {
         'color': string[];
     }[])[];
 };
-export declare const QUILL_MODULES_ALT: {
-    history: {
-        delay: number;
-        maxStack: number;
-        userOnly: boolean;
-    };
-    clipboard: {
-        matchVisual: boolean;
-    };
-    toolbar: (string[] | {
-        'indent': string;
-    }[] | {
-        'color': never[];
-    }[])[];
-};
 export declare const QUILL_FORMATS: string[];

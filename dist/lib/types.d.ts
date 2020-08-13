@@ -65,6 +65,7 @@ export interface Template {
     templateData: TemplateData;
     id: string;
     slug: string;
+    type?: string;
     attachmentIds: string[];
     isGlobal: boolean;
     created: string;

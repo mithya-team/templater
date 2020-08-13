@@ -22396,11 +22396,12 @@ var useStyles$7 = makeStyles(function (theme) { return createStyles({
             margin: '0px 2px'
         }
     },
+    bodyFieldsContainer: {},
     bodyFields: {
         padding: '20px 10px',
         position: 'fixed',
-        // right: 10,
-        // top: 100,
+        right: 10,
+        top: 100,
         minWidth: 180,
     }
 }); });

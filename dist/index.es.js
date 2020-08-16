@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, Component, createRef } from 'react';
-import { createMuiTheme, Button, makeStyles, createStyles, Box, Typography, Input, IconButton, Paper, CircularProgress, useTheme, Fab, FormControl, InputLabel, Select, MenuItem, Icon, TextField, AppBar, Toolbar as Toolbar$1, Tabs, Tab } from '@material-ui/core';
+import { createMuiTheme, Button, makeStyles, createStyles, Box, Typography, Input, IconButton, Paper, CircularProgress, useTheme, Fab, Icon, Link, FormControl, InputLabel, Select, MenuItem, TextField, AppBar, Toolbar as Toolbar$1, Tabs, Tab } from '@material-ui/core';
 import { useParams } from 'react-router';
 import reactDom from 'react-dom';
 import server from 'react-dom/server';
-import { withRouter, Link } from 'react-router-dom';
 import { makeStyles as makeStyles$1, createStyles as createStyles$1 } from '@material-ui/core/styles';
+import { withRouter, Link as Link$1 } from 'react-router-dom';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -19601,6 +19601,33 @@ var TemplateService = /** @class */ (function () {
         data: template
     }); };
     /**
+    * Add an attchment to a template
+    * @param templateId
+    * @param agencyId
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.addAttachment = function (templateId, agencyId, attachments) { return axios$1.request({
+        url: API_URL + "/" + templateId + "/addAttachments",
+        method: 'PATCH',
+        params: { agencyId: agencyId },
+        headers: {
+            'content-type': 'multipart/form-data'
+        },
+        data: attachments
+    }); };
+    /**
+    * Remove an attchment from a template
+    * @param templateId
+    * @param agencyId
+    * @param attachmentIds
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    TemplateService.removeAttachment = function (templateId, agencyId, attachmentIds) { return axios$1.request({
+        url: API_URL + "/" + templateId + "/removeAttachments",
+        method: 'DELETE',
+        params: { agencyId: agencyId, attachmentIds: attachmentIds },
+    }); };
+    /**
     * Fetch template types with its configs
     * @return Array<Type of templates with its fields>
     */
@@ -19691,6 +19718,10 @@ var Notifier = /** @class */ (function () {
         var _a, _b, _c, _d;
         config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error updating setting');
     };
+    Notifier.templateAttachmentAdded = function (error) {
+        var _a, _b, _c, _d;
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Attachment added successfully ' : ((_d = (_c = (_b = (_a = error) === null || _a === void 0 ? void 0 : _a.response) === null || _b === void 0 ? void 0 : _b.data) === null || _c === void 0 ? void 0 : _c.error) === null || _d === void 0 ? void 0 : _d.message) || 'Error adding attachment');
+    };
     return Notifier;
 }());
 
@@ -19713,8 +19744,52 @@ var useTemplateService = function (defaultFilter) {
             loadSettings();
         }
     }, [isInitialized]);
-    var loadSettings = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var removeAttachments = function (templateId, agencyId, attachmentIds) { return __awaiter(void 0, void 0, void 0, function () {
         var res, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, TemplateService.removeAttachment(templateId, agencyId, attachmentIds)];
+                case 1:
+                    res = _a.sent();
+                    setTemplate(res.data.id, res.data);
+                    return [2 /*return*/, res.data];
+                case 2:
+                    error_1 = _a.sent();
+                    throw error_1;
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+    var setTemplate = function (id, data) {
+        var _templates = templates.map(function (t) { return t.id === id ? (__assign(__assign({}, t), data)) : t; });
+        setTemplates(_templates);
+    };
+    var addAttachment = function (templateId, agencyId, attachments) { return __awaiter(void 0, void 0, void 0, function () {
+        var formData, res, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    formData = new FormData();
+                    Array.from(attachments).forEach(function (file, i) { return formData.append(i.toString(), file); });
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, TemplateService.addAttachment(templateId, agencyId, formData)];
+                case 2:
+                    res = _a.sent();
+                    setTemplate(res.data.id, res.data);
+                    return [2 /*return*/, res.data];
+                case 3:
+                    error_2 = _a.sent();
+                    throw error_2;
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); };
+    var loadSettings = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var res, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19726,14 +19801,14 @@ var useTemplateService = function (defaultFilter) {
                         setSettings(res.data);
                     return [3 /*break*/, 3];
                 case 2:
-                    error_1 = _a.sent();
+                    error_3 = _a.sent();
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     }); };
     var saveSettings = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var error_2;
+        var error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19752,14 +19827,14 @@ var useTemplateService = function (defaultFilter) {
                     _a.label = 4;
                 case 4: return [3 /*break*/, 6];
                 case 5:
-                    error_2 = _a.sent();
-                    throw error_2;
+                    error_4 = _a.sent();
+                    throw error_4;
                 case 6: return [2 /*return*/];
             }
         });
     }); };
     var createSetting = function (setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_3;
+        var res, error_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19775,16 +19850,16 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_3 = _a.sent();
-                    Notifier.templateCreate(error_3);
+                    error_5 = _a.sent();
+                    Notifier.templateCreate(error_5);
                     setStatus('error');
-                    throw error_3;
+                    throw error_5;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateSetting = function (id, setting) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_1, error_4;
+        var res_1, error_6;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19800,16 +19875,16 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_4 = _a.sent();
-                    Notifier.templateUpdate(error_4);
+                    error_6 = _a.sent();
+                    Notifier.templateUpdate(error_6);
                     setStatus('error');
-                    throw error_4;
+                    throw error_6;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var loadTemplates = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, res1, res2, error_5;
+        var _a, res1, res2, error_7;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -19825,7 +19900,7 @@ var useTemplateService = function (defaultFilter) {
                     setStatus('done');
                     return [3 /*break*/, 4];
                 case 3:
-                    error_5 = _b.sent();
+                    error_7 = _b.sent();
                     setStatus('error');
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
@@ -19833,7 +19908,7 @@ var useTemplateService = function (defaultFilter) {
         });
     }); };
     var createTemplate = function (template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res, error_6;
+        var res, error_8;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19849,16 +19924,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateCreate();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_6 = _a.sent();
+                    error_8 = _a.sent();
                     setStatus('error');
-                    Notifier.templateCreate(error_6);
-                    throw error_6;
+                    Notifier.templateCreate(error_8);
+                    throw error_8;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var updateTemplate = function (id, template) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_2, error_7;
+        var res_2, error_9;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19874,16 +19949,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateUpdate();
                     return [2 /*return*/, res_2.data];
                 case 3:
-                    error_7 = _a.sent();
+                    error_9 = _a.sent();
                     setStatus('error');
-                    Notifier.templateUpdate(error_7);
-                    throw error_7;
+                    Notifier.templateUpdate(error_9);
+                    throw error_9;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var enableTemplate = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var res_3, flow_1, updatedTemplates, error_8;
+        var res_3, flow_1, updatedTemplates, error_10;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19901,16 +19976,16 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateEnabled();
                     return [3 /*break*/, 4];
                 case 3:
-                    error_8 = _a.sent();
-                    Notifier.templateEnabled(error_8);
+                    error_10 = _a.sent();
+                    Notifier.templateEnabled(error_10);
                     setStatus('error');
-                    throw error_8;
+                    throw error_10;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var getTemplateById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-        var index, res, error_9;
+        var index, res, error_11;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19925,14 +20000,14 @@ var useTemplateService = function (defaultFilter) {
                     res = _a.sent();
                     return [2 /*return*/, res.data];
                 case 3:
-                    error_9 = _a.sent();
-                    throw error_9;
+                    error_11 = _a.sent();
+                    throw error_11;
                 case 4: return [2 /*return*/];
             }
         });
     }); };
     var deleteTemplateById = function (templateId) { return __awaiter(void 0, void 0, void 0, function () {
-        var error_10;
+        var error_12;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -19950,10 +20025,10 @@ var useTemplateService = function (defaultFilter) {
                     Notifier.templateDelete();
                     return [2 /*return*/];
                 case 3:
-                    error_10 = _a.sent();
-                    Notifier.templateDelete(error_10);
+                    error_12 = _a.sent();
+                    Notifier.templateDelete(error_12);
                     setStatus('error');
-                    throw error_10;
+                    throw error_12;
                 case 4: return [2 /*return*/];
             }
         });
@@ -19983,7 +20058,9 @@ var useTemplateService = function (defaultFilter) {
         updateTemplate: updateTemplate,
         getTemplateById: getTemplateById,
         testTemplate: testTemplate,
-        deleteTemplateById: deleteTemplateById
+        deleteTemplateById: deleteTemplateById,
+        addAttachment: addAttachment,
+        removeAttachments: removeAttachments
     };
 };
 
@@ -22020,6 +22097,10 @@ var FileInput = /** @class */ (function (_super) {
             var files = e.target.files || [];
             if (files.length === 0)
                 return;
+            var _a = _this.props.encodeToBase64, encodeToBase64 = _a === void 0 ? true : _a;
+            if (!encodeToBase64) {
+                return _this.props.onDone(Array.from(files));
+            }
             var allFiles = [];
             Array.from(files).forEach(function (file) {
                 var reader = new FileReader();
@@ -22045,8 +22126,8 @@ var FileInput = /** @class */ (function (_super) {
         return _this;
     }
     FileInput.prototype.render = function () {
-        var _a = this.props, _b = _a.multiple, multiple = _b === void 0 ? false : _b, _c = _a.disabled, disabled = _c === void 0 ? false : _c, _d = _a.style;
-        return (React.createElement("input", { type: "file", onChange: this.handleChange, multiple: multiple, accept: this.props.accept, style: __assign(__assign({}, this.props.style), FILE_UPLOAD_BUTTON_STYLES.fileInput), disabled: disabled }));
+        var _a = this.props, _b = _a.multiple, multiple = _b === void 0 ? false : _b, _c = _a.disabled, disabled = _c === void 0 ? false : _c, _d = _a.style, id = _a.id;
+        return (React.createElement("input", { id: id, type: "file", onChange: this.handleChange, multiple: multiple, accept: this.props.accept, style: __assign(__assign({}, this.props.style), FILE_UPLOAD_BUTTON_STYLES.fileInput), disabled: disabled }));
     };
     return FileInput;
 }(Component));
@@ -22249,6 +22330,69 @@ function clsx () {
 	return str;
 }
 
+var Attachments = function (props) {
+    var classes = useStyles$7();
+    var _a = props.attachments, attachments = _a === void 0 ? [] : _a;
+    var _b = useState(false), loading = _b[0], setLoading = _b[1];
+    var handleDone = function (files) { return __awaiter(void 0, void 0, void 0, function () {
+        var error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setLoading(true);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, props.handleAddAttchment(files)];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    return [3 /*break*/, 4];
+                case 4:
+                    setLoading(false);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleRemove = function (id) { return function () { return __awaiter(void 0, void 0, void 0, function () {
+        var error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!props.onRemoveAttachment)
+                        return [2 /*return*/];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, props.onRemoveAttachment(id)];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_2 = _a.sent();
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    }); }; };
+    return (React.createElement(Box, null,
+        loading ? React.createElement(CircularProgress, null) :
+            React.createElement(Box, { position: "relative" },
+                React.createElement("label", { htmlFor: 'attachment-upload' },
+                    React.createElement(IconButton, { size: "small" },
+                        React.createElement(Icon, null, "attach_email"))),
+                React.createElement(FileInput, { id: 'attachment-upload', accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone })),
+        React.createElement(Box, { display: "flex", flexDirection: "column" }, attachments.map(function (a) { return (React.createElement(Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
+            React.createElement(Link, { target: "_blank", href: a.url },
+                "attachment ",
+                a.name),
+            React.createElement(IconButton, { onClick: handleRemove(a.id), size: "small" },
+                React.createElement(Icon, null, "close")))); }))));
+};
+var useStyles$7 = makeStyles$1(function (theme) { return ({}); });
+
 var DEFAULT_FLOW = 'defaultFlow';
 var curQuillInputIndex = 0;
 var Form = function (props) {
@@ -22257,7 +22401,7 @@ var Form = function (props) {
     var _t = useState(false), loading = _t[0], setLoading = _t[1];
     var dialogProps = config.dialogProps;
     var _u = useState(1), step = _u[0], setStep = _u[1];
-    var classes = useStyles$7(props);
+    var classes = useStyles$8(props);
     var quillRef = createRef();
     var onImagesSelected = function (file) {
         setLoading(true);
@@ -22361,7 +22505,10 @@ var Form = function (props) {
                     React.createElement(Box, { my: 2, width: "100%" },
                         React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
                         React.createElement(QuillToolbar$1, { id: "toolbar-ql" }),
-                        React.createElement(lib, { formats: QUILL_FORMATS, modules: getQuillModule('toolbar-ql'), ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })))))) : null,
+                        React.createElement(lib, { formats: QUILL_FORMATS, modules: getQuillModule('toolbar-ql'), ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })),
+                    props.onAddAttachments ? (React.createElement(Box, { my: 2, width: "100%", alignItems: "center" },
+                        React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "ATTACHMENTS"),
+                        React.createElement(Attachments, { onRemoveAttachment: props.onRemoveAttachment, attachments: template._attachments || [], handleAddAttchment: props.onAddAttachments }))) : null)))) : null,
         template.channel === 'sms' ? (React.createElement(Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React.createElement(Typography, null, "SMS"),
             React.createElement(Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React.createElement(Box, { my: 2, key: config.name, width: "100%" },
@@ -22370,7 +22517,7 @@ var Form = function (props) {
         props.fields ? (React.createElement(Paper, { className: clsx(classes.bodyFields, (_q = props.classes) === null || _q === void 0 ? void 0 : _q.bodyFieldsContainer), elevation: 1 },
             React.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$7 = makeStyles(function (theme) { return createStyles({
+var useStyles$8 = makeStyles(function (theme) { return createStyles({
     container: {
         margin: '16px 0px',
         position: 'relative',
@@ -22406,9 +22553,9 @@ var useStyles$7 = makeStyles(function (theme) { return createStyles({
     }
 }); });
 
-var useStyles$8 = makeStyles(function (theme) { return createStyles({}); });
+var useStyles$9 = makeStyles(function (theme) { return createStyles({}); });
 
-var useStyles$9 = makeStyles(function () { return createStyles({
+var useStyles$a = makeStyles(function () { return createStyles({
     root: {
         backgroundColor: '#F5F5F5'
     },
@@ -22419,7 +22566,7 @@ var shoudShowTabs = function (pathname) {
     return ENABLED_TABS_ROUTES.map(function (r) { return getPath(r); }).indexOf(pathname) > -1;
 };
 var MainTabs = function (props) {
-    var classes = useStyles$a(props);
+    var classes = useStyles$b(props);
     if (!shoudShowTabs(props.location.pathname) || config.disableTabs)
         return React.createElement("div", null);
     return (React.createElement(AppBar, { position: "sticky" },
@@ -22430,7 +22577,7 @@ var MainTabs = function (props) {
                 React.createElement(Tab, { label: "Settings" })),
             React.createElement(Box, { flex: 1 }))));
 };
-var useStyles$a = makeStyles(function (theme) { return createStyles({
+var useStyles$b = makeStyles(function (theme) { return createStyles({
     toolbar: {
         minHeight: 48
     }
@@ -22491,19 +22638,19 @@ var TemplatePreview = function (props) {
 
 var TemplateCard = function (props) {
     var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React.createElement("div", null)) : _a, badgeHTML = props.badgeHTML;
-    var classes = useStyles$b();
+    var classes = useStyles$c();
     var CUSTOM = '<sup>*</sup>custom';
     var AUTO = '<sup>*</sup>auto triggered';
     return (React.createElement(Paper, { className: classes.root },
         React.createElement(Box, { p: 2, borderRadius: "4px" },
             React.createElement("div", { className: classes.tags },
                 React.createElement(Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : (data.flow === 'defaultFlow' ? CUSTOM : AUTO) } })),
-            React.createElement(Link, { to: redirectUrl || '#' },
+            React.createElement(Link$1, { to: redirectUrl || '#' },
                 React.createElement(Box, { pl: 1, display: "flex", justifyContent: "space-between" },
                     React.createElement(Typography, null, data.name))),
             React.createElement(Box, { display: "flex" }, actions))));
 };
-var useStyles$b = makeStyles(function () { return createStyles({
+var useStyles$c = makeStyles(function () { return createStyles({
     img: {
         borderRadius: '4px 4px 0px 0px',
         width: '100%'
@@ -22519,16 +22666,16 @@ var useStyles$b = makeStyles(function () { return createStyles({
 }); });
 
 var Settings = function (props) {
-    var classes = useStyles$c(props);
+    var classes = useStyles$d(props);
     return (React.createElement("div", null, "Settings"));
 };
-var useStyles$c = makeStyles(function (theme) { return createStyles({}); });
+var useStyles$d = makeStyles(function (theme) { return createStyles({}); });
 
 var curQuillInputIndex$1 = 0;
 var FooterForm = function (props) {
     var _a, _b, _c, _d, _e;
     var onChange = props.onChange, _f = props.setting, setting = _f === void 0 ? {} : _f;
-    var classes = useStyles$d();
+    var classes = useStyles$e();
     var _g = useState(false), loading = _g[0], setLoading = _g[1];
     var quillRef = createRef();
     useEffect(function () {
@@ -22620,7 +22767,7 @@ var FooterForm = function (props) {
         props.fields ? (React.createElement(Paper, { className: props.variableContainerClass || classes.bodyFields, elevation: 1 },
             React.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$d = makeStyles$1(function (theme) { return createStyles$1({
+var useStyles$e = makeStyles$1(function (theme) { return createStyles$1({
     rte: {
         '& .ql-editor': {
             minHeight: 160

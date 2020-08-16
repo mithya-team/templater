@@ -23,5 +23,8 @@ export class Notifier {
     static templateSettingUpdate = (error?: any) => {
         config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Setting updated successfully ' : error?.response?.data?.error?.message || 'Error updating setting');
     }
+    static templateAttachmentAdded = (error?: any) => {
+        config.onActionCompleted(!error ? 'success' : 'error', !error ? 'Attachment added successfully ' : error?.response?.data?.error?.message || 'Error adding attachment');
+    }
 
 }

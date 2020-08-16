@@ -8,6 +8,7 @@ import SingleImageUpload from './ImageUpload';
 import BodyFields from '../components/BodyFields';
 import QuillToolbar from '../QuillToolbar';
 import clsx from 'clsx';
+import Attachments from './Attachments';
 
 
 
@@ -20,6 +21,8 @@ export interface IFormProps {
     errors?: Record<string, any>
     flows: Array<{ name: string, value: string }>
     onLinkCopy?: (link: string) => void
+    onAddAttachments?: (files: any[]) => Promise<void>
+    onRemoveAttachment?: (id: string) => Promise<void>
     onChange: (key: FormKey, value: any) => void
 }
 
@@ -60,6 +63,8 @@ const Form: React.FC<IFormProps> = (props) => {
             })
 
     }, [quillRef])
+
+
 
 
     const onImageUploadComplete = (current: any, response: TPicture) => {
@@ -205,6 +210,12 @@ const Form: React.FC<IFormProps> = (props) => {
                                     ref={quillRef} className={classes.rte} value={template.templateData?.body || ''}
                                     onChange={handleRteChange} />
                             </Box>
+                            {props.onAddAttachments ? (
+                                <Box my={2} width="100%" alignItems="center">
+                                    <Typography gutterBottom variant="caption">ATTACHMENTS</Typography>
+                                    <Attachments onRemoveAttachment={props.onRemoveAttachment} attachments={template._attachments || []} handleAddAttchment={props.onAddAttachments} />
+                                </Box>
+                            ) : null}
                         </Box>
                     </Paper>
                 </>

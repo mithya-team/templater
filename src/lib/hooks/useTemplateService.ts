@@ -31,6 +31,37 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         }
     }, [isInitialized])
 
+
+    const removeAttachments = async (templateId: string, agencyId: string, attachmentIds: string[]) => {
+        try {
+            const res = await TemplateService.removeAttachment(templateId, agencyId, attachmentIds);
+            setTemplate(res.data.id, res.data);
+            return res.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+
+    const setTemplate = (id: string, data: Partial<Template>) => {
+        const _templates = templates.map(t => t.id === id ? ({ ...t, ...data }) : t);
+        setTemplates(_templates);
+    }
+
+
+    const addAttachment = async (templateId: string, agencyId: string, attachments: any[]) => {
+        const formData = new FormData();
+        Array.from(attachments).forEach((file, i) => formData.append(i.toString(), file));
+        try {
+            const res = await TemplateService.addAttachment(templateId, agencyId, formData)
+            setTemplate(res.data.id, res.data);
+            return res.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const loadSettings = async () => {
         try {
             const res = await TemplateService.getTemplateSettings({ filter: defaultFilter });
@@ -194,6 +225,8 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         updateTemplate,
         getTemplateById,
         testTemplate,
-        deleteTemplateById
+        deleteTemplateById,
+        addAttachment,
+        removeAttachments
     }
 }

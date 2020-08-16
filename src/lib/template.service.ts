@@ -80,6 +80,36 @@ export class TemplateService {
     })
 
 
+    /**
+    * Add an attchment to a template
+    * @param templateId 
+    * @param agencyId 
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static addAttachment = (templateId: string, agencyId: string, attachments: any) => Axios.request<Template>({
+        url: `${API_URL}/${templateId}/addAttachments`,
+        method: 'PATCH',
+        params: { agencyId },
+        headers: {
+            'content-type': 'multipart/form-data'
+        },
+        data: attachments
+
+    })
+    /**
+    * Remove an attchment from a template
+    * @param templateId 
+    * @param agencyId 
+    * @param attachmentIds
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static removeAttachment = (templateId: string, agencyId: string, attachmentIds: string[]) => Axios.request<Template>({
+        url: `${API_URL}/${templateId}/removeAttachments`,
+        method: 'DELETE',
+        params: { agencyId, attachmentIds },
+    })
+
+
 
     /**
     * Fetch template types with its configs

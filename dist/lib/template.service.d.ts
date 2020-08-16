@@ -42,6 +42,21 @@ export declare class TemplateService {
     */
     static updateTemplate: (id: string, template: Partial<Template>) => Promise<import("axios").AxiosResponse<any>>;
     /**
+    * Add an attchment to a template
+    * @param templateId
+    * @param agencyId
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static addAttachment: (templateId: string, agencyId: string, attachments: any) => Promise<import("axios").AxiosResponse<Template>>;
+    /**
+    * Remove an attchment from a template
+    * @param templateId
+    * @param agencyId
+    * @param attachmentIds
+    * @return Promise<AxiosResponse<Template>>>
+    */
+    static removeAttachment: (templateId: string, agencyId: string, attachmentIds: string[]) => Promise<import("axios").AxiosResponse<Template>>;
+    /**
     * Fetch template types with its configs
     * @return Array<Type of templates with its fields>
     */

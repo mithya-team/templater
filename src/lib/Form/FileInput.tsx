@@ -7,6 +7,8 @@ interface IProps {
     disabled?: boolean
     style?: any
     accept: string
+    encodeToBase64?: boolean
+    id?: string
 }
 
 const FILE_UPLOAD_BUTTON_STYLES = {
@@ -28,8 +30,14 @@ export default class FileInput extends Component<IProps> {
     handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let files = e.target.files || []
         if (files.length === 0) return;
+        const { encodeToBase64 = true } = this.props;
+        if (!encodeToBase64) {
+
+            return this.props.onDone(Array.from(files))
+        }
 
         let allFiles: any[] = [];
+
 
         Array.from(files).forEach(file => {
             let reader = new FileReader();
@@ -54,10 +62,11 @@ export default class FileInput extends Component<IProps> {
 
     }
     render() {
-        const { multiple = false, disabled = false, style = {} } = this.props;
+        const { multiple = false, disabled = false, style = {}, id } = this.props;
 
         return (
             <input
+                id={id}
                 type="file"
                 onChange={this.handleChange}
                 multiple={multiple}

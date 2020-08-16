@@ -16,4 +16,6 @@ export declare const useTemplateService: (defaultFilter?: Record<string, any>) =
     getTemplateById: (id: string) => Promise<Template>;
     testTemplate: (templateId: string, type: any, providerConfig: TemplateProviderConfig) => Promise<void>;
     deleteTemplateById: (templateId: string) => Promise<void>;
+    addAttachment: (templateId: string, agencyId: string, attachments: any[]) => Promise<Template>;
+    removeAttachments: (templateId: string, agencyId: string, attachmentIds: string[]) => Promise<Template>;
 };

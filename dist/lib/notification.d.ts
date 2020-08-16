@@ -6,4 +6,5 @@ export declare class Notifier {
     static templateEnabled: (error?: any) => void;
     static templateSettingCreate: (error?: any) => void;
     static templateSettingUpdate: (error?: any) => void;
+    static templateAttachmentAdded: (error?: any) => void;
 }

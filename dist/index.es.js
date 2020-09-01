@@ -20060,7 +20060,8 @@ var useTemplateService = function (defaultFilter) {
         testTemplate: testTemplate,
         deleteTemplateById: deleteTemplateById,
         addAttachment: addAttachment,
-        removeAttachments: removeAttachments
+        removeAttachments: removeAttachments,
+        setTemplates: setTemplates
     };
 };
 

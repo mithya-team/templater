@@ -60,6 +60,33 @@ export type TemplateField = {
     isRequired: boolean
 }
 
+export interface Schedule {
+    name: string;
+    channel: string;
+    enabled: boolean;
+    sendOnce: boolean;
+    deleted: boolean;
+    status: string;
+    wherePid: number;
+    recipients: any[];
+    id: string;
+    trackingId: string;
+    slug: string;
+    created: string;
+    updated: string;
+    jobName: string;
+    scheduledAt: string[];
+    templateWhere: any;
+    dataFields: any;
+    rangeFilter: any;
+    tracking: {
+        sent: any[];
+        failed: any[];
+        id: string;
+        scheduleId: string;
+    };
+}
+
 export interface Template {
     name: string
     eventId?: string
@@ -78,6 +105,7 @@ export interface Template {
     created: string
     updated: string
     _attachments: any[]
+    schedules: Schedule[]
     // fields: Array<TemplateField>
     // email: TemplateEmail
     // sms: TemplateSms

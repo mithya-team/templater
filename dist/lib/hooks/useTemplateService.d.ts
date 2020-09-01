@@ -1,3 +1,4 @@
+import React from 'react';
 import { Template, TemplateServiceStatus, TemplateProviderConfig, TemplateSetting } from '../types';
 export declare const useTemplateService: (defaultFilter?: Record<string, any>) => {
     flows: Partial<Record<string, {
@@ -18,4 +19,5 @@ export declare const useTemplateService: (defaultFilter?: Record<string, any>) =
     deleteTemplateById: (templateId: string) => Promise<void>;
     addAttachment: (templateId: string, agencyId: string, attachments: any[]) => Promise<Template>;
     removeAttachments: (templateId: string, agencyId: string, attachmentIds: string[]) => Promise<Template>;
+    setTemplates: React.Dispatch<React.SetStateAction<Template[]>>;
 };

@@ -227,6 +227,7 @@ export const useTemplateService = (defaultFilter: Record<string, any> = FILTER) 
         testTemplate,
         deleteTemplateById,
         addAttachment,
-        removeAttachments
+        removeAttachments,
+        setTemplates
     }
 }

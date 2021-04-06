@@ -48,7 +48,7 @@ export const initializeTemplater = (configuration: Partial<TemplaterConfig>) => 
 const initQuill = (quill: typeof Quill) => {
     var Size = quill.import('attributors/style/size');
     var Align = quill.import('attributors/style/align');
-    Size.whitelist = ['12px', '14px', '16px', '18px', '20px'];
+    Size.whitelist = ['11px', '12px', '14px', '16px', '18px', '20px', '24px', '34px'];
     quill.register(Size, true);
     quill.register(Align, true);
 }

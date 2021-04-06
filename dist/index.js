@@ -19482,7 +19482,7 @@ var initializeTemplater = function (configuration) {
 var initQuill = function (quill) {
     var Size = quill.import('attributors/style/size');
     var Align = quill.import('attributors/style/align');
-    Size.whitelist = ['12px', '14px', '16px', '18px', '20px'];
+    Size.whitelist = ['11px', '12px', '14px', '16px', '18px', '20px', '24px', '34px'];
     quill.register(Size, true);
     quill.register(Align, true);
 };
@@ -22280,9 +22280,12 @@ var Heading = (React__default.createElement("span", { className: "ql-formats" },
         React__default.createElement("option", { value: "3" }, "Heading 3"),
         React__default.createElement("option", { selected: true, value: "" }, "Normal"))));
 var Size = (React__default.createElement("select", { className: "ql-size" },
-    React__default.createElement("option", { value: "12px" }, "Small"),
-    React__default.createElement("option", { selected: true, value: "14px" }, "Medium"),
-    React__default.createElement("option", { value: "18px" }, "Large")));
+    React__default.createElement("option", { value: "34px" }, "Heading 1"),
+    React__default.createElement("option", { value: "24px" }, "Heading 2"),
+    React__default.createElement("option", { value: "20px" }, "Heading 3"),
+    React__default.createElement("option", { value: "16px", selected: true }, "Body 1"),
+    React__default.createElement("option", { value: "14px" }, "Body 2"),
+    React__default.createElement("option", { value: "11px" }, "Body 3")));
 var Indents = (React__default.createElement("span", { className: "ql-formats" },
     React__default.createElement("button", { className: "ql-list", value: "ordered" }),
     React__default.createElement("button", { className: "ql-list", value: "bullet" }),

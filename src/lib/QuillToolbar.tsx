@@ -57,9 +57,12 @@ const Heading = (
 
 const Size = (
     <select className="ql-size">
-        <option value="12px">Small</option>
-        <option selected value="14px">Medium</option>
-        <option value="18px">Large</option>
+        <option value="34px">Heading 1</option>
+        <option value="24px">Heading 2</option>
+        <option value="20px">Heading 3</option>
+        <option value="16px" selected>Body 1</option>
+        <option value="14px">Body 2</option>
+        <option value="11px">Body 3</option>
     </select>
 )
 

@@ -22256,34 +22256,35 @@ var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
 }); });
 
 var QuillToolbar$1 = function (props) {
-    var _a = props.variant, variant = _a === void 0 ? 'headings' : _a, _b = props.toolbarOptions, toolbarOptions = _b === void 0 ? ['align', 'color', 'image', 'size'] : _b;
+    var _a = props.variant, variant = _a === void 0 ? "headings" : _a, _b = props.toolbarOptions, toolbarOptions = _b === void 0 ? ["align", "color", "image", "size"] : _b;
     return (React__default.createElement("div", { id: props.id },
-        toolbarOptions.includes('size') &&
-            variant === 'headings' ? Heading : Size,
+        toolbarOptions.includes("size") && variant === "headings"
+            ? Heading
+            : Size,
         React__default.createElement("span", { className: "ql-formats" },
             Formatting,
-            toolbarOptions.includes('color') && Color),
-        toolbarOptions.includes('image') && Image,
-        toolbarOptions.includes('align') && Align,
+            toolbarOptions.includes("color") && Color),
+        toolbarOptions.includes("image") && Image,
+        toolbarOptions.includes("align") && Align,
         Indents));
 };
-var Image = (React__default.createElement("button", { className: "ql-image" }));
+var Image = React__default.createElement("button", { className: "ql-image" });
 // const Color = (
 //     <select className="ql-color">
 //     </select>
 // )
-var Color = (React__default.createElement("input", { id: "color", type: "color", className: "ql-color" }));
+var Color = React__default.createElement("input", { id: "color", type: "color", className: "ql-color" });
 var Heading = (React__default.createElement("span", { className: "ql-formats" },
-    React__default.createElement("select", { className: "ql-header" },
+    React__default.createElement("select", { className: "ql-header", defaultValue: "" },
         React__default.createElement("option", { value: "1" }, "Heading 1"),
         React__default.createElement("option", { value: "2" }, "Heading 2"),
         React__default.createElement("option", { value: "3" }, "Heading 3"),
-        React__default.createElement("option", { selected: true, value: "" }, "Normal"))));
-var Size = (React__default.createElement("select", { className: "ql-size" },
+        React__default.createElement("option", { value: "" }, "Normal"))));
+var Size = (React__default.createElement("select", { className: "ql-size", defaultValue: "16px" },
     React__default.createElement("option", { value: "34px" }, "Heading 1"),
     React__default.createElement("option", { value: "24px" }, "Heading 2"),
     React__default.createElement("option", { value: "20px" }, "Heading 3"),
-    React__default.createElement("option", { value: "16px", selected: true }, "Body 1"),
+    React__default.createElement("option", { value: "16px" }, "Body 1"),
     React__default.createElement("option", { value: "14px" }, "Body 2"),
     React__default.createElement("option", { value: "11px" }, "Body 3")));
 var Indents = (React__default.createElement("span", { className: "ql-formats" },

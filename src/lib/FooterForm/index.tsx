@@ -146,14 +146,19 @@ const FooterForm: React.FC<FooterFormProps> = (props) => {
                   loading={loading}
                   onImageSelected={onImagesSelected}
                   onImageUploadComplete={onImageUploadComplete(i)}
+                  disabled={disabled}
                 />
               </Box>
-              <FormControl fullWidth disabled={disabled}>
+              <FormControl fullWidth>
                 <Input
                   value={l.link || ""}
                   onChange={handleChange(i)}
+                  disabled={disabled}
                   endAdornment={
-                    <IconButton onClick={handleLinkRemove(i)}>
+                    <IconButton
+                      disabled={disabled}
+                      onClick={handleLinkRemove(i)}
+                    >
                       <i className="material-icons">close</i>
                     </IconButton>
                   }

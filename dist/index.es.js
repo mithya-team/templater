@@ -22776,9 +22776,9 @@ var FooterForm = function (props) {
                     var _a, _b, _c, _d;
                     return (React.createElement(Box, { key: i, my: 1, display: "flex", alignItems: "center", width: "100%" },
                         React.createElement(Box, { mr: 1, position: "relative" },
-                            React.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: "30px", height: "30px" }, folderName: "template", imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || "", loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i) })),
-                        React.createElement(FormControl, { fullWidth: true, disabled: disabled },
-                            React.createElement(Input, { value: l.link || "", onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
+                            React.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: "30px", height: "30px" }, folderName: "template", imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || "", loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i), disabled: disabled })),
+                        React.createElement(FormControl, { fullWidth: true },
+                            React.createElement(Input, { value: l.link || "", onChange: handleChange(i), disabled: disabled, endAdornment: React.createElement(IconButton, { disabled: disabled, onClick: handleLinkRemove(i) },
                                     React.createElement("i", { className: "material-icons" }, "close")) }))));
                 }),
                 React.createElement(Box, { my: 1, display: "flex", alignItems: "center", width: "100%" },

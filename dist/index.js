@@ -22783,9 +22783,9 @@ var FooterForm = function (props) {
                     var _a, _b, _c, _d;
                     return (React__default.createElement(core.Box, { key: i, my: 1, display: "flex", alignItems: "center", width: "100%" },
                         React__default.createElement(core.Box, { mr: 1, position: "relative" },
-                            React__default.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: "30px", height: "30px" }, folderName: "template", imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || "", loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i) })),
-                        React__default.createElement(core.FormControl, { fullWidth: true, disabled: disabled },
-                            React__default.createElement(core.Input, { value: l.link || "", onChange: handleChange(i), endAdornment: React__default.createElement(core.IconButton, { onClick: handleLinkRemove(i) },
+                            React__default.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: "30px", height: "30px" }, folderName: "template", imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || "", loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i), disabled: disabled })),
+                        React__default.createElement(core.FormControl, { fullWidth: true },
+                            React__default.createElement(core.Input, { value: l.link || "", onChange: handleChange(i), disabled: disabled, endAdornment: React__default.createElement(core.IconButton, { disabled: disabled, onClick: handleLinkRemove(i) },
                                     React__default.createElement("i", { className: "material-icons" }, "close")) }))));
                 }),
                 React__default.createElement(core.Box, { my: 1, display: "flex", alignItems: "center", width: "100%" },

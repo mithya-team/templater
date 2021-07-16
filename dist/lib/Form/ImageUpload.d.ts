@@ -13,6 +13,7 @@ interface IProps<T = unknown> {
     loading?: boolean;
     imageUrl?: string;
     onImageUploadComplete?: (current: any, response: T) => void;
+    disabled?: boolean;
 }
 declare function SingleImageUpload<T extends any>(props: IProps<T>): JSX.Element;
 export default SingleImageUpload;

@@ -22137,20 +22137,22 @@ function SingleImageUpload(props) {
     var _this = this;
     var theme = useTheme();
     var classes = useStyles$5(props);
-    var _a = props.mini, mini = _a === void 0 ? false : _a, _b = props.avatar, avatar = _b === void 0 ? false : _b, _c = props.dimension, dimension = _c === void 0 ? { width: '100%', height: 'unset' } : _c, _d = props.placeholderText, placeholderText = _d === void 0 ? '' : _d;
+    var _a = props.mini, mini = _a === void 0 ? false : _a, _b = props.avatar, avatar = _b === void 0 ? false : _b, _c = props.dimension, dimension = _c === void 0 ? { width: "100%", height: "unset" } : _c, _d = props.placeholderText, placeholderText = _d === void 0 ? "" : _d, _e = props.disabled, disabled = _e === void 0 ? false : _e;
     var uploadFiles = function (files) { return __awaiter(_this, void 0, void 0, function () {
         var file, filePromises;
         var _this = this;
         return __generator(this, function (_a) {
-            if (!files || files.length === 0 || typeof props.onImageSelected !== 'function')
+            if (!files ||
+                files.length === 0 ||
+                typeof props.onImageSelected !== "function")
                 return [2 /*return*/];
             file = files[0];
             props.onImageSelected(file);
             filePromises = files.map(function (file, index) {
                 return new Promise(function (resolve, reject) {
                     js(file.base64, function (img, data) {
-                        console.log('Data', data);
-                        var base64 = img.getAttribute('src');
+                        console.log("Data", data);
+                        var base64 = img.getAttribute("src");
                         resolve(file);
                     }, { meta: undefined });
                 });
@@ -22159,7 +22161,7 @@ function SingleImageUpload(props) {
                 var res;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, uploadPicture(newFiles[0], props.folderName || 'all')];
+                        case 0: return [4 /*yield*/, uploadPicture(newFiles[0], props.folderName || "all")];
                         case 1:
                             res = _a.sent();
                             if (props.onImageUploadComplete)
@@ -22171,41 +22173,54 @@ function SingleImageUpload(props) {
             return [2 /*return*/];
         });
     }); };
-    return props.loading ? React.createElement(Typography, { align: "center" },
+    return props.loading ? (React.createElement(Typography, { align: "center" },
         React.createElement(CircularProgress, null),
-        " ") : (React.createElement(Paper, { square: avatar ? false : true, style: { borderRadius: avatar ? '50%' : undefined } },
-        props.imageUrl ?
-            React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: { borderRadius: avatar ? '50%' : 0, minHeight: dimension.minHeight } }) :
-            React.createElement("div", { style: { width: dimension.width, height: dimension.height, minHeight: dimension.minHeight }, className: classes.imagePlaceholder }),
-        React.createElement("div", { className: classes.buttonContainer, style: { top: !!props.imageUrl ? undefined : '50%' } },
-            !props.imageUrl ?
-                React.createElement(React.Fragment, null,
-                    React.createElement(Typography, { variant: "body2" }, placeholderText)) : null,
-            React.createElement(Fab, { size: "small", color: "primary", className: classes.uploadBtn, style: mini ? { width: 30, height: 30, minHeight: 0, opacity: !!props.imageUrl ? 0 : 1 } : {} },
+        " ")) : (React.createElement(Paper, { square: avatar ? false : true, style: { borderRadius: avatar ? "50%" : undefined } },
+        props.imageUrl ? (React.createElement("img", { src: props.imageUrl, width: dimension.width, height: dimension.height, className: classes.image, style: {
+                borderRadius: avatar ? "50%" : 0,
+                minHeight: dimension.minHeight,
+            } })) : (React.createElement("div", { style: {
+                width: dimension.width,
+                height: dimension.height,
+                minHeight: dimension.minHeight,
+            }, className: classes.imagePlaceholder })),
+        React.createElement("div", { className: classes.buttonContainer, style: { top: !!props.imageUrl ? undefined : "50%" } },
+            !props.imageUrl ? (React.createElement(React.Fragment, null,
+                React.createElement(Typography, { variant: "body2" }, placeholderText))) : null,
+            React.createElement(Fab, { disabled: disabled, size: "small", color: "primary", className: classes.uploadBtn, style: mini
+                    ? {
+                        width: 30,
+                        height: 30,
+                        minHeight: 0,
+                        opacity: !!props.imageUrl ? 0 : 1,
+                    }
+                    : {} },
                 React.createElement("i", { style: mini ? { fontSize: 14 } : {}, className: "material-icons" }, "camera_alt"),
                 React.createElement(FileInput, { accept: "image/*", multiple: false, onDone: uploadFiles })))));
 }
-var useStyles$5 = makeStyles(function (theme) { return createStyles({
-    image: {
-        display: 'block',
-        objectFit: 'contain'
-    },
-    imagePlaceholder: {
-        background: 'white',
-    },
-    buttonContainer: {
-        position: 'absolute',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        // top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)'
-    },
-    uploadBtn: {
-        position: 'relative',
-    }
-}); });
+var useStyles$5 = makeStyles(function (theme) {
+    return createStyles({
+        image: {
+            display: "block",
+            objectFit: "contain",
+        },
+        imagePlaceholder: {
+            background: "white",
+        },
+        buttonContainer: {
+            position: "absolute",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            // top: '50%',
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+        },
+        uploadBtn: {
+            position: "relative",
+        },
+    });
+});
 
 var BodyFields = function (props) {
     var classes = useStyles$6(props);
@@ -22679,60 +22694,60 @@ var useStyles$d = makeStyles(function (theme) { return createStyles({}); });
 var curQuillInputIndex$1 = 0;
 var FooterForm = function (props) {
     var _a, _b, _c, _d, _e;
-    var onChange = props.onChange, _f = props.setting, setting = _f === void 0 ? {} : _f;
+    var onChange = props.onChange, _f = props.setting, setting = _f === void 0 ? {} : _f, _g = props.disabled, disabled = _g === void 0 ? false : _g;
     var classes = useStyles$e();
-    var _g = useState(false), loading = _g[0], setLoading = _g[1];
+    var _h = useState(false), loading = _h[0], setLoading = _h[1];
     var quillRef = createRef();
     useEffect(function () {
         if (!quillRef.current)
             return;
         var editor = quillRef.current.getEditor();
-        editor.on('editor-change', function () {
+        editor.on("editor-change", function () {
             var selection = editor.getSelection();
             if (selection)
                 curQuillInputIndex$1 = selection.index;
         });
-        var customButton = document.querySelector('#color');
+        var customButton = document.querySelector("#color");
         if (customButton)
-            customButton.addEventListener('change', function (e) {
+            customButton.addEventListener("change", function (e) {
                 var _a;
-                editor.format('color', (_a = e.target) === null || _a === void 0 ? void 0 : _a.value);
+                editor.format("color", (_a = e.target) === null || _a === void 0 ? void 0 : _a.value);
             });
         // editor.format('align', 'center')
     }, [quillRef]);
     useEffect(function () {
         var _a, _b;
-        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
+        var _links = __spreadArrays((((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []));
         if (_links.length === 0) {
-            onChange('links', [{ link: '' }]);
+            onChange("links", [{ link: "" }]);
         }
     }, []);
     var onImagesSelected = function (file) {
         setLoading(true);
     };
-    var handleRteChange = function (content) { return onChange('body', content); };
+    var handleRteChange = function (content) { return onChange("body", content); };
     var newMediaData = function () {
         var _a, _b;
-        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
-        onChange('links', __spreadArrays(_links, [{ link: '' }]));
+        var _links = __spreadArrays((((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []));
+        onChange("links", __spreadArrays(_links, [{ link: "" }]));
     };
     var handleChange = function (index) { return function (e) {
         var _a, _b;
-        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
+        var _links = __spreadArrays((((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []));
         if (_links[index])
             _links[index] = __assign(__assign({}, _links[index]), { link: e.target.value });
         // else
         //     _links.push({ link: e.target.value })
-        onChange('links', _links);
+        onChange("links", _links);
     }; };
     var onImageUploadComplete = function (index) { return function (current, response) {
         var _a, _b;
-        var _links = __spreadArrays(((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []);
+        var _links = __spreadArrays((((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links) || []));
         if (_links[index])
             _links[index] = __assign(__assign({}, _links[index]), { icon: response });
         // else
         //     _links.push({ icon: response, link: '' })
-        onChange('links', _links);
+        onChange("links", _links);
         setLoading(false);
     }; };
     var handleInsertValue = function (value) {
@@ -22746,7 +22761,7 @@ var FooterForm = function (props) {
     };
     var handleLinkRemove = function (index) { return function () {
         var _a, _b;
-        onChange('links', ((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links.filter(function (_, i) { return index !== i; })) || []);
+        onChange("links", ((_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links.filter(function (_, i) { return index !== i; })) || []);
     }; };
     var linksLength = ((_b = (_a = setting.settingData) === null || _a === void 0 ? void 0 : _a.links) === null || _b === void 0 ? void 0 : _b.length) || 0;
     return (React.createElement(Paper, null,
@@ -22754,38 +22769,40 @@ var FooterForm = function (props) {
             React.createElement(Box, { my: 2, width: "100%" },
                 React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "FOOTER TEXT"),
                 React.createElement(QuillToolbar$1, { variant: "size", id: "ql-footer-toolbar" }),
-                React.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: getQuillModule('ql-footer-toolbar'), className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || '', onChange: handleRteChange })),
+                React.createElement(lib, { ref: quillRef, formats: QUILL_FORMATS, modules: getQuillModule("ql-footer-toolbar"), className: classes.rte, value: ((_c = setting.settingData) === null || _c === void 0 ? void 0 : _c.body) || "", onChange: handleRteChange, readOnly: disabled })),
             React.createElement(Box, { my: 2 },
                 React.createElement(Typography, { gutterBottom: true, variant: "caption" }, "SOCIAL MEDIA URL\u2019s IN FOOTER"), (_e = (_d = setting.settingData) === null || _d === void 0 ? void 0 : _d.links) === null || _e === void 0 ? void 0 :
                 _e.map(function (l, i) {
                     var _a, _b, _c, _d;
                     return (React.createElement(Box, { key: i, my: 1, display: "flex", alignItems: "center", width: "100%" },
                         React.createElement(Box, { mr: 1, position: "relative" },
-                            React.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: '30px', height: '30px' }, folderName: 'template', imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || '', loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i) })),
-                        React.createElement(FormControl, { fullWidth: true },
-                            React.createElement(Input, { value: l.link || '', onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
+                            React.createElement(SingleImageUpload, { placeholderText: " ", avatar: true, mini: true, dimension: { width: "30px", height: "30px" }, folderName: "template", imageUrl: ((_d = (_c = (_b = (_a = setting) === null || _a === void 0 ? void 0 : _a.settingData) === null || _b === void 0 ? void 0 : _b.links[i]) === null || _c === void 0 ? void 0 : _c.icon) === null || _d === void 0 ? void 0 : _d.url) || "", loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete(i) })),
+                        React.createElement(FormControl, { fullWidth: true, disabled: disabled },
+                            React.createElement(Input, { value: l.link || "", onChange: handleChange(i), endAdornment: React.createElement(IconButton, { onClick: handleLinkRemove(i) },
                                     React.createElement("i", { className: "material-icons" }, "close")) }))));
                 }),
                 React.createElement(Box, { my: 1, display: "flex", alignItems: "center", width: "100%" },
-                    React.createElement(IconButton, { size: "small", onClick: newMediaData },
+                    React.createElement(IconButton, { disabled: disabled, size: "small", onClick: newMediaData },
                         React.createElement(Icon, null, "add"))))),
         props.fields ? (React.createElement(Paper, { className: props.variableContainerClass || classes.bodyFields, elevation: 1 },
             React.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$e = makeStyles$1(function (theme) { return createStyles$1({
-    rte: {
-        '& .ql-editor': {
-            minHeight: 160
-        }
-    },
-    bodyFields: {
-        padding: '20px 10px',
-        position: 'fixed',
-        right: 10,
-        top: 100,
-        minWidth: 180,
-    }
-}); });
+var useStyles$e = makeStyles$1(function (theme) {
+    return createStyles$1({
+        rte: {
+            "& .ql-editor": {
+                minHeight: 160,
+            },
+        },
+        bodyFields: {
+            padding: "20px 10px",
+            position: "fixed",
+            right: 10,
+            top: 100,
+            minWidth: 180,
+        },
+    });
+});
 
 export { BodyFields, FooterForm, Form, Pagination, Preview, QUILL_FORMATS, QUILL_MODULES, QuillToolbar$1 as QuillToolbar, lib as ReactQuill, Settings, TemplateCard, TemplatePreview, TemplateService, generateHTML, getFooterHTML, getQuillModule, initializeTemplater, usePagination, useTemplateService };
 //# sourceMappingURL=index.es.js.map

@@ -99,6 +99,7 @@ export interface Template {
     updated: string;
     _attachments: any[];
     schedules: Schedule[];
+    senderEmail?: string;
 }
 declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
 declare type TemplateData = Partial<TTemplateData>;

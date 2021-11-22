@@ -106,6 +106,7 @@ export interface Template {
     updated: string
     _attachments: any[]
     schedules: Schedule[]
+    senderEmail?: string
     // fields: Array<TemplateField>
     // email: TemplateEmail
     // sms: TemplateSms

@@ -22469,7 +22469,7 @@ var Form = function (props) {
     var _handleChange = function (e) {
         var _a = e.target, value = _a.value, name = _a.name;
         if (name === 'cc' || name === 'bcc')
-            onChange(name, value.split(",").map(function (v) { return v.trim(); }));
+            onChange(name, value.split(',').map(function (v) { return v.trim(); }));
         else
             onChange(name, value);
     };
@@ -22485,16 +22485,56 @@ var Form = function (props) {
     var _i = flows.findIndex(function (f) { return f.value === template.flow; });
     var templateName = config.singleInstances && template.flow !== DEFAULT_FLOW && _i > -1 ? flows[_i].name || '-TemplateName' : template.name || '';
     var EMAIL_INPUT_CONFIG = [
-        { label: 'TEMPLATE NAME (internal purpose only)', required: true, name: 'name', value: templateName, handleChange: _handleChange },
-        { label: 'SENDER EMAIL', name: 'senderEmail', value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '', handleChange: _handleSenderChange('email') },
-        { label: 'SENDER NAME', name: 'senderName', value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '', handleChange: _handleSenderChange('name') },
-        { label: 'CC EMAIL TO', name: 'cc', multiline: true, value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(", ")) || '', handleChange: _handleChange },
-        { label: 'BCC EMAIL TO', name: 'bcc', multiline: true, value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(", ")) || '', handleChange: _handleChange },
-        { label: 'EMAIL SUBJECT', required: true, name: 'subject', value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '', handleChange: _handleChange },
+        {
+            label: 'TEMPLATE NAME (internal purpose only)',
+            required: true,
+            name: 'name',
+            value: templateName,
+            handleChange: _handleChange,
+        },
+        {
+            label: 'SENDER EMAIL',
+            name: 'senderEmail',
+            required: true,
+            value: ((_b = (_a = template.templateData) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.email) || '',
+            handleChange: _handleSenderChange('email'),
+        },
+        {
+            label: 'SENDER NAME',
+            name: 'senderName',
+            value: ((_d = (_c = template.templateData) === null || _c === void 0 ? void 0 : _c.from) === null || _d === void 0 ? void 0 : _d.name) || '',
+            handleChange: _handleSenderChange('name'),
+        },
+        {
+            label: 'CC EMAIL TO',
+            name: 'cc',
+            multiline: true,
+            value: ((_f = (_e = template.templateData) === null || _e === void 0 ? void 0 : _e.cc) === null || _f === void 0 ? void 0 : _f.join(', ')) || '',
+            handleChange: _handleChange,
+        },
+        {
+            label: 'BCC EMAIL TO',
+            name: 'bcc',
+            multiline: true,
+            value: ((_h = (_g = template.templateData) === null || _g === void 0 ? void 0 : _g.bcc) === null || _h === void 0 ? void 0 : _h.join(', ')) || '',
+            handleChange: _handleChange,
+        },
+        {
+            label: 'EMAIL SUBJECT',
+            required: true,
+            name: 'subject',
+            value: ((_j = template.templateData) === null || _j === void 0 ? void 0 : _j.subject) || '',
+            handleChange: _handleChange,
+        },
     ];
-    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(function (f) { return (config.singleInstances && template.flow !== DEFAULT_FLOW) ? f.name !== 'name' : true; });
+    EMAIL_INPUT_CONFIG = EMAIL_INPUT_CONFIG.filter(function (f) { return (config.singleInstances && template.flow !== DEFAULT_FLOW ? f.name !== 'name' : true); });
     var SMS_INPUT_CONFIG = [
-        { label: 'SMS BODY', name: 'body', value: ((_k = template.templateData) === null || _k === void 0 ? void 0 : _k.body) || '', handleChange: _handleChange },
+        {
+            label: 'SMS BODY',
+            name: 'body',
+            value: ((_k = template.templateData) === null || _k === void 0 ? void 0 : _k.body) || '',
+            handleChange: _handleChange,
+        },
     ];
     var getLabel = function (flow) {
         if (!flow)
@@ -22523,8 +22563,7 @@ var Form = function (props) {
             React__default.createElement(core.Box, { my: 3, position: "relative" },
                 React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '150px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
-                template.slug ?
-                    React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug) : null,
+                template.slug ? (React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug)) : null,
                 React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
                     EMAIL_INPUT_CONFIG.map(function (config, i) { return (React__default.createElement(core.Box, { my: 2, key: config.name + i, width: "100%" },
                         React__default.createElement(core.FormControl, { fullWidth: true },
@@ -22544,41 +22583,43 @@ var Form = function (props) {
         props.fields ? (React__default.createElement(core.Paper, { className: clsx(classes.bodyFields, (_q = props.classes) === null || _q === void 0 ? void 0 : _q.bodyFieldsContainer), elevation: 1 },
             React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$8 = core.makeStyles(function (theme) { return core.createStyles({
-    container: {
-        margin: '16px 0px',
-        position: 'relative',
-        padding: '30px 20px'
-    },
-    slug: {
-        padding: '2px 4px',
-        position: 'absolute',
-        right: 0,
-        top: 0,
-        border: "1px solid " + theme.palette.primary.main
-    },
-    rte: {
-        '& .ql-editor': {
-            minHeight: 160
-        }
-    },
-    typeLabel: {
-        '& span': {
-            background: theme.palette.primary.main,
-            color: 'white',
-            padding: '0px 2px',
-            margin: '0px 2px'
-        }
-    },
-    bodyFieldsContainer: {},
-    bodyFields: {
-        padding: '20px 10px',
-        position: 'fixed',
-        right: 10,
-        top: 100,
-        minWidth: 180,
-    }
-}); });
+var useStyles$8 = core.makeStyles(function (theme) {
+    return core.createStyles({
+        container: {
+            margin: '16px 0px',
+            position: 'relative',
+            padding: '30px 20px',
+        },
+        slug: {
+            padding: '2px 4px',
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            border: "1px solid " + theme.palette.primary.main,
+        },
+        rte: {
+            '& .ql-editor': {
+                minHeight: 160,
+            },
+        },
+        typeLabel: {
+            '& span': {
+                background: theme.palette.primary.main,
+                color: 'white',
+                padding: '0px 2px',
+                margin: '0px 2px',
+            },
+        },
+        bodyFieldsContainer: {},
+        bodyFields: {
+            padding: '20px 10px',
+            position: 'fixed',
+            right: 10,
+            top: 100,
+            minWidth: 180,
+        },
+    });
+});
 
 var useStyles$9 = core.makeStyles(function (theme) { return core.createStyles({}); });
 

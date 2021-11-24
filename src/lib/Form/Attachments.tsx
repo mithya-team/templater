@@ -47,8 +47,8 @@ const Attachments: FC<AttachmentsProps> = (props) => {
                 </Box>
             )}
             <Box display="flex" flexDirection="column">
-                {attachments.map((a) => (
-                    <Box display="flex" width="100%" justifyContent="space-between" alignItems="center" my={2}>
+                {attachments.map((a, index) => (
+                    <Box key={a.id} display="flex" width="100%" justifyContent="space-between" alignItems="center" my={2}>
                         <Link target="_blank" href={a.url}>
                             attachment {a.name}
                         </Link>
@@ -58,7 +58,7 @@ const Attachments: FC<AttachmentsProps> = (props) => {
                     </Box>
                 ))}
                 {selectedAttachmentFields.map((a) => (
-                    <Box display="flex" width="100%" justifyContent="space-between" alignItems="center" my={2}>
+                    <Box key={a.value} display="flex" width="100%" justifyContent="space-between" alignItems="center" my={2}>
                         <Typography color="primary">{a.description}</Typography>
                         <IconButton onClick={() => onRemoveDynamicAttachment?.(a.value)} size="small">
                             <Icon>close</Icon>

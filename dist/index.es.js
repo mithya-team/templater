@@ -22398,12 +22398,11 @@ var Attachments = function (props) {
         });
     }); }; };
     return (React.createElement(Box, null,
-        loading ? React.createElement(CircularProgress, null) :
-            React.createElement(Box, { position: "relative" },
-                React.createElement("label", { htmlFor: 'attachment-upload' },
-                    React.createElement(IconButton, { size: "small" },
-                        React.createElement(Icon, null, "attach_email"))),
-                React.createElement(FileInput, { id: 'attachment-upload', accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone })),
+        loading ? (React.createElement(CircularProgress, null)) : (React.createElement(Box, { position: "relative", width: "min-content" },
+            React.createElement("label", { htmlFor: "attachment-upload" },
+                React.createElement(IconButton, { size: "small" },
+                    React.createElement(Icon, null, "attach_email"))),
+            React.createElement(FileInput, { id: "attachment-upload", accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone }))),
         React.createElement(Box, { display: "flex", flexDirection: "column" }, attachments.map(function (a) { return (React.createElement(Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
             React.createElement(Link, { target: "_blank", href: a.url },
                 "attachment ",
@@ -22698,33 +22697,36 @@ var TemplatePreview = function (props) {
 };
 
 var TemplateCard = function (props) {
-    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React.createElement("div", null)) : _a, badgeHTML = props.badgeHTML;
+    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? React.createElement("div", null) : _a, badgeHTML = props.badgeHTML;
     var classes = useStyles$c();
     var CUSTOM = '<sup>*</sup>custom';
     var AUTO = '<sup>*</sup>auto triggered';
     return (React.createElement(Paper, { className: classes.root },
         React.createElement(Box, { p: 2, borderRadius: "4px" },
             React.createElement("div", { className: classes.tags },
-                React.createElement(Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : (data.flow === 'defaultFlow' ? CUSTOM : AUTO) } })),
+                React.createElement(Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : data.flow === 'defaultFlow' ? CUSTOM : AUTO } })),
             React.createElement(Link$1, { to: redirectUrl || '#' },
                 React.createElement(Box, { pl: 1, display: "flex", justifyContent: "space-between" },
                     React.createElement(Typography, null, data.name))),
             React.createElement(Box, { display: "flex" }, actions))));
 };
-var useStyles$c = makeStyles(function () { return createStyles({
-    img: {
-        borderRadius: '4px 4px 0px 0px',
-        width: '100%'
-    },
-    root: {
-        position: 'relative'
-    },
-    tags: {
-        position: 'absolute',
-        top: 4,
-        right: 4
-    }
-}); });
+var useStyles$c = makeStyles(function () {
+    return createStyles({
+        img: {
+            borderRadius: '4px 4px 0px 0px',
+            width: '100%',
+        },
+        root: {
+            position: 'relative',
+            width: '100%',
+        },
+        tags: {
+            position: 'absolute',
+            top: 4,
+            right: 4,
+        },
+    });
+});
 
 var Settings = function (props) {
     var classes = useStyles$d(props);

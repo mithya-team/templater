@@ -22405,12 +22405,11 @@ var Attachments = function (props) {
         });
     }); }; };
     return (React__default.createElement(core.Box, null,
-        loading ? React__default.createElement(core.CircularProgress, null) :
-            React__default.createElement(core.Box, { position: "relative" },
-                React__default.createElement("label", { htmlFor: 'attachment-upload' },
-                    React__default.createElement(core.IconButton, { size: "small" },
-                        React__default.createElement(core.Icon, null, "attach_email"))),
-                React__default.createElement(FileInput, { id: 'attachment-upload', accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone })),
+        loading ? (React__default.createElement(core.CircularProgress, null)) : (React__default.createElement(core.Box, { position: "relative", width: "min-content" },
+            React__default.createElement("label", { htmlFor: "attachment-upload" },
+                React__default.createElement(core.IconButton, { size: "small" },
+                    React__default.createElement(core.Icon, null, "attach_email"))),
+            React__default.createElement(FileInput, { id: "attachment-upload", accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone }))),
         React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, attachments.map(function (a) { return (React__default.createElement(core.Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
             React__default.createElement(core.Link, { target: "_blank", href: a.url },
                 "attachment ",
@@ -22705,33 +22704,36 @@ var TemplatePreview = function (props) {
 };
 
 var TemplateCard = function (props) {
-    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? (React__default.createElement("div", null)) : _a, badgeHTML = props.badgeHTML;
+    var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? React__default.createElement("div", null) : _a, badgeHTML = props.badgeHTML;
     var classes = useStyles$c();
     var CUSTOM = '<sup>*</sup>custom';
     var AUTO = '<sup>*</sup>auto triggered';
     return (React__default.createElement(core.Paper, { className: classes.root },
         React__default.createElement(core.Box, { p: 2, borderRadius: "4px" },
             React__default.createElement("div", { className: classes.tags },
-                React__default.createElement(core.Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : (data.flow === 'defaultFlow' ? CUSTOM : AUTO) } })),
+                React__default.createElement(core.Typography, { variant: "caption", dangerouslySetInnerHTML: { __html: badgeHTML ? badgeHTML : data.flow === 'defaultFlow' ? CUSTOM : AUTO } })),
             React__default.createElement(reactRouterDom.Link, { to: redirectUrl || '#' },
                 React__default.createElement(core.Box, { pl: 1, display: "flex", justifyContent: "space-between" },
                     React__default.createElement(core.Typography, null, data.name))),
             React__default.createElement(core.Box, { display: "flex" }, actions))));
 };
-var useStyles$c = core.makeStyles(function () { return core.createStyles({
-    img: {
-        borderRadius: '4px 4px 0px 0px',
-        width: '100%'
-    },
-    root: {
-        position: 'relative'
-    },
-    tags: {
-        position: 'absolute',
-        top: 4,
-        right: 4
-    }
-}); });
+var useStyles$c = core.makeStyles(function () {
+    return core.createStyles({
+        img: {
+            borderRadius: '4px 4px 0px 0px',
+            width: '100%',
+        },
+        root: {
+            position: 'relative',
+            width: '100%',
+        },
+        tags: {
+            position: 'absolute',
+            top: 4,
+            right: 4,
+        },
+    });
+});
 
 var Settings = function (props) {
     var classes = useStyles$d(props);

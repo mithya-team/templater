@@ -100,6 +100,7 @@ export interface Template {
     _attachments: any[];
     schedules: Schedule[];
     senderEmail?: string;
+    dynamicAttachments?: Record<string, boolean>;
 }
 declare type TemplateChannel = 'email' | 'sms' | 'TemplateData';
 declare type TemplateData = Partial<TTemplateData>;

@@ -107,6 +107,7 @@ export interface Template {
     _attachments: any[]
     schedules: Schedule[]
     senderEmail?: string
+    dynamicAttachments?: Record<string, boolean>
     // fields: Array<TemplateField>
     // email: TemplateEmail
     // sms: TemplateSms

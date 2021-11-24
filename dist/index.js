@@ -22251,24 +22251,26 @@ var BodyFields = function (props) {
             React__default.createElement(core.IconButton, { className: classes.iconButton, onClick: handleCopyLink(f.value) },
                 React__default.createElement("i", { className: "material-icons" }, "file_copy")))); })));
 };
-var useStyles$6 = core.makeStyles(function (theme) { return core.createStyles({
-    root: {
-        maxHeight: '100vh',
-        overflow: 'scroll',
-    },
-    fieldItem: {
-        cursor: 'pointer',
-        '& button > span': {
-            fontSize: 12
+var useStyles$6 = core.makeStyles(function (theme) {
+    return core.createStyles({
+        root: {
+        // maxHeight: '100vh',
+        // overflow: 'scroll',
         },
-    },
-    iconButton: {
-        padding: 10,
-        '& i': {
-            fontSize: '20px'
-        }
-    }
-}); });
+        fieldItem: {
+            cursor: 'pointer',
+            '& button > span': {
+                fontSize: 12,
+            },
+        },
+        iconButton: {
+            padding: 10,
+            '& i': {
+                fontSize: '20px',
+            },
+        },
+    });
+});
 
 var QuillToolbar$1 = function (props) {
     var _a = props.variant, variant = _a === void 0 ? "headings" : _a, _b = props.toolbarOptions, toolbarOptions = _b === void 0 ? ["align", "color", "image", "size"] : _b;
@@ -22359,8 +22361,8 @@ function clsx () {
 
 var Attachments = function (props) {
     var classes = useStyles$7();
-    var _a = props.attachments, attachments = _a === void 0 ? [] : _a;
-    var _b = React.useState(false), loading = _b[0], setLoading = _b[1];
+    var _a = props.attachments, attachments = _a === void 0 ? [] : _a, _b = props.selectedAttachmentFields, selectedAttachmentFields = _b === void 0 ? [] : _b, onRemoveDynamicAttachment = props.onRemoveDynamicAttachment;
+    var _c = React.useState(false), loading = _c[0], setLoading = _c[1];
     var handleDone = function (files) { return __awaiter(void 0, void 0, void 0, function () {
         var error_1;
         return __generator(this, function (_a) {
@@ -22410,24 +22412,70 @@ var Attachments = function (props) {
                 React__default.createElement(core.IconButton, { size: "small" },
                     React__default.createElement(core.Icon, null, "attach_email"))),
             React__default.createElement(FileInput, { id: "attachment-upload", accept: "*", encodeToBase64: false, multiple: true, onDone: handleDone }))),
-        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, attachments.map(function (a) { return (React__default.createElement(core.Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
-            React__default.createElement(core.Link, { target: "_blank", href: a.url },
-                "attachment ",
-                a.name),
-            React__default.createElement(core.IconButton, { onClick: handleRemove(a.id), size: "small" },
-                React__default.createElement(core.Icon, null, "close")))); }))));
+        React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
+            attachments.map(function (a) { return (React__default.createElement(core.Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
+                React__default.createElement(core.Link, { target: "_blank", href: a.url },
+                    "attachment ",
+                    a.name),
+                React__default.createElement(core.IconButton, { onClick: handleRemove(a.id), size: "small" },
+                    React__default.createElement(core.Icon, null, "close")))); }),
+            selectedAttachmentFields.map(function (a) { return (React__default.createElement(core.Box, { display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center", my: 2 },
+                React__default.createElement(core.Typography, { color: "primary" }, a.description),
+                React__default.createElement(core.IconButton, { onClick: function () { var _a; return (_a = onRemoveDynamicAttachment) === null || _a === void 0 ? void 0 : _a(a.value); }, size: "small" },
+                    React__default.createElement(core.Icon, null, "close")))); }))));
 };
 var useStyles$7 = styles.makeStyles(function (theme) { return ({}); });
+
+var AttachmentFields = function (props) {
+    var classes = useStyles$8();
+    var _a = props.dynamicAttachments, dynamicAttachments = _a === void 0 ? {} : _a;
+    var handleClick = function (value) { return function () {
+        props.onClick(value);
+    }; };
+    return (React__default.createElement(core.Box, { className: classes.root },
+        React__default.createElement(core.Box, { ml: 1 },
+            React__default.createElement(core.Typography, { variant: "caption" },
+                React__default.createElement("b", null, "INSERT ATTACHMENTS"))),
+        props.fields.map(function (f, i) { return (React__default.createElement(core.Box, { display: "flex", alignItems: "center", justifyContent: "space-between", key: i, className: classes.fieldItem },
+            React__default.createElement(core.Button, { onClick: handleClick(f.value), variant: "text", color: "primary" },
+                "<",
+                f.value,
+                ">"),
+            React__default.createElement(core.Box, { width: "20px" }),
+            React__default.createElement(core.Switch, { color: "primary", checked: dynamicAttachments[f.value] || false, className: classes.iconButton, onChange: handleClick(f.value) }))); })));
+};
+var useStyles$8 = styles.makeStyles(function (theme) {
+    return styles.createStyles({
+        fieldItem: {
+            '& button > span': {
+                fontSize: 12,
+            },
+        },
+        iconButton: {
+            padding: 10,
+            '& i': {
+                fontSize: '20px',
+            },
+        },
+        itemLabel: {
+            width: '100%',
+            justifyContent: 'space-between',
+            '& > *': {
+                fontWeight: theme.typography.fontWeightBold,
+            },
+        },
+    });
+});
 
 var DEFAULT_FLOW = 'defaultFlow';
 var curQuillInputIndex = 0;
 var Form = function (props) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
-    var template = props.template, onChange = props.onChange, fields = props.fields, _r = props.flows, flows = _r === void 0 ? [] : _r, _s = props.errors, errors = _s === void 0 ? {} : _s;
-    var _t = React.useState(false), loading = _t[0], setLoading = _t[1];
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
+    var template = props.template, onChange = props.onChange, fields = props.fields, _u = props.flows, flows = _u === void 0 ? [] : _u, _v = props.errors, errors = _v === void 0 ? {} : _v;
+    var _w = React.useState(false), loading = _w[0], setLoading = _w[1];
     var dialogProps = config.dialogProps;
-    var _u = React.useState(1), step = _u[0], setStep = _u[1];
-    var classes = useStyles$8(props);
+    var _x = React.useState(1), step = _x[0], setStep = _x[1];
+    var classes = useStyles$9(props);
     var quillRef = React.createRef();
     var onImagesSelected = function (file) {
         setLoading(true);
@@ -22545,6 +22593,21 @@ var Form = function (props) {
             return flow;
     };
     var FLOWS = config.singleInstances ? flows.filter(function (f) { return f.value === DEFAULT_FLOW; }) : flows;
+    var textFields = React.useMemo(function () {
+        var _a;
+        return (_a = props.fields) === null || _a === void 0 ? void 0 : _a.filter(function (i) { return !i.type; });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [(_l = props.fields) === null || _l === void 0 ? void 0 : _l.length]);
+    var attachmentFields = React.useMemo(function () {
+        var _a;
+        return (_a = props.fields) === null || _a === void 0 ? void 0 : _a.filter(function (i) { return i.type === 'attachment'; });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [(_m = props.fields) === null || _m === void 0 ? void 0 : _m.length]);
+    var handleDynamicAttachmentChange = function (key) {
+        var _a;
+        var _b = template.dynamicAttachments, dynamicAttachments = _b === void 0 ? {} : _b;
+        onChange('dynamicAttachments', __assign(__assign({}, dynamicAttachments), (_a = {}, _a[key] = !dynamicAttachments[key], _a)));
+    };
     return (React__default.createElement("div", null,
         React__default.createElement(core.Paper, null,
             React__default.createElement(core.Box, { p: 3, display: "flex", alignItems: "center" }, step === 1 ? (React__default.createElement(core.FormControl, { fullWidth: true },
@@ -22560,7 +22623,7 @@ var Form = function (props) {
                     React__default.createElement("span", null, getLabel(template.flow))))))),
         props.template.channel === 'email' ? (React__default.createElement(React__default.Fragment, null,
             React__default.createElement(core.Box, { my: 3, position: "relative" },
-                React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '150px', width: '100%' }, folderName: 'template', imageUrl: (_o = (_m = (_l = template) === null || _l === void 0 ? void 0 : _l.templateData) === null || _m === void 0 ? void 0 : _m.banner) === null || _o === void 0 ? void 0 : _o.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
+                React__default.createElement(SingleImageUpload, { placeholderText: " ", dimension: { minHeight: '150px', width: '100%' }, folderName: 'template', imageUrl: (_q = (_p = (_o = template) === null || _o === void 0 ? void 0 : _o.templateData) === null || _p === void 0 ? void 0 : _p.banner) === null || _q === void 0 ? void 0 : _q.url, loading: loading, onImageSelected: onImagesSelected, onImageUploadComplete: onImageUploadComplete })),
             React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
                 template.slug ? (React__default.createElement(core.Typography, { variant: "caption", className: classes.slug }, template.slug)) : null,
                 React__default.createElement(core.Box, { display: "flex", flexDirection: "column" },
@@ -22570,19 +22633,20 @@ var Form = function (props) {
                     React__default.createElement(core.Box, { my: 2, width: "100%" },
                         React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "EMAIL BODY"),
                         React__default.createElement(QuillToolbar$1, { id: "toolbar-ql" }),
-                        React__default.createElement(lib, { formats: QUILL_FORMATS, modules: getQuillModule('toolbar-ql'), ref: quillRef, className: classes.rte, value: ((_p = template.templateData) === null || _p === void 0 ? void 0 : _p.body) || '', onChange: handleRteChange })),
+                        React__default.createElement(lib, { formats: QUILL_FORMATS, modules: getQuillModule('toolbar-ql'), ref: quillRef, className: classes.rte, value: ((_r = template.templateData) === null || _r === void 0 ? void 0 : _r.body) || '', onChange: handleRteChange })),
                     props.onAddAttachments ? (React__default.createElement(core.Box, { my: 2, width: "100%", alignItems: "center" },
                         React__default.createElement(core.Typography, { gutterBottom: true, variant: "caption" }, "ATTACHMENTS"),
-                        React__default.createElement(Attachments, { onRemoveAttachment: props.onRemoveAttachment, attachments: template._attachments || [], handleAddAttchment: props.onAddAttachments }))) : null)))) : null,
+                        React__default.createElement(Attachments, { onRemoveAttachment: props.onRemoveAttachment, attachments: template._attachments || [], handleAddAttchment: props.onAddAttachments, onRemoveDynamicAttachment: handleDynamicAttachmentChange, selectedAttachmentFields: (_s = attachmentFields) === null || _s === void 0 ? void 0 : _s.filter(function (i) { var _a, _b; return !!((_b = (_a = template) === null || _a === void 0 ? void 0 : _a.dynamicAttachments) === null || _b === void 0 ? void 0 : _b[i.value]); }) }))) : null)))) : null,
         template.channel === 'sms' ? (React__default.createElement(core.Paper, __assign({ elevation: 1, className: classes.container }, dialogProps.formContainerProps),
             React__default.createElement(core.Typography, null, "SMS"),
             React__default.createElement(core.Box, { display: "flex", flexDirection: "column" }, SMS_INPUT_CONFIG.map(function (config) { return (React__default.createElement(core.Box, { my: 2, key: config.name, width: "100%" },
                 React__default.createElement(core.FormControl, { fullWidth: true },
                     React__default.createElement(core.TextField, { label: config.label, name: config.name, value: config.value, onChange: config.handleChange })))); })))) : null,
-        props.fields ? (React__default.createElement(core.Paper, { className: clsx(classes.bodyFields, (_q = props.classes) === null || _q === void 0 ? void 0 : _q.bodyFieldsContainer), elevation: 1 },
-            React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
+        props.fields ? (React__default.createElement(core.Paper, { className: clsx(classes.bodyFields, (_t = props.classes) === null || _t === void 0 ? void 0 : _t.bodyFieldsContainer), elevation: 1 },
+            React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: textFields || [] }),
+            React__default.createElement(AttachmentFields, { onClick: handleDynamicAttachmentChange, dynamicAttachments: template.dynamicAttachments, fields: attachmentFields || [] }))) : null));
 };
-var useStyles$8 = core.makeStyles(function (theme) {
+var useStyles$9 = core.makeStyles(function (theme) {
     return core.createStyles({
         container: {
             margin: '16px 0px',
@@ -22616,13 +22680,15 @@ var useStyles$8 = core.makeStyles(function (theme) {
             right: 10,
             top: 100,
             minWidth: 180,
+            bottom: 0,
+            overflow: 'auto',
         },
     });
 });
 
-var useStyles$9 = core.makeStyles(function (theme) { return core.createStyles({}); });
+var useStyles$a = core.makeStyles(function (theme) { return core.createStyles({}); });
 
-var useStyles$a = core.makeStyles(function () { return core.createStyles({
+var useStyles$b = core.makeStyles(function () { return core.createStyles({
     root: {
         backgroundColor: '#F5F5F5'
     },
@@ -22633,7 +22699,7 @@ var shoudShowTabs = function (pathname) {
     return ENABLED_TABS_ROUTES.map(function (r) { return getPath(r); }).indexOf(pathname) > -1;
 };
 var MainTabs = function (props) {
-    var classes = useStyles$b(props);
+    var classes = useStyles$c(props);
     if (!shoudShowTabs(props.location.pathname) || config.disableTabs)
         return React__default.createElement("div", null);
     return (React__default.createElement(core.AppBar, { position: "sticky" },
@@ -22644,7 +22710,7 @@ var MainTabs = function (props) {
                 React__default.createElement(core.Tab, { label: "Settings" })),
             React__default.createElement(core.Box, { flex: 1 }))));
 };
-var useStyles$b = core.makeStyles(function (theme) { return core.createStyles({
+var useStyles$c = core.makeStyles(function (theme) { return core.createStyles({
     toolbar: {
         minHeight: 48
     }
@@ -22705,7 +22771,7 @@ var TemplatePreview = function (props) {
 
 var TemplateCard = function (props) {
     var data = props.data, redirectUrl = props.redirectUrl, _a = props.actions, actions = _a === void 0 ? React__default.createElement("div", null) : _a, badgeHTML = props.badgeHTML;
-    var classes = useStyles$c();
+    var classes = useStyles$d();
     var CUSTOM = '<sup>*</sup>custom';
     var AUTO = '<sup>*</sup>auto triggered';
     return (React__default.createElement(core.Paper, { className: classes.root },
@@ -22717,7 +22783,7 @@ var TemplateCard = function (props) {
                     React__default.createElement(core.Typography, null, data.name))),
             React__default.createElement(core.Box, { display: "flex" }, actions))));
 };
-var useStyles$c = core.makeStyles(function () {
+var useStyles$d = core.makeStyles(function () {
     return core.createStyles({
         img: {
             borderRadius: '4px 4px 0px 0px',
@@ -22736,16 +22802,16 @@ var useStyles$c = core.makeStyles(function () {
 });
 
 var Settings = function (props) {
-    var classes = useStyles$d(props);
+    var classes = useStyles$e(props);
     return (React__default.createElement("div", null, "Settings"));
 };
-var useStyles$d = core.makeStyles(function (theme) { return core.createStyles({}); });
+var useStyles$e = core.makeStyles(function (theme) { return core.createStyles({}); });
 
 var curQuillInputIndex$1 = 0;
 var FooterForm = function (props) {
     var _a, _b, _c, _d, _e;
     var onChange = props.onChange, _f = props.setting, setting = _f === void 0 ? {} : _f, _g = props.disabled, disabled = _g === void 0 ? false : _g;
-    var classes = useStyles$e();
+    var classes = useStyles$f();
     var _h = React.useState(false), loading = _h[0], setLoading = _h[1];
     var quillRef = React.createRef();
     React.useEffect(function () {
@@ -22837,7 +22903,7 @@ var FooterForm = function (props) {
         props.fields ? (React__default.createElement(core.Paper, { className: props.variableContainerClass || classes.bodyFields, elevation: 1 },
             React__default.createElement(BodyFields, { onClick: handleInsertValue, fields: props.fields || [] }))) : null));
 };
-var useStyles$e = styles.makeStyles(function (theme) {
+var useStyles$f = styles.makeStyles(function (theme) {
     return styles.createStyles({
         rte: {
             "& .ql-editor": {

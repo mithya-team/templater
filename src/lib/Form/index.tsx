@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from 'react';
+import React, { useState, createRef, useEffect, useMemo } from 'react';
 import {
     createStyles,
     makeStyles,
@@ -22,6 +22,7 @@ import BodyFields from '../components/BodyFields';
 import QuillToolbar from '../QuillToolbar';
 import clsx from 'clsx';
 import Attachments from './Attachments';
+import AttachmentFields from '../components/AttachmentFields';
 
 const DEFAULT_FLOW = 'defaultFlow';
 export interface IFormProps {
@@ -185,6 +186,19 @@ const Form: React.FC<IFormProps> = (props) => {
     };
 
     const FLOWS = config.singleInstances ? flows.filter((f) => f.value === DEFAULT_FLOW) : flows;
+    const textFields = useMemo(() => {
+        return props.fields?.filter((i) => !i.type);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.fields?.length]);
+    const attachmentFields = useMemo(() => {
+        return props.fields?.filter((i) => i.type === 'attachment');
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.fields?.length]);
+
+    const handleDynamicAttachmentChange = (key: string) => {
+        const { dynamicAttachments = {} } = template;
+        onChange('dynamicAttachments', { ...dynamicAttachments, [key]: !dynamicAttachments[key] });
+    };
 
     return (
         <div>
@@ -284,6 +298,8 @@ const Form: React.FC<IFormProps> = (props) => {
                                         onRemoveAttachment={props.onRemoveAttachment}
                                         attachments={template._attachments || []}
                                         handleAddAttchment={props.onAddAttachments}
+                                        onRemoveDynamicAttachment={handleDynamicAttachmentChange}
+                                        selectedAttachmentFields={attachmentFields?.filter((i) => !!template?.dynamicAttachments?.[i.value])}
                                     />
                                 </Box>
                             ) : null}
@@ -308,7 +324,12 @@ const Form: React.FC<IFormProps> = (props) => {
             ) : null}
             {props.fields ? (
                 <Paper className={clsx(classes.bodyFields, props.classes?.bodyFieldsContainer)} elevation={1}>
-                    <BodyFields onClick={handleInsertValue} fields={props.fields || []} />
+                    <BodyFields onClick={handleInsertValue} fields={textFields || []} />
+                    <AttachmentFields
+                        onClick={handleDynamicAttachmentChange}
+                        dynamicAttachments={template.dynamicAttachments}
+                        fields={attachmentFields || []}
+                    />
                 </Paper>
             ) : null}
         </div>
@@ -349,6 +370,8 @@ const useStyles = makeStyles((theme: Theme) =>
             right: 10,
             top: 100,
             minWidth: 180,
+            bottom: 0,
+            overflow: 'auto',
         },
     })
 );
